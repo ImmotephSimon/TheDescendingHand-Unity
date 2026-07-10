@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6ebece3ed951bb4eafa59019319baa3, type: 3}
+  m_Name: DungeonConfig
+  m_EditorClassIdentifier: NewAssembly::DungeonConfig
+  startRooms:
+  - {fileID: 511542090649066052, guid: dce01091836baae4ea10f1dff1fca6e8, type: 3}
+  standardRooms:
+  - {fileID: 1538774992368700844, guid: 19aac39bfcd579d46b725976e1aa9885, type: 3}
+  - {fileID: 312055575691783326, guid: 9adec48a4f878ad479d8a3bb03a681c2, type: 3}
+  - {fileID: 6566107772004059349, guid: 8fc84a16002a8ff438019f060a8620de, type: 3}
+  bossRooms:
+  - {fileID: 5863445262934485348, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+  deadEndRoom: {fileID: 425798220843404614, guid: fe6eee9e79c1e684faba6039f0d3f4f9, type: 3}
