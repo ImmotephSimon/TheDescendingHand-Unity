@@ -119,26 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &163139971 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4011628898227018519, guid: df4f40d11e2a5a14abcdef2d192d3a99, type: 3}
-  m_PrefabInstance: {fileID: 2817598824442762880}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &163139974
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 163139971}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd2bb22e9d38cd14dbff11b8dde3f7b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: NewAssembly::RoomDecorator
-  wallPrefab: {fileID: 3273507634397097229, guid: e794ef6281667614cac380cdd895bdf9, type: 3}
-  doorFramePrefab: {fileID: 7017249610731780099, guid: 88b0bd32fdfe67946bc7044c5a1ac00c, type: 3}
-  doorHeight: 2.5
 --- !u!1 &494549554
 GameObject:
   m_ObjectHideFlags: 0
@@ -447,10 +427,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4011628898227018519, guid: df4f40d11e2a5a14abcdef2d192d3a99, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 163139974}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: df4f40d11e2a5a14abcdef2d192d3a99, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5376221456616203928
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3316610804657935661}
+  - component: {fileID: 5623727256761062555}
+  - component: {fileID: 8488202990766122636}
+  m_Layer: 0
+  m_Name: FluidSimulator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3316610804657935661
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5376221456616203928}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.065412, y: -13.164355, z: 21.318693}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5623727256761062555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5376221456616203928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d85b516f15ac844ca9bbe5c5dbd932e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _velocityField: {fileID: 8400000, guid: a637d858b4e8a43e6babfe9244a39176, type: 2}
+  _forceField: {fileID: 8400000, guid: 50e986256d755482fb4dcb092d19f666, type: 2}
+  _kernelShader: {fileID: 4800000, guid: 636ac93388c5343c894f80bf0fc605f2, type: 3}
+  Viscosity: 0.000001
+--- !u!114 &8488202990766122636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5376221456616203928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68b35f6f5dea6274db0eda640e08abc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <PointForce>k__BackingField: 300
+  <PointFalloff>k__BackingField: 100
+  origin: {x: 0, y: -0.2}
+  _canvasRT: {fileID: 8600000, guid: 84c1663b5ecf149c0bbe31adb8a81842, type: 2}
+  _colorInjection: {fileID: 8400000, guid: 9f6f8ff8db5154ec3a818fdf0a35f31a, type: 2}
+  _forceField: {fileID: 8400000, guid: 50e986256d755482fb4dcb092d19f666, type: 2}
+  _shader: {fileID: 4800000, guid: ae8ec69a42aab44e58c38501811bda46, type: 3}
+  forceHz: 3

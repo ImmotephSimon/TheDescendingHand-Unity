@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class DoorSocket : MonoBehaviour
@@ -14,13 +15,15 @@ public class DoorSocket : MonoBehaviour
         East,
         West
     }
-
+    
     [SerializeField] private DoorSide side;
 
     [Tooltip("X = position along wall edge. Y = vertical position within room bounds.")]
     [SerializeField] private Vector2 offset;
 
     [SerializeField] private DoorType type;
+    private float width = 6f;
+    public float Width => width;
     public DoorSide Side => side;
     public Vector2 Offset => offset;
     public DoorType Type => type;
@@ -72,7 +75,10 @@ public class DoorSocket : MonoBehaviour
         GetComponentInParent<Room>()?.UpdateDoors();
     }
 
-    
+    public float GetOffsetWorld(float roomUnit)
+    {
+        return offset.x * roomUnit;
+    }
 
     public void Connect(DoorSocket other)
     {
@@ -83,5 +89,15 @@ public class DoorSocket : MonoBehaviour
     {
         connectedDoor = null;
     }
-
+    public bool MatchesDirection(Vector2Int direction)
+    {
+        return direction switch
+        {
+            var d when d == Vector2Int.up => side == DoorSide.North,
+            var d when d == Vector2Int.down => side == DoorSide.South,
+            var d when d == Vector2Int.right => side == DoorSide.East,
+            var d when d == Vector2Int.left => side == DoorSide.West,
+            _ => false
+        };
+    }
 }

@@ -6,31 +6,44 @@ using UnityEngine;
 public class DungeonDecorator : MonoBehaviour
 {
     [SerializeField] private GameObject wallPrefab;
-    [SerializeField] private GameObject doorFramePrefab;
-    [SerializeField] private float wallThickness = 0.2f;
+    [SerializeField] private GameObject doorWallPrefab;
     private int roomUnit;
     private float roomHeight;
     private Dictionary<Vector2Int, Room> dungeonMap;
+
+    private void OnValidate()
+    {
+        if (wallPrefab == null) Debug.LogError("DungeonDecorator: wallPrefab is not assigned.", this);
+        if (doorWallPrefab == null) Debug.LogError("DungeonDecorator: doorWallPrefab is not assigned.", this);
+    }
 
     public void Decorate(Dictionary<Vector2Int, Room> dungeonMap, int roomUnit)
     {
         this.roomUnit = roomUnit;
         this.dungeonMap = dungeonMap;
 
+        HashSet<string> processedConnections = new();
+
         foreach (Room room in dungeonMap.Values.Distinct())
         {
             foreach (DoorSocket door in room.GetConnectedDoors())
             {
-                if (door == null)
+                if (door == null || door.ConnectedDoor == null) continue;
+
+                // Generate a unique, order-independent ID string for the pair
+                string idA = door.GetInstanceID().ToString();
+                string idB = door.ConnectedDoor.GetInstanceID().ToString();
+                string connectionKey = string.Compare(idA, idB) < 0 ? $"{idA}_{idB}" : $"{idB}_{idA}";
+
+                if (!processedConnections.Contains(connectionKey))
                 {
-                    Debug.LogError($"{room.name} has a destroyed DoorSocket reference.");
-                    continue;
+                    processedConnections.Add(connectionKey);
+                    CreateDoorFrame(
+                        room,
+                        door.ConnectedDoor.GetComponentInParent<Room>(),
+                        door
+                    );
                 }
-                if (door.GetEntityId() < door.ConnectedDoor.GetEntityId())
-                {
-                    CreateDoorFrame(door);
-                }
-                    
             }
         }
 
@@ -43,98 +56,94 @@ public class DungeonDecorator : MonoBehaviour
         }
     }
 
-    private void CreateDoorFrame(DoorSocket door)
+    private void CreateDoorFrame(Room roomA, Room roomB, DoorSocket door)
     {
-        Instantiate(
-            doorFramePrefab,
+        GameObject obj = Instantiate(
+            doorWallPrefab,
             door.transform.position,
             door.transform.rotation,
-            transform
+            roomA.transform
         );
+
+        DoorController controller = obj.GetComponentInChildren<DoorController>();
+
+        roomA.RegisterDoor(controller);
+        roomB.RegisterDoor(controller);
     }
 
     private void CheckWall(Vector2Int cell, Vector2Int direction)
     {
         Room room = dungeonMap[cell];
 
-        if (!dungeonMap.TryGetValue(cell + direction, out Room neighbour))
+        bool isBoundary =
+            !dungeonMap.TryGetValue(cell + direction, out Room neighbour) ||
+            neighbour != room;
+
+        if (!isBoundary)
+            return;
+
+        float roomBottom = -room.RoomExtent.y / 2 + roomUnit / 2;
+
+        for (float y = roomBottom; y < room.RoomExtent.y / 2; y += roomUnit)
         {
-            CreateWallForEdge(cell, direction, room);
-        }
-        else if (neighbour != room && !HasDoorBetween(room, neighbour))
-        {
-            CreateWallForEdge(cell, direction, room);
+            if (HasDoorOnEdge(cell, direction, room, y))
+                continue;
+
+            CreateWallForEdge(cell, direction, room, y);
         }
     }
-
-    private bool HasDoorBetween(Room a, Room b)
+    private bool HasDoorOnEdge(Vector2Int cell, Vector2Int direction, Room room, float y)
     {
-        foreach (DoorSocket door in a.GetConnectedDoors())
+        if (!dungeonMap.TryGetValue(cell + direction, out Room neighbour))
+            return false;
+
+        foreach (DoorSocket door in room.GetConnectedDoors())
         {
-            if (door.ConnectedDoor != null &&
-                door.ConnectedDoor.GetComponentInParent<Room>() == b)
+            Debug.Log($"door width {door.Width}");
+            if (door.ConnectedDoor == null)
+                continue;
+
+            if (!ReferenceEquals(door.ConnectedDoor.GetComponentInParent<Room>(), neighbour))
             {
-                return true;
+                Debug.Log($"Mismatch socket room {door.ConnectedDoor.GetComponentInParent<Room>().name} vs neighbour {neighbour.name}");
+                continue;
             }
+
+            Vector3 wallPosition = GridToWorldPosition(cell, direction, y);
+
+            float distance = direction.x != 0
+                ? Mathf.Abs(door.transform.position.z - wallPosition.z)
+                : Mathf.Abs(door.transform.position.x - wallPosition.x);
+            if (distance <= door.Width / 2f)
+                return true;
         }
 
         return false;
     }
 
-    private void CreateWallSegment(Vector3 pos, Vector2Int direction, Room room, float length)
+    private void CreateWallForEdge(Vector2Int cell, Vector2Int direction, Room room, float y)
     {
-        GameObject wall = Instantiate(
-            wallPrefab,
-            pos,
-            Quaternion.identity,
-            transform
-        );
+        Vector3 pos = GridToWorldPosition(cell, direction, y);
 
-        Vector3 scale = GetWallScale(direction, room);
+        Quaternion rotation = direction.x != 0
+            ? Quaternion.identity
+            : Quaternion.Euler(0, 90, 0);
 
-        if (direction.x != 0)
-            scale.z *= length;
-        else
-            scale.x *= length;
-
-        wall.transform.localScale = scale;
-    }
-
-    private void CreateWallForEdge(Vector2Int cell, Vector2Int direction, Room room)
-    {
-        Vector3 pos = GridToWorldEdge(cell, direction, room);
-        pos += new Vector3(1.5f, 0, 1.5f);
-        GameObject wall = Instantiate(
-            wallPrefab,
-            pos,
-            Quaternion.identity,
-            transform
-        );
-        wall.transform.localScale = GetWallScale(direction, room);
+        Instantiate(wallPrefab, pos, rotation, room.transform);
     }
 
 
-    private Vector3 GetWallScale(Vector2Int direction, Room room)
+    private Vector3 GridToWorldPosition(Vector2Int cell, Vector2Int direction, float y)
     {
-        if (direction.x != 0)
-        {
-            return new Vector3(wallThickness, room.RoomExtent.y, roomUnit);
-        }
-        else
-        {
-            return new Vector3(roomUnit, room.RoomExtent.y, wallThickness);
-        }
-    }
-
-    private Vector3 GridToWorldEdge(Vector2Int cell, Vector2Int direction, Room room)
-    {
-        Vector3 pos = new Vector3(
-            cell.x * roomUnit,
-            -room.RoomExtent.y / 2f,
-            cell.y * roomUnit
-        );
-
         float half = roomUnit / 2f;
+
+        Vector3 pos = new Vector3(
+            cell.x * roomUnit + half,
+            y,
+            cell.y * roomUnit + half
+        );
+
+        
 
         if (direction == Vector2Int.right)
             pos.x += half;

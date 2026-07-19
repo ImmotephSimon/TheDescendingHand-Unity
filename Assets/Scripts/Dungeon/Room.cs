@@ -1,16 +1,21 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class Room : MonoBehaviour
 {
-    private DoorSocket[] doors;
+    [SerializeField] private float roomUnit = 3f;
+
+    private DoorSocket[] doorSockets;
     private BoxCollider bounds;
     private DoorSocket entranceDoor;
 
     public Vector3 RoomExtent => bounds.size;
-    [SerializeField] private float roomUnit = 3f;
-
+    
+    public event Action Entered;
+    public Collider Bounds => bounds;
+    private bool entered = false;
 
     private void OnValidate()
     {
@@ -20,20 +25,21 @@ public class Room : MonoBehaviour
     public void UpdateDoors()
     {
         bounds = GetComponentInChildren<BoxCollider>();
-        doors = GetComponentsInChildren<DoorSocket>();
+        doorSockets = GetComponentsInChildren<DoorSocket>();
 
-        foreach (DoorSocket door in doors)
+        foreach (DoorSocket doorSocket in doorSockets)
         {
-            door.UpdatePosition(bounds, roomUnit);
+            doorSocket.UpdatePosition(bounds, roomUnit);
         }
+
+        
     }
 
     private void Awake()
     {
-        doors = GetComponentsInChildren<DoorSocket>();
+        doorSockets = GetComponentsInChildren<DoorSocket>();
         bounds = GetComponentInChildren<BoxCollider>();
     }
-
 
     public DoorSocket GetEntranceDoor()
     {
@@ -41,24 +47,44 @@ public class Room : MonoBehaviour
         {
             List<DoorSocket> availableDoors = GetUnconnectedDoors();
 
-            entranceDoor = availableDoors
-                .Where(d => d.Type == DoorSocket.DoorType.Entrance)
-                .OrderBy(x => Random.value)
-                .FirstOrDefault()
-                ?? availableDoors.FirstOrDefault();
+            entranceDoor = availableDoors.Count > 0
+                ? availableDoors[UnityEngine.Random.Range(0, availableDoors.Count)]
+                : availableDoors.FirstOrDefault();
         }
         return entranceDoor;
     }
 
     public List<DoorSocket> GetUnconnectedDoors()
     {
-        return doors.Where(d => !d.IsConnected).ToList();
+        return doorSockets.Where(d => !d.IsConnected).ToList();
     }
 
     public List<DoorSocket> GetConnectedDoors()
     {
-        return doors.Where(d => d.IsConnected).ToList();
+        return doorSockets.Where(d => d.IsConnected).ToList();
     }
 
+    private void OnDoorEntered()
+    {
+        if (entered)
+            return;
 
+        entered = true;
+        foreach (DoorController door in doors)
+        {
+            door.PlayerEntered -= OnDoorEntered;
+        }
+        Entered?.Invoke();
+    }
+
+    private readonly List<DoorController> doors = new();
+
+    public void RegisterDoor(DoorController door)
+    {
+        if (door == null)
+            return;
+
+        doors.Add(door);
+        door.PlayerEntered += OnDoorEntered;
+    }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.AI.Navigation;
 using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour
@@ -166,21 +167,27 @@ public class DungeonGenerator : MonoBehaviour
 
         foreach (Room prefab in shuffled)
         {
-            room = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+            // Double check the engine hasn't lost the asset reference
+            if (prefab == null) continue;
+
+            Room spawnedRoom = Instantiate(prefab, Vector3.zero, Quaternion.identity);
 
             Vector2Int gridPosition = SnapRoom(
                 parentDoor,
-                room,
-                room.GetEntranceDoor()
+                spawnedRoom,
+                spawnedRoom.GetEntranceDoor()
             );
 
-            if (CanPlaceRoom(room, gridPosition))
+            if (CanPlaceRoom(spawnedRoom, gridPosition))
             {
-                AcceptRoom(parentDoor, room, gridPosition);
+                AcceptRoom(parentDoor, spawnedRoom, gridPosition);
+                room = spawnedRoom; // Only assign to the out parameter on success
                 return true;
             }
 
-            Destroy(room.gameObject);
+            // Use DestroyImmediate during generation loops to guarantee 
+            // the native pointer is wiped cleanly without bleeding into the next iteration
+            DestroyImmediate(spawnedRoom.gameObject);
         }
 
         room = null;
@@ -286,13 +293,11 @@ public class DungeonGenerator : MonoBehaviour
         DoorSocket childDoor)
     {
         Transform childRoom = room.transform;
-
-        Quaternion rotation = Quaternion.FromToRotation(
-            childDoor.transform.forward,
-            -parentDoor.transform.forward
+        Quaternion rotation = Quaternion.LookRotation(
+            -parentDoor.transform.forward,
+            Vector3.up
         );
-
-        childRoom.rotation = rotation * childRoom.rotation;
+        childRoom.rotation = rotation * Quaternion.Inverse(childDoor.transform.rotation);
 
         Vector3 offset = childDoor.transform.position - parentDoor.transform.position;
         childRoom.position -= offset;
@@ -311,5 +316,15 @@ public class DungeonGenerator : MonoBehaviour
     void FinishDungeon()
     {
         decorator.Decorate(dungeonMap, roomUnit);
+        var surfaces = FindObjectsByType<NavMeshSurface>(FindObjectsSortMode.None);
+
+        Debug.Log($"Found {surfaces.Length} surfaces");
+
+        foreach (NavMeshSurface surface in surfaces)
+        {
+            surface.BuildNavMesh();
+
+            if (surface.navMeshData == null) Debug.LogError($"Failed to bake: {surface.gameObject.name}");
+        }
     }
 }

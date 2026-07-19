@@ -1,0 +1,11 @@
+Element.Fire
+Element.Cold
+Element.Lightning
+
+Card.Spell
+Card.Attack
+Card.Projectile
+
+Weapon.Sword
+Weapon.Axe
+Weapon.TwoHanded

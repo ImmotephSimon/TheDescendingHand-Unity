@@ -26,6 +26,8 @@
 *.booproj
 *.svd
 *.pdb
+*.sln
+*.slnx
 
 # OS files
 .DS_Store

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1051362448419978199}
   - component: {fileID: 4819669219746137910}
+  - component: {fileID: 959545188080898593}
   m_Layer: 0
   m_Name: DungeonGenerator
   m_TagString: Untagged
@@ -44,3 +45,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75be49ad60f716b45a0161eff52aa5f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  config: {fileID: 11400000, guid: 93324807452a3d743a7e8c58bb74c3e8, type: 2}
+  roomUnit: 3
+--- !u!114 &959545188080898593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4011628898227018519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd2bb22e9d38cd14dbff11b8dde3f7b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: NewAssembly::RoomDecorator
+  wallPrefab: {fileID: 3273507634397097229, guid: e794ef6281667614cac380cdd895bdf9, type: 3}
+  doorWallPrefab: {fileID: 7017249610731780099, guid: 88b0bd32fdfe67946bc7044c5a1ac00c, type: 3}
+  wallThickness: 0.2
