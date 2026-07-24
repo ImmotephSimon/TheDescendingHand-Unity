@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4371616eeba732146ae006219d721597, type: 3}
+  m_Name: ElectrocuteCardDefinition
+  m_EditorClassIdentifier: 
+  id: 9e5bd61f-be00-4f2c-8b06-a986354d6a3d
+  castTime: 1
+  visuals:
+    CastAnimation: 0
+    Impact: 0
+  projectile:
+    Prefab: {fileID: 755919957440293959, guid: 09d0ab38ffa41c24fb5537cb07e4f326, type: 3}
+    Speed: 12
+    Direction:
+      Sideways: 0
+      Upward: 0
+      Forward: 1
+    Visual: 1
+    Count: 1
+    PierceCount: 0
+  effectiveness: 1
+  damageConversion: {fileID: 11400000, guid: 5d7f8bcbc2d29b14bacc644813b18c7e, type: 2}

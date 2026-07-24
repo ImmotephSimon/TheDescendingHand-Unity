@@ -10,25 +10,23 @@ public class EnemyMovementController : MonoBehaviour, IEnemyMovement
     private Transform ownerTransform;
     private Vector3 lastDestination;
 
-    private bool serverInitialized;
 
-    public void Initialize(NavMeshAgent agent, Transform ownerTransform)
+    private void Awake()
     {
-        this.agent = agent;
-        this.ownerTransform = ownerTransform;
+        agent = GetComponent<NavMeshAgent>();
+        if (agent == null ) Debug.LogError($"NavMeshAgent missing on {name}!");
+        ownerTransform = transform;
 
         agent.stoppingDistance = stoppingDistance;
         agent.autoBraking = true;
         agent.acceleration = 100f;
         agent.angularSpeed = angularSpeed;
-        serverInitialized = true;
+
+        enabled = false; // Guarantees it starts off until OnStartServer enables it
     }
 
     public void MoveTo(Vector3 position)
     {
-        if (!serverInitialized)
-            return;
-
         if ((lastDestination - position).sqrMagnitude < 0.25f)
             return;
 
@@ -40,18 +38,12 @@ public class EnemyMovementController : MonoBehaviour, IEnemyMovement
 
     public void StopMovement()
     {
-        if (!serverInitialized)
-            return;
-
         agent.isStopped = true;
         agent.ResetPath();
     }
 
     public bool HasReachedDestination()
     {
-        if (!serverInitialized)
-            return false;
-
         if (agent.pathPending)
             return false;
 
@@ -63,9 +55,6 @@ public class EnemyMovementController : MonoBehaviour, IEnemyMovement
 
     public bool IsWithinStoppingDistance(Vector3 position)
     {
-        if (!serverInitialized)
-            return false;
-
         return Vector3.Distance(ownerTransform.position, position) <= agent.stoppingDistance;
     }
 

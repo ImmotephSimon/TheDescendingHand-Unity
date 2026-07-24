@@ -1,5 +1,5 @@
 ﻿public interface IAbilityManager
 {
-    bool Ready(IAttackAbility attack);
-    void StartCooldown(IAttackAbility attack);
+    bool Ready(IEnemyAttack attack);
+    void StartCooldown(IEnemyAttack attack);
 }

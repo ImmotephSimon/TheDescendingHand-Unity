@@ -3,15 +3,15 @@ using UnityEngine;
 
 public class AbilityManager : MonoBehaviour, IAbilityManager
 {
-    private readonly Dictionary<IAttackAbility, float> _cooldowns = new();
-    private readonly List<IAttackAbility> _keys = new();
+    private readonly Dictionary<IEnemyAttack, float> _cooldowns = new();
+    private readonly List<IEnemyAttack> _keys = new();
 
-    public bool Ready(IAttackAbility ability)
+    public bool Ready(IEnemyAttack ability)
     {
         return !_cooldowns.TryGetValue(ability, out var time) || time <= 0;
     }
 
-    public void StartCooldown(IAttackAbility ability)
+    public void StartCooldown(IEnemyAttack ability)
     {
         _cooldowns[ability] = ability.CooldownDuration;
     }

@@ -74,7 +74,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 854cb47217d2e26428399490d33723f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testCardPrefab: {fileID: 755919957440293959, guid: 09d0ab38ffa41c24fb5537cb07e4f326, type: 3}
 --- !u!114 &7881783565058136539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99,6 +98,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d25b42818a7d4742b0385bbd63948f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  projectileAttachments:
+  - Visual: 1
+    Prefab: {fileID: 8553150264899835645, guid: e7e405b0ae2a4b64499b3f5624b62bd0, type: 3}
+  castAnimations:
+  - Animation: 0
+    Prefab: {fileID: 0}
+  impacts:
+  - Visual: 1
+    Prefab: {fileID: 5489294000875374177, guid: fe3d3f231b074684ba04ba547cfe4f92, type: 3}
 --- !u!114 &6216139526593159133
 MonoBehaviour:
   m_ObjectHideFlags: 0

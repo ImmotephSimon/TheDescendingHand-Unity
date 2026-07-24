@@ -13,7 +13,7 @@ public class SequenceComponent : CardComponent
         _delay = delay;
     }
 
-    protected override void OnCastTimeDone()
+    protected override void OnActivate()
     {
         _running = true;
         _currentStep = 0;
@@ -35,11 +35,19 @@ public class SequenceComponent : CardComponent
         var step = _steps[_currentStep];
 
         step.ExecuteBegin();
-        step.ExecuteCastTimeDone();
+        step.Activate();
 
         _currentStep++;
 
         if (_currentStep >= _steps.Length)
             _running = false;
+    }
+
+    protected override void OnBegin()
+    {
+    }
+
+    protected override void OnCancel()
+    {
     }
 }

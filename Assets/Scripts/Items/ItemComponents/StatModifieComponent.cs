@@ -15,4 +15,5 @@ public class TagRestriction : Restriction
 
         return true;
     }
+
 }

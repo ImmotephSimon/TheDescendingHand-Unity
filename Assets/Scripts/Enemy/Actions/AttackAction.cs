@@ -1,19 +1,19 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 public class AttackAction : EnemyActionBase
 {
-    private readonly IAttackAbility attack;
+    private readonly IEnemyAttack _attack;
     private float endTime;
-    private bool canBeInterrupted = false;
-    public override bool CanBeInterrupted => canBeInterrupted;
+    private bool _canBeInterrupted = false;
+    public override bool CanBeInterrupted => _canBeInterrupted;
 
 
-    public AttackAction(Enemy owner, IAttackAbility attack) : base(owner)
+    public AttackAction(Enemy owner, IEnemyAttack attack) : base(owner)
     {
-        this.attack = attack;
-        if (attack == null)
-            Debug.LogError($"{owner.name}: Missing IAttackAbility");
+        _attack = attack;
+        if (attack == null) Debug.LogError($"{owner.name}: Missing IAttackAbility");
     }
     
 
@@ -22,10 +22,10 @@ public class AttackAction : EnemyActionBase
         if (!perception.HasTarget)
             return false;
 
-        if (!abilityManager.Ready(attack))
+        if (!abilityManager.Ready(_attack))
             return false;
 
-        return attack.CanHit(perception.Target);
+        return _attack.CanHit(perception.Target);
     }
 
     public override float GetPriority()
@@ -38,20 +38,32 @@ public class AttackAction : EnemyActionBase
         if (!perception.HasTarget)
             return;
 
-        canBeInterrupted = false;
+        _canBeInterrupted = false;
+        _attack.OnHit += HandleHit;
 
         animationHandler.SetAnimationState(CharacterAnimationState.Attack);
         animationHandler.PlayAnimation(
-            attack.AttackAnimation,
+            _attack.AttackAnimation,
             FinishAttack
         );
 
-        abilityManager.StartCooldown(attack);
-        attack.Execute(perception.Target);
+        abilityManager.StartCooldown(_attack);
+        _attack.Execute(perception.Target);
     }
+
+    private void HandleHit(IEntity entity)
+    {
+        Debug.Log($"{entity} being hit");
+
+        if (entity.Transform.TryGetComponent<IDamageable>(out var target))
+        {
+            target.TakeDamage(new DamageInfo { Amount = 2,  HitPosition = entity.Transform.position, Source = _owner});
+        }
+    }
+
     private void FinishAttack()
     {
-        canBeInterrupted = true;
+        _canBeInterrupted = true;
     }
 
     public override void UpdateAction()
@@ -60,5 +72,6 @@ public class AttackAction : EnemyActionBase
 
     public override void StopAction()
     {
+        _attack.OnHit -= HandleHit;
     }
 }

@@ -192,8 +192,6 @@ public class PlayerMovement : NetworkBehaviour, IPlayerMovement
 
     private void Update()
     {
-
-
         float currentVelocity = _currentMoveVelocity.magnitude;
         _animator.SetFloat("Speed", currentVelocity);
         _animator.SetFloat("AnimSpeed", currentVelocity > 0.1f ? currentVelocity / _stats.MoveSpeed.Value : 1f);

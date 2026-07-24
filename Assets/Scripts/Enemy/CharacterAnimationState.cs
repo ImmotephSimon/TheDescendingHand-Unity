@@ -4,5 +4,5 @@
     Locomotion,
     Attack,
     Stun,
-    Death
+    Dead
 }

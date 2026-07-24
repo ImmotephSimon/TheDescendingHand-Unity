@@ -1,34 +1,68 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Cards/Card Registry")]
+[CreateAssetMenu(menuName = "Cards/Registry")]
 public class CardRegistry : ScriptableObject
 {
-    [Serializable]
-    public class Entry
-    {
-        public string CardId;
+    [SerializeField] private List<CardDefinition> cards = new();
 
-        public GameObject ProjectilePrefab;
-        public GameObject MinionPrefab;
-        public GameObject EffectPrefab;
+    private Dictionary<string, CardDefinition> _lookup;
+
+    private void OnEnable()
+    {
+        _lookup = null;
     }
 
-    [SerializeField] private List<Entry> entries = new();
-
-    private Dictionary<string, Entry> _lookup;
-
-    public void Initialize()
+#if UNITY_EDITOR
+    private void OnValidate()
     {
-        _lookup = new();
+        _lookup = null;
+    }
+#endif
 
-        foreach (var entry in entries)
-            _lookup[entry.CardId] = entry;
+    public bool TryGet(string definitionId, out CardDefinition definition)
+    {
+        if (string.IsNullOrEmpty(definitionId))
+        {
+            definition = null;
+            return false;
+        }
+
+        InitializeIfNeeded();
+        return _lookup.TryGetValue(definitionId, out definition);
     }
 
-    public bool TryGet(string id, out Entry entry)
+    private void InitializeIfNeeded()
     {
-        return _lookup.TryGetValue(id, out entry);
+        if (_lookup != null) return;
+
+        _lookup = new Dictionary<string, CardDefinition>();
+
+        for (int i = 0; i < cards.Count; i++)
+        {
+            var card = cards[i];
+
+            if (card == null)
+            {
+                Debug.LogWarning($"[{name}] Null entry found in Cards list at index {i}.");
+                continue;
+            }
+
+            if (string.IsNullOrEmpty(card.Id))
+            {
+                Debug.LogError($"[{name}] CardDefinition '{card.name}' has no assigned Id.");
+                continue;
+            }
+
+            if (!_lookup.TryAdd(card.Id, card))
+            {
+                Debug.LogError($"[{name}] Duplicate CardDefinition Id '{card.Id}' on asset '{card.name}'. Collision with '{_lookup[card.Id].name}'.");
+            }
+        }
+    }
+
+    public CardDefinition GetRandomCard()
+    {
+        return cards[Random.Range(0, cards.Count)];
     }
 }

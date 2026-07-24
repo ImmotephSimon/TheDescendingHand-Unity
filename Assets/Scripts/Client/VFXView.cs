@@ -1,32 +1,114 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class VFXView : MonoBehaviour
 {
-    internal void PlayCardAnimation(Guid cardId)
+    [SerializeField] private List<AbilityVisualEntry> projectileAttachments;
+    [SerializeField] private List<CardImpactEntry> impacts;
+    
+    [Serializable]
+    public class AbilityVisualEntry
     {
-        throw new NotImplementedException();
+        public AbilityVisual Visual;
+        public GameObject Prefab;
     }
 
-    internal void PlayHit(HitPresentationData data)
+    private IAnimationHandler animationHandler;
+
+    private void Awake()
     {
-        throw new NotImplementedException();
+        animationHandler = GetComponentInParent<IAnimationHandler>();
     }
 
-    internal void SpawnProjectile(ProjectilePresentationData data)
+
+    private readonly Dictionary<Transform, GameObject> _spawnedVisuals = new();
+
+    public void AttachAbilityVisual(AbilityVisual visual, Transform target)
     {
-        throw new NotImplementedException();
+        if (!TryGetPrefab(visual, out var prefab))
+        {
+            Debug.LogWarning($"No VFX assigned for {visual}");
+            return;
+        }
+
+        var instance = Instantiate(prefab);
+        if (instance.TryGetComponent<IVfx>(out var vfx))
+        {
+            vfx.Initialize(target.position,target);
+
+        }
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void DetachAbilityVisual(AbilityVisual visual, Transform target)
+    {
+    }
+
+    private bool TryGetPrefab(AbilityVisual visual, out GameObject prefab)
+    {
+        foreach (var entry in projectileAttachments)
+        {
+            if (entry.Visual == visual)
+            {
+                prefab = entry.Prefab;
+                return true;
+            }
+        }
+
+        prefab = null;
+        return false;
+    }
+
+
+    internal void PlayCardCastAnimation(CardCastAnimation animation)
     {
         
+        animationHandler.PlayAnimation(animation);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void PlayCardImpact(CardImpactVisual visual)
     {
-        
+        if (!TryGetImpact(visual, out var prefab))
+        {
+            return;
+        }
+
+        Instantiate(prefab, transform);
+    }
+
+
+    private bool TryGetImpact(CardImpactVisual visual, out GameObject prefab)
+    {
+        foreach (var entry in impacts)
+        {
+            if (entry.Visual == visual)
+            {
+                prefab = entry.Prefab;
+                return true;
+            }
+        }
+
+        prefab = null;
+        return false;
+    }
+
+    internal void SetAnimationHandler(IAnimationHandler animationHandler)
+    {
+        this.animationHandler = animationHandler;
+    }
+
+    [Serializable]
+    private class CardCastEntry
+    {
+        public CardCastAnimation Animation;
+        public GameObject Prefab;
+    }
+
+    [Serializable]
+    private class CardImpactEntry
+    {
+        public CardImpactVisual Visual;
+        public GameObject Prefab;
     }
 }
+

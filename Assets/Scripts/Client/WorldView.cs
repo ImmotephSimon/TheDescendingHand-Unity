@@ -39,18 +39,18 @@ public class WorldView : MonoBehaviour
         _animation = GetComponent<AnimationPlayer>();
     }
 
-    public void ShowHit(HitPresentationData data)
-        {
-            _vfx.PlayHit(data);
-        }
+    //public void ShowHit(HitPresentationData data)
+    //    {
+    //        _vfx.PlayHit(data);
+    //    }
 
-        public void ShowAttack(AttackPresentationData data)
-        {
-            _animation.PlayAttack(data);
-        }
+    //public void ShowAttack(AttackPresentationData data)
+    //{
+    //    _animation.PlayAttack(data);
+    //}
 
-        public void ShowProjectile(ProjectilePresentationData data)
-        {
-            _vfx.SpawnProjectile(data);
-        }
+    //public void ShowProjectile(ProjectilePresentationData data)
+    //{
+    //    _vfx.SpawnProjectile(data);
+    //}
 }

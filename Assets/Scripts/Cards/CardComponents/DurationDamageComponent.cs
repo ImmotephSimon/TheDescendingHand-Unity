@@ -49,5 +49,17 @@ namespace Cards.CardComponents
         {
             // Needs target from whoever applied this effect
         }
+
+        protected override void OnBegin()
+        {
+        }
+
+        protected override void OnActivate()
+        {
+        }
+
+        protected override void OnCancel()
+        {
+        }
     }
 }

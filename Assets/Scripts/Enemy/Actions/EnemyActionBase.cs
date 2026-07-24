@@ -2,6 +2,7 @@
 
 public abstract class EnemyActionBase : IEnemyAction
 {
+    protected readonly Enemy _owner;
     protected readonly IEnemyMovement movementHandler;
     protected readonly IPerception perception;
     protected readonly IAnimationHandler animationHandler;
@@ -13,6 +14,7 @@ public abstract class EnemyActionBase : IEnemyAction
     {
         if (owner == null)
             throw new ArgumentNullException(nameof(owner));
+        _owner = owner;
 
         movementHandler = owner.GetComponent<IEnemyMovement>()
             ?? throw new InvalidOperationException($"{owner.name} requires IEnemyMovement");
@@ -20,7 +22,7 @@ public abstract class EnemyActionBase : IEnemyAction
         perception = owner.GetComponent<IPerception>()
             ?? throw new InvalidOperationException($"{owner.name} requires IPerception");
 
-        animationHandler = owner.GetComponent<IAnimationHandler>()
+        animationHandler = owner.GetComponentInChildren<IAnimationHandler>()
             ?? throw new InvalidOperationException($"{owner.name} requires IAnimationHandler");
         abilityManager = owner.GetComponent<IAbilityManager>()
             ?? throw new InvalidOperationException($"{owner.name} requires IAbilityManager");

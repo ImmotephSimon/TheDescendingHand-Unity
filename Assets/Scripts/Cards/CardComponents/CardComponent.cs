@@ -2,29 +2,32 @@ using UnityEngine;
 
 public abstract class CardComponent
 {
-    protected Transform Owner { get; private set; }
+    protected IStatContainer Stats { get; private set; }
+    protected Card Card { get; private set; }
+    protected IEntity Owner { get; private set; }
     public virtual void OnHit(HitInfo info) { }
 
     public void ExecuteBegin()
     {
-        OnBeginCard();
+        OnBegin();
     }
 
-    public void ExecuteCastTimeDone()
+    public void Activate()
     {
-        OnCastTimeDone();
+        OnActivate();
     }
 
-    public void ExecuteCancelled()
+    public void Cancel()
     {
-        OnCancelled();
+        OnCancel();
     }
-    public void Initialize(Transform owner)
+    internal void Initialize(Card card, IEntity owner)
     {
+        Card = card;
         Owner = owner;
     }
-    protected virtual void OnBeginCard() { }
-    protected virtual void OnCastTimeDone() { }
-    protected virtual void OnCancelled() { }
+    protected abstract void OnBegin();
+    protected abstract void OnActivate();
+    protected abstract void OnCancel();
     public virtual void Tick(float deltaTime) { }
 }

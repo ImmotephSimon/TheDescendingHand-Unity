@@ -18,12 +18,12 @@ public class SuctionComponent : CardComponent
         _enemyLayer = enemyLayer;
     }
 
-    protected override void OnCastTimeDone()
+    protected override void OnActivate()
     {
         _isSuctionActive = true;
     }
 
-    protected override void OnCancelled()
+    protected override void OnCancel()
     {
         _isSuctionActive = false;
     }
@@ -34,7 +34,7 @@ public class SuctionComponent : CardComponent
             return;
 
         Collider[] targets = Physics.OverlapSphere(
-            Owner.position,
+            Owner.Transform.position,
             _radius,
             _enemyLayer
         );
@@ -43,7 +43,7 @@ public class SuctionComponent : CardComponent
         {
             if (target.TryGetComponent<Rigidbody>(out var rb))
             {
-                Vector3 direction = Owner.position - target.transform.position;
+                Vector3 direction = Owner.Transform.position - target.transform.position;
 
                 if (direction.sqrMagnitude > 0.01f)
                 {
@@ -54,5 +54,9 @@ public class SuctionComponent : CardComponent
                 }
             }
         }
+    }
+
+    protected override void OnBegin()
+    {
     }
 }

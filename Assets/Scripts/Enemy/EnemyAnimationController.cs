@@ -4,8 +4,12 @@ using UnityEngine;
 
 
 
-public class EnemyAnimationController : MonoBehaviour
+public class EnemyAnimationController : MonoBehaviour, IAnimationHandler
 {
+    [SerializeField] private AnimationClip fastAttack;
+    [SerializeField] private AnimationClip slowAttack;
+    [SerializeField] private AnimationClip chargeAttack;
+
     private Animator animator;
     private CharacterAnimationState currentState;
     private bool isLocked;
@@ -36,6 +40,7 @@ public class EnemyAnimationController : MonoBehaviour
             return;
         }
         _overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+        animator.runtimeAnimatorController = _overrideController;
 
     }
 
@@ -45,16 +50,7 @@ public class EnemyAnimationController : MonoBehaviour
         animator.SetFloat(SpeedHash, speed);
     }
 
-    public void PlayStateDelayed(CharacterAnimationState state)
-    {
-        StartCoroutine(Delayed(state));
-    }
 
-    private IEnumerator Delayed(CharacterAnimationState state)
-    {
-        yield return null;
-        PlayState(state);
-    }
 
     public void PlayState(CharacterAnimationState state, float transitionDuration = 0.1f)
     {
@@ -80,7 +76,7 @@ public class EnemyAnimationController : MonoBehaviour
                 animator.CrossFade(StunHash, transitionDuration);
                 break;
 
-            case CharacterAnimationState.Death:
+            case CharacterAnimationState.Dead:
                 Debug.Log($"Playing animator state {state}");
                 animator.CrossFade(DeathHash, transitionDuration);
                 isLocked = true;
@@ -107,5 +103,31 @@ public class EnemyAnimationController : MonoBehaviour
     {
         attackFinished?.Invoke();
         attackFinished = null;
+    }
+
+    public void PlayAnimation(AttackAnimation attackAnimation, Action onFinished)
+    {
+        attackFinished = onFinished;
+
+        AnimationClip clip = attackAnimation switch
+        {
+            AttackAnimation.MeleeFast => fastAttack,
+            AttackAnimation.MeleeSlow => slowAttack,
+            AttackAnimation.MeleeCharge => chargeAttack,
+            _ => fastAttack
+        };
+
+        _overrideController["Attack"] = clip;
+        animator.CrossFade(AttackHash, 0.1f);
+    }
+    public void SetAnimationState(CharacterAnimationState state)
+    {
+        PlayState(state);
+    }
+
+
+    public void PlayAnimation(CardCastAnimation animation)
+    {
+        throw new NotImplementedException();
     }
 }

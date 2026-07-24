@@ -2,14 +2,25 @@ using FishNet;
 using FishNet.Object;
 using UnityEngine;
 
-public class Player : NetworkBehaviour
+public class Player : NetworkBehaviour, IEntity
 {
     [SerializeField] private CardRegistry cardRegistry;
 
     private PlayerState _state;
+    private IAnimationHandler animationHandler;
+    private IStatContainer stats;
 
     public PlayerState State => _state;
     public ICardContainer CardProvider => _state.CardManager;
+
+    public Transform Transform => transform;
+
+    public int TeamLayer => gameObject.layer;
+
+    public bool IsDead { get; private set; }
+
+    public IStatContainer Stats => stats;
+
     protected override void OnValidate()
     {
         base.OnValidate();
@@ -18,6 +29,12 @@ public class Player : NetworkBehaviour
         {
             Debug.LogWarning($"[{name}] Card Registry field is unassigned in the inspector.", this);
         }
+    }
+    private void Awake()
+    {
+        animationHandler = GetComponentInChildren<IAnimationHandler>();
+        stats = GetComponent<IStatContainer>();
+        if (animationHandler == null) Debug.LogError($"{name} missing IAnimationHandler", this);
     }
     public override void OnStartClient()
     {
@@ -50,10 +67,17 @@ public class Player : NetworkBehaviour
         }
 
         
-        
-        cardRegistry.Initialize();
-        CardFactory factory = new CardFactory(cardRegistry, transform, (go) => ServerManager.Spawn(go));
-        _state = new PlayerState(factory);
+        CardFactory factory = new CardFactory(cardRegistry, (go) => ServerManager.Spawn(go));
+        _state = new PlayerState(this, factory, cardRegistry);
         cardController.SetCardProvider(CardProvider);
+        
+        
+    }
+
+    public void Die()
+    {
+        if (IsDead) return;
+        IsDead = true;
+        animationHandler.SetAnimationState(CharacterAnimationState.Dead);
     }
 }

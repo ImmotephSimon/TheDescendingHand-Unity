@@ -4,5 +4,8 @@ using UnityEngine;
 public interface IAnimationHandler
 {
     void SetAnimationState(CharacterAnimationState state);
-    void PlayAnimation(AnimationClip animationClip, Action onFinished);
+    void PlayAnimation(AttackAnimation attackAnimation, Action onFinished);
+
+    void PlayAnimation(CardCastAnimation animation);
+    void SetSpeed(float clientSmoothSpeed);
 }

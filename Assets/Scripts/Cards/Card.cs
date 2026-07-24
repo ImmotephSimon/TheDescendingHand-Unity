@@ -2,24 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Card : IHitReceiver
+public class Card : IHitReceiver
 {
-    protected readonly Transform Owner;
+    public IEntity Owner => _owner;
     public Guid Id { get; }
-    public float CastTime { get; }
+    public float CastTime => Definition.CastTime;
+    public CardDefinition Definition { get; }
 
+    private readonly IEntity _owner;
     private readonly List<CardComponent> _components = new();
 
-    protected Card(Guid id, float castTime, Transform owner)
+    public Card(Guid id, CardDefinition definition, IEntity owner)
     {
         Id = id;
-        CastTime = castTime;
-        Owner = owner;
+        Definition = definition;
+        _owner = owner;
     }
 
-    protected void AddComponent(CardComponent component)
+    internal void AddComponent(CardComponent component)
     {
-        component.Initialize(Owner);
+        component.Initialize(this, _owner);
         _components.Add(component);
     }
 
@@ -31,6 +33,8 @@ public abstract class Card : IHitReceiver
 
     public void Tick(float deltaTime)
     {
+        Debug.LogError($"Tick is currently not being called.");
+
         foreach (var component in _components)
             component.Tick(deltaTime);
     }
@@ -44,11 +48,12 @@ public abstract class Card : IHitReceiver
     public void ExecuteCastTimeDone()
     {
         foreach (var comp in _components)
-            comp.ExecuteCastTimeDone();
+            comp.Activate();
     }
 
-    internal void ExecuteCancelled()
+    public void ExecuteCancelled()
     {
-        throw new NotImplementedException();
+        foreach (var comp in _components)
+            comp.Cancel();
     }
 }

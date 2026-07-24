@@ -1,13 +1,4 @@
-public enum StatType
-{
-    Health,
-    MaxHealth,
-    Damage,
-    FireDamage,
-    AttackSpeed,
-    Armor,
-    CritChance
-}
+using System;
 
 public enum ModifierType
 {
@@ -26,16 +17,20 @@ public readonly struct ModifierHandle
     }
 }
 
-public struct StatModifier
+public readonly struct StatModifier
 {
-    public StatType Stat;
-    public ModifierType Type;
-    public float Value;
+    public readonly GameTag Stat;
+    public readonly ModifierType Type;
+    public readonly float Value;
+    public readonly TagContainer RequiredTags;
 
-    public StatModifier(StatType stat, ModifierType type, float value)
+    public StatModifier(GameTag stat, ModifierType type, float value, TagContainer requiredTags)
     {
         Stat = stat;
         Type = type;
         Value = value;
+        RequiredTags = requiredTags;
     }
+    public StatModifier(GameTag stat, ModifierType type, float value)
+        : this(stat, type, value, new TagContainer()) { }
 }

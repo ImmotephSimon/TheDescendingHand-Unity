@@ -7,8 +7,8 @@ public class DoorController : MonoBehaviour
     [SerializeField] private Transform hinge;
 
     [Header("Settings")]
-    [SerializeField] private float openAngle = 90f;
-    [SerializeField] private float openSpeed = 5f;
+    private float openAngle = -150f;
+    private float openSpeed = 1f;
     [SerializeField] private Collider triggerCollider;
 
     public event Action PlayerEntered;
@@ -53,8 +53,6 @@ public class DoorController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("Player"))
-            return;
         if (!other.CompareTag("Player"))
             return;
 

@@ -1,20 +1,12 @@
 ﻿using UnityEngine;
 
-public class ChargeAttack : MonoBehaviour, IAttackAbility
+public class ChargeAttack : EnemyAttack
 {
-    private AnimationClip animationClip;
+    public override float Range => 10f;
 
-    public float Range => 10f;
-    public float CooldownDuration => 3f;
+    public override float CooldownDuration => 3f;
 
-    public AnimationClip AttackAnimation => animationClip;
-
-    public bool CanHit(Transform target)
-    {
-        return Vector3.Distance(transform.position, target.position) <= Range;
-    }
-
-    public void Execute(Transform target)
+    public override void Execute(Transform target)
     {
         Debug.Log($"Charging towards {target.name}");
     }

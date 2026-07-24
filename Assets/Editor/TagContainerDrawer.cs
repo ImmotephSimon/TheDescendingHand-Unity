@@ -1,42 +1,15 @@
-using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
 [CustomPropertyDrawer(typeof(TagContainer))]
 public class TagContainerDrawer : PropertyDrawer
 {
-    private static string[] availableTags;
-
-    private static void EnsureTagsLoaded()
-    {
-        if (availableTags != null)
-            return;
-
-        TextAsset file = AssetDatabase.LoadAssetAtPath<TextAsset>(
-            "Assets/Data/Tags.txt"
-        );
-
-        if (file == null)
-        {
-            Debug.LogError("Could not find Tags.txt");
-            availableTags = new string[0];
-            return;
-        }
-
-        availableTags = file.text
-            .Split('\n')
-            .Select(x => x.Trim())
-            .Where(x => !string.IsNullOrEmpty(x))
-            .ToArray();
-    }
-
     public override void OnGUI(
         Rect position,
         SerializedProperty property,
         GUIContent label)
     {
-        EnsureTagsLoaded();
+        string[] availableTags = TagLookup.AvailableTags;
 
         EditorGUI.BeginProperty(position, label, property);
 
@@ -53,27 +26,26 @@ public class TagContainerDrawer : PropertyDrawer
         for (int i = 0; i < tags.arraySize; i++)
         {
             SerializedProperty element = tags.GetArrayElementAtIndex(i);
+            SerializedProperty tagId = element.FindPropertyRelative("TagId");
 
-            int currentIndex = Mathf.Max(
-                0,
-                System.Array.IndexOf(
-                    availableTags,
-                    element.stringValue
-                )
-            );
+            int currentIndex = System.Array.IndexOf(availableTags, tagId.stringValue);
 
-            currentIndex = EditorGUI.Popup(
+            EditorGUI.BeginChangeCheck();
+
+            // If string isn't found in availableTags, EditorGUI.Popup displays -1 as empty/invalid
+            int newIndex = EditorGUI.Popup(
                 new Rect(position.x, y, position.width - 30, 18),
                 currentIndex,
                 availableTags
             );
 
-            element.stringValue = availableTags[currentIndex];
+            // ONLY write to stringValue if the user manually changed the selection
+            if (EditorGUI.EndChangeCheck() && newIndex >= 0 && newIndex < availableTags.Length)
+            {
+                tagId.stringValue = availableTags[newIndex];
+            }
 
-            if (GUI.Button(
-                new Rect(position.x + position.width - 25, y, 25, 18),
-                "-"
-            ))
+            if (GUI.Button(new Rect(position.x + position.width - 25, y, 25, 18), "-"))
             {
                 tags.DeleteArrayElementAtIndex(i);
             }

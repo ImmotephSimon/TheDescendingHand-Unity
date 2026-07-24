@@ -9,7 +9,7 @@ using UnityEngine.XR;
 public class CardController : NetworkBehaviour, IAbilitySystem
 {
     public static ClientBridge Instance { get; private set; }
-    private readonly List<Card> _activeCards = new();
+    
 
     private ICardContainer _cardProvider;
     private readonly Dictionary<Card, Coroutine> _pendingCasts = new();
@@ -25,12 +25,9 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     }
 
     [ObserversRpc]
-    private void CardExecutedObserversRpc(Guid cardId)
+    private void CardActivatedObserversRpc(CardImpactVisual visual)
     {
-        if (IsServerStarted)
-            return;
-
-        ClientBridge.Instance.VFXView.PlayCardAnimation(cardId);
+        ClientBridge.Instance.VFXView.PlayCardImpact(visual);
     }
 
     [ServerRpc]
@@ -38,28 +35,33 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     {
         if (_cardProvider.TryGetCardAtIndex(cardIndex, out Card card))
         {
-            StartCast(card);
+            Server_StartCast(card);
         }
     }
 
-    private void StartCast(Card card)
+    private void Server_StartCast(Card card)
     {
-        
-        _activeCards.Add(card);
+        CardStartedObserversRpc(card.Definition.Visuals.CastAnimation);
 
-        CardStartedObserversRpc(card.Id);
-
-        StartCoroutine(CastRoutine(card));
+        StartCoroutine(Server_CastTimeRoutine(card));
     }
 
-    private void ExecuteCard(Card card)
+
+    [ObserversRpc]
+    private void CardStartedObserversRpc(CardCastAnimation castAnimation)
+    {
+        ClientBridge.Instance.VFXView.PlayCardCastAnimation(castAnimation);
+    }
+
+    private void Server_ExecuteCard(Card card)
     {
         card.ExecuteBegin();
         card.ExecuteCastTimeDone();
 
-        CardExecutedObserversRpc(card.Id);
+        CardActivatedObserversRpc(card.Definition.Visuals.Impact);
+
     }
-    public void CancelCard(Card card)
+    public void Server_CancelCard(Card card)
     {
         if (_pendingCasts.TryGetValue(card, out var routine))
         {
@@ -68,25 +70,12 @@ public class CardController : NetworkBehaviour, IAbilitySystem
         }
 
         card.ExecuteCancelled();
-        _activeCards.Remove(card);
     }
 
-    private void CardStartedObserversRpc(Guid id)
-    {
-        Debug.Log($"Started casting id {id}");
-    }
-
-    private void Update()
-    {
-        float dt = Time.deltaTime;
-
-        foreach (var card in _activeCards)
-            card.Tick(dt);
-    }
-    private IEnumerator CastRoutine(Card card)
+    private IEnumerator Server_CastTimeRoutine(Card card)
     {
         yield return new WaitForSeconds(card.CastTime);
         _pendingCasts.Remove(card);
-        ExecuteCard(card);
+        Server_ExecuteCard(card);
     }
 }
