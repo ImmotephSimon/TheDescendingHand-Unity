@@ -1,5 +1,6 @@
 using FishNet;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 [ExecuteAlways]
 public class ARPGCamera : MonoBehaviour
@@ -7,57 +8,68 @@ public class ARPGCamera : MonoBehaviour
     [SerializeField] private float cameraDistance = 8f;
     private readonly float cameraAngle = 55f;
 
-    private Vector3 Offset
-    {
-        get
-        {
-            Quaternion rotation = Quaternion.Euler(cameraAngle, 0f, 0f);
-            return rotation * new Vector3(0f, 0f, -cameraDistance);
-        }
-    }
+    private Vector3 Offset =>
+        Quaternion.Euler(cameraAngle, 0f, 0f) * new Vector3(0f, 0f, -cameraDistance);
+
     private Transform player;
+    private LiquidWobble[] liquids;
+    private bool initialized;
 
-    void OnEnable()
+    private void Awake()
     {
-        FindPlayerTarget();
+        liquids = GetComponentsInChildren<LiquidWobble>();
+
+        if (liquids.Length == 0)
+            Debug.LogError("ARPGCamera has no LiquidWobble children");
     }
 
-    void Update()
+    private void Update()
     {
-        // In the editor or if the connection dropped, fallback to searching the scene
         if (player == null)
-        {
             FindPlayerTarget();
-        }
 
-        SnapToPlayer();
+        if (player != null)
+            SnapToPlayer();
     }
 
     private void FindPlayerTarget()
     {
-        // At runtime, explicitly find our owned local player connection
-        if (Application.isPlaying && InstanceFinder.ClientManager?.Connection?.FirstObject != null)
+        if (Application.isPlaying)
         {
-            player = InstanceFinder.ClientManager.Connection.FirstObject.transform;
-            return;
+            var firstObject = InstanceFinder.ClientManager?.Connection?.FirstObject;
+
+            if (firstObject != null)
+                player = firstObject.transform;
+        }
+        else
+        {
+            var movement = FindAnyObjectByType<PlayerMovement>();
+
+            if (movement != null)
+                player = movement.transform;
         }
 
-        // Editor fallback or initial scene setup search
-        var movement = FindAnyObjectByType<PlayerMovement>();
-        if (movement != null) player = movement.transform;
+        if (!initialized && player != null)
+        {
+            var entity = player.transform.GetComponent<IEntity>();
+            foreach (var liquid in liquids)
+            { 
+                liquid.Initialize(entity);
+            }
+
+            initialized = true;
+        }
     }
 
     private void SnapToPlayer()
     {
-        if (player != null)
-        {
-            transform.position = player.position + Offset;
+        transform.position = player.position + Offset;
 
-            Shader.SetGlobalVector("_PlayerPosition", player.position + new Vector3(0, 1, 0));
-            Vector2 screenPos = Camera.main.WorldToViewportPoint(player.position);
-            Shader.SetGlobalVector("_PlayerScreenPosition", screenPos);
-            // In your player or camera script Update loop:
-            Shader.SetGlobalVector("_CameraPosition", transform.position);
-        }
+        Shader.SetGlobalVector("_PlayerPosition", player.position + Vector3.up);
+
+        Vector2 screenPos = Camera.main.WorldToViewportPoint(player.position);
+        Shader.SetGlobalVector("_PlayerScreenPosition", screenPos);
+
+        Shader.SetGlobalVector("_CameraPosition", transform.position);
     }
 }

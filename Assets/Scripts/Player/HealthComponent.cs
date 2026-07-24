@@ -2,47 +2,52 @@ using System;
 using UnityEngine;
 
 
-public class HealthComponent : MonoBehaviour
+public class HealthComponent : MonoBehaviour, IHealth
 {
     [SerializeField] private GameTag LifeTag;
 
     private IEntity owner;
     private IStatContainer stats;
-    private float currentHealth;
+    private float _currentHealth;
 
-    
+    public event Action OnHealthChanged;
+
+    public float CurrentHealth => _currentHealth;
+    public float MaxHealth => _maxHealth;
+    private float _maxHealth =>
+        stats.GetStat(
+            LifeTag,
+            new TagContainer());
+
+
     private void Awake()
     {
         owner = GetComponent<IEntity>();
         stats = GetComponent<IStatContainer>();
         if (stats == null) Debug.LogError($"{name} has no IStatContainer");
     }
-
     private void Start()
     {
-        currentHealth = MaxHealth;
+        _currentHealth = MaxHealth;
+        OnHealthChanged?.Invoke();
     }
-
-    public float CurrentHealth => currentHealth;
-
-    public float MaxHealth =>
-        stats.GetStat(
-            LifeTag,
-            new TagContainer());
 
     public void AdjustHealth(float healthAdjustment)
     {
-        currentHealth -= healthAdjustment;
+        _currentHealth -= healthAdjustment;
+        OnHealthChanged?.Invoke();
 
-        if (currentHealth <= 0)
+        if (_currentHealth <= 0)
             owner.Die();
     }
 
     public void Restore(float amount)
     {
-        currentHealth = Mathf.Min(
-            currentHealth + amount,
+        _currentHealth = Mathf.Min(
+            _currentHealth + amount,
             MaxHealth);
+
+        OnHealthChanged?.Invoke();
     }
 
 }
