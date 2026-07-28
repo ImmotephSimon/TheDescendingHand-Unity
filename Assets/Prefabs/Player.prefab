@@ -20,6 +20,9 @@ GameObject:
   - component: {fileID: 8123409046431912342}
   - component: {fileID: 1912273287407227265}
   - component: {fileID: -3316597988531484127}
+  - component: {fileID: 5036442494900270532}
+  - component: {fileID: 2784291924378910289}
+  - component: {fileID: 6099822581306699113}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -121,9 +124,9 @@ MonoBehaviour:
   _enableStateForwarding: 1
   _networkTransform: {fileID: 0}
   _ownerInterpolation: 1
-  _ownerSmoothedProperties: 255
+  _ownerSmoothedProperties: 4294967295
   _adaptiveInterpolation: 3
-  _spectatorSmoothedProperties: 255
+  _spectatorSmoothedProperties: 4294967295
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
@@ -145,7 +148,8 @@ MonoBehaviour:
   NetworkBehaviours:
   - {fileID: 20013263525237340}
   - {fileID: 8874282774513023185}
-  - {fileID: 488370662399731791}
+  - {fileID: 5036442494900270532}
+  - {fileID: 2784291924378910289}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects:
   - {fileID: 1678090823185134308}
@@ -157,7 +161,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584166861373839625
+  _initializedTimestamp: -8584165673073628114
 --- !u!114 &20013263525237340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,9 +204,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fc60441f19260841b768455006c045d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 2
-  _addedNetworkObject: {fileID: 927076904386195409}
-  _networkObjectCache: {fileID: 927076904386195409}
   cardRegistry: {fileID: 11400000, guid: dbc5fdb1cbf049e43a5b28ed6e176ee2, type: 2}
 --- !u!114 &8461922595216608990
 MonoBehaviour:
@@ -260,11 +261,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3d5d8de8a5f7d45ab65eea5812f627, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  balanceCurves: {fileID: 11400000, guid: ad106a06f6b24ee4d91ae928098460cb, type: 2}
   level: 1
-  baseHealth: 20
-  healthPerLevel: 2
-  healthTag:
-    TagId: Mod.Stat.Health
 --- !u!114 &-3316597988531484127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,7 +275,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90545e697ab4d174c80965468169dd49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxMana: 20
+--- !u!114 &5036442494900270532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673506913013919535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6415895039e4fc249b6a0686cc9affea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 2
+  _addedNetworkObject: {fileID: 927076904386195409}
+  _networkObjectCache: {fileID: 927076904386195409}
+--- !u!114 &2784291924378910289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673506913013919535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e0f442bb81fb4d48b0e7f6b71e0b148, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 3
+  _addedNetworkObject: {fileID: 927076904386195409}
+  _networkObjectCache: {fileID: 927076904386195409}
+  hudPrefab: {fileID: 6607168225021539708, guid: 5c4a9236940cdc046892af6ef774de20, type: 3}
+--- !u!114 &6099822581306699113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673506913013919535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cc5c41bfab6a3941be444116b85eb06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poiseMultiplier: 2
+  stunThreshold: 0.2
 --- !u!1001 &4825371266952317310
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -336,7 +378,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6178638726304578458, guid: 947bc5bfb8601c643b73b68ae987a038, type: 3}
       propertyPath: _initializedTimestamp
-      value: -8584166861373839625
+      value: -8584165673073628114
       objectReference: {fileID: 0}
     - target: {fileID: 6178638726304578458, guid: 947bc5bfb8601c643b73b68ae987a038, type: 3}
       propertyPath: <IsNested>k__BackingField
@@ -505,6 +547,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 1549d8f69ea48624bb286a3ea3c68ff0, type: 2}
+    - target: {fileID: 5866666021909216657, guid: ea9285ea89bfa1449acc379a399b49e7, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5958258633643187299, guid: ea9285ea89bfa1449acc379a399b49e7, type: 3}
       propertyPath: m_UpdateWhenOffscreen
       value: 0

@@ -13,7 +13,7 @@ public abstract class ItemComponent : ScriptableObject
     {
     }
 
-    public virtual void Activate(Character user)
+    public virtual void Activate(IEntity user)
     {
     }
 }

@@ -2,7 +2,7 @@
 {
     public ItemDefinition BaseType;
 
-    public ItemRarity Rarity;
+    public Rarity Rarity;
 
     public AffixInstance[] Affixes;
 }

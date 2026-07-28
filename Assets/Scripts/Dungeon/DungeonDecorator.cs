@@ -99,13 +99,12 @@ public class DungeonDecorator : MonoBehaviour
 
         foreach (DoorSocket door in room.GetConnectedDoors())
         {
-            Debug.Log($"door width {door.Width}");
             if (door.ConnectedDoor == null)
                 continue;
 
             if (!ReferenceEquals(door.ConnectedDoor.GetComponentInParent<Room>(), neighbour))
             {
-                Debug.Log($"Mismatch socket room {door.ConnectedDoor.GetComponentInParent<Room>().name} vs neighbour {neighbour.name}");
+                //Debug.Log($"Mismatch socket room {door.ConnectedDoor.GetComponentInParent<Room>().name} vs neighbour {neighbour.name}");
                 continue;
             }
 

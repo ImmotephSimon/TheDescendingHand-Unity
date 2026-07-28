@@ -17,5 +17,11 @@ public class ClientBridge : MonoBehaviour
     {
         AbilitySystem = player.GetComponentInChildren<IAbilitySystem>();
         Movement = player.GetComponent<IPlayerMovement>();
+
+        if (AbilitySystem == null)
+            Debug.LogError("Failed to register AbilitySystem");
+
+        if (Movement == null)
+            Debug.LogError("Failed to register PlayerMovement");
     }
 }

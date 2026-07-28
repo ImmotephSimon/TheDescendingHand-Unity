@@ -23,7 +23,6 @@ public class ChainLightningView : MonoBehaviour, IVfx
     private float maxSpeed;
     private Vector3 originalStart;
 
-    private bool reachedTarget;
     private Transform target;
     private float shrinkTimer;
 

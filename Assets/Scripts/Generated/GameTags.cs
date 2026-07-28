@@ -1,0 +1,57 @@
+// Auto-generated. Do not edit.
+
+public static class GameTags
+{
+    public static readonly GameTag RestrictionElementFire = new("Restriction.Element.Fire");
+    public static readonly GameTag RestrictionElementCold = new("Restriction.Element.Cold");
+    public static readonly GameTag RestrictionElementLightning = new("Restriction.Element.Lightning");
+    public static readonly GameTag RestrictionPhysical = new("Restriction.Physical");
+    public static readonly GameTag RestrictionChaos = new("Restriction.Chaos");
+    public static readonly GameTag ContextTagEquipped = new("ContextTag.Equipped");
+    public static readonly GameTag ContextTagImmutable = new("ContextTag.Immutable");
+    public static readonly GameTag ContextTagUnidentified = new("ContextTag.Unidentified");
+    public static readonly GameTag ModDefenseDamageTaken = new("Mod.Defense.DamageTaken");
+    public static readonly GameTag ModDefenseGlancing = new("Mod.Defense.Glancing");
+    public static readonly GameTag ModDefenseManaDamageTaken = new("Mod.Defense.ManaDamageTaken");
+    public static readonly GameTag ModDefenseMitigation = new("Mod.Defense.Mitigation");
+    public static readonly GameTag ModImplicit = new("Mod.Implicit");
+    public static readonly GameTag ModItem = new("Mod.Item");
+    public static readonly GameTag ModOffenseCastSpeed = new("Mod.Offense.CastSpeed");
+    public static readonly GameTag ModOffenseCritical = new("Mod.Offense.Critical");
+    public static readonly GameTag ModOffenseDamage = new("Mod.Offense.Damage");
+    public static readonly GameTag ModOffenseDamagePerMana = new("Mod.Offense.DamagePerMana");
+    public static readonly GameTag ModStatArmour = new("Mod.Stat.Armour");
+    public static readonly GameTag ModStatEvasion = new("Mod.Stat.Evasion");
+    public static readonly GameTag ModStatInstinct = new("Mod.Stat.Instinct");
+    public static readonly GameTag ModStatLevel = new("Mod.Stat.Level");
+    public static readonly GameTag ModStatHealth = new("Mod.Stat.Health");
+    public static readonly GameTag ModStatMana = new("Mod.Stat.Mana");
+    public static readonly GameTag ModStatMovement = new("Mod.Stat.Movement");
+    public static readonly GameTag ModStatStrength = new("Mod.Stat.Strength");
+    public static readonly GameTag ModStatWillpower = new("Mod.Stat.Willpower");
+    public static readonly GameTag ModUtilityArea = new("Mod.Utility.Area");
+    public static readonly GameTag ModUtilityCardBias = new("Mod.Utility.CardBias");
+    public static readonly GameTag ModUtilityCost = new("Mod.Utility.Cost");
+    public static readonly GameTag ModUtilityDuration = new("Mod.Utility.Duration");
+    public static readonly GameTag ModUtilityItemRarity = new("Mod.Utility.ItemRarity");
+    public static readonly GameTag ModUtilityTimeDilation = new("Mod.Utility.TimeDilation");
+    public static readonly GameTag ReqMods2 = new("Req.Mods.2");
+    public static readonly GameTag ReqMods4 = new("Req.Mods.4");
+    public static readonly GameTag ReqPrefixExists = new("Req.Prefix.Exists");
+    public static readonly GameTag ReqPrefixOpen = new("Req.Prefix.Open");
+    public static readonly GameTag ReqSuffixExists = new("Req.Suffix.Exists");
+    public static readonly GameTag ReqSuffixOpen = new("Req.Suffix.Open");
+    public static readonly GameTag StatusBurn = new("Status.Burn");
+    public static readonly GameTag StatusElectrified = new("Status.Electrified");
+    public static readonly GameTag StatusFreeze = new("Status.Freeze");
+    public static readonly GameTag StatusPoison = new("Status.Poison");
+    public static readonly GameTag StatusStun = new("Status.Stun");
+    public static readonly GameTag TraitConductive = new("Trait.Conductive");
+    public static readonly GameTag TypeArea = new("Type.Area");
+    public static readonly GameTag TypeBuff = new("Type.Buff");
+    public static readonly GameTag TypeChannelling = new("Type.Channelling");
+    public static readonly GameTag TypeDefensive = new("Type.Defensive");
+    public static readonly GameTag TypeDoT = new("Type.DoT");
+    public static readonly GameTag TypeMelee = new("Type.Melee");
+    public static readonly GameTag TypeProjectile = new("Type.Projectile");
+}

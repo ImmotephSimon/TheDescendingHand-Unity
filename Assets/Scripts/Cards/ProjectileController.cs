@@ -29,7 +29,7 @@ public class ProjectileController : NetworkBehaviour
         _info = info;
         _owner = owner;
         _initialized = true;
-        _hitMask |= 1 << _owner.TargetTeamLayer; 
+        _hitMask |= 1 << _owner.OtherTeamLayer; 
     }
 
     public override void OnStartServer()

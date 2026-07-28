@@ -50,8 +50,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hinge: {fileID: 8661411643167445293}
-  openAngle: 90
-  openSpeed: 5
   triggerCollider: {fileID: 5439318028308926662}
 --- !u!65 &5439318028308926662
 BoxCollider:
@@ -85,7 +83,7 @@ GameObject:
   - component: {fileID: 1448909486829669275}
   - component: {fileID: 5476490309464642501}
   - component: {fileID: 6312589919637523483}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -172,7 +170,7 @@ GameObject:
   - component: {fileID: 3101736569562024649}
   - component: {fileID: 772117594965682124}
   - component: {fileID: 4841012109161907397}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -312,7 +310,7 @@ GameObject:
   - component: {fileID: 5954263397755078311}
   - component: {fileID: 7193954292508076654}
   - component: {fileID: 2577594424291283311}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

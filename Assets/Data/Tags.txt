@@ -4,6 +4,9 @@ Restriction.Element.Lightning
 Restriction.Physical
 Restriction.Chaos
 
+ContextTag.Equipped
+ContextTag.Immutable
+ContextTag.Unidentified
 
 Mod.Defense.DamageTaken
 Mod.Defense.Glancing
@@ -30,3 +33,29 @@ Mod.Utility.Cost
 Mod.Utility.Duration
 Mod.Utility.ItemRarity
 Mod.Utility.TimeDilation
+
+
+Req.Mods.2
+Req.Mods.4
+
+Req.Prefix.Exists
+Req.Prefix.Open
+
+Req.Suffix.Exists
+Req.Suffix.Open
+
+Status.Burn
+Status.Electrified
+Status.Freeze
+Status.Poison
+Status.Stun
+
+Trait.Conductive
+
+Type.Area
+Type.Buff
+Type.Channelling
+Type.Defensive
+Type.DoT
+Type.Melee
+Type.Projectile

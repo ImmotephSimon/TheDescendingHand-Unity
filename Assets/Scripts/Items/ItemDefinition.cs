@@ -6,7 +6,7 @@ public class ItemDefinition : ScriptableObject
 {
     public string ID;
     public string DisplayName;
-    public ItemRarity Rarity;
+    public Rarity Rarity;
 
     public AppearanceData Appearance;
     public int RequiredLevel;

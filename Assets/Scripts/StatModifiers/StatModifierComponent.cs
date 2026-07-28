@@ -55,11 +55,11 @@ public class StatModifierComponent : MonoBehaviour, IStatContainer
             if (modifier.RequiredTags != null && !context.HasAll(modifier.RequiredTags))
                 continue;
 
-            switch (modifier.Type)
+            switch (modifier.Op)
             {
-                case ModifierType.Flat: value += modifier.Value; break;
-                case ModifierType.AdditivePercent: additive += modifier.Value; break;
-                case ModifierType.Multiplicative: multiplier *= modifier.Value; break;
+                case MathOp.Flat: value += modifier.Value; break;
+                case MathOp.AdditivePercent: additive += modifier.Value; break;
+                case MathOp.Multiplicative: multiplier *= modifier.Value; break;
             }
         }
 
@@ -86,7 +86,7 @@ public class StatModifierComponent : MonoBehaviour, IStatContainer
 
         foreach (var mod in modifiers.Values)
         {
-            GUILayout.Label($"{mod.Stat}: {mod.Type} {mod.Value}");
+            GUILayout.Label($"{mod.Stat}: {mod.Op} {mod.Value}");
         }
 
         GUILayout.EndArea();

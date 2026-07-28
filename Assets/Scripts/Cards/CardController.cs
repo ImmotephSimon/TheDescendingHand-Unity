@@ -2,9 +2,7 @@ using FishNet.Object;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Playables;
 using UnityEngine;
-using UnityEngine.XR;
 
 public class CardController : NetworkBehaviour, IAbilitySystem
 {
@@ -12,11 +10,15 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     
 
     private ICardContainer _cardProvider;
+    private PlayerMovementController playerMovement;
+    private bool isCasting = false;
     private readonly Dictionary<Card, Coroutine> _pendingCasts = new();
 
     public override void OnStartServer()
     {
         base.OnStartServer();
+        playerMovement = GetComponentInParent<PlayerMovementController>();
+        if (playerMovement == null) Debug.LogError($"No player movement in parent");
     }
 
     public void SetCardProvider(ICardContainer provider)
@@ -33,6 +35,8 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     [ServerRpc]
     public void RequestUseAbility(int cardIndex)
     {
+        if (isCasting) return;
+
         if (_cardProvider.TryGetCardAtIndex(cardIndex, out Card card))
         {
             Server_StartCast(card);
@@ -41,8 +45,9 @@ public class CardController : NetworkBehaviour, IAbilitySystem
 
     private void Server_StartCast(Card card)
     {
+        isCasting = true;
+        playerMovement.LockMovement();
         CardStartedObserversRpc(card.Definition.Visuals.CastAnimation);
-
         StartCoroutine(Server_CastTimeRoutine(card));
     }
 
@@ -57,7 +62,8 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     {
         card.ExecuteBegin();
         card.ExecuteCastTimeDone();
-
+        isCasting = false;
+        playerMovement.UnlockMovement();
         CardActivatedObserversRpc(card.Definition.Visuals.Impact);
 
     }

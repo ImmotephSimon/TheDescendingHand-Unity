@@ -251,7 +251,6 @@ public class DungeonGenerator : MonoBehaviour
 
     void RegisterRoom(Room room, Vector2Int origin)
     {
-        Debug.Log($"{room.name} origin {origin} size {room.RoomExtent}");
         foreach (Vector2Int cell in GetOccupiedCells(room))
         {
             Vector2Int position = origin + cell;
@@ -317,8 +316,6 @@ public class DungeonGenerator : MonoBehaviour
     {
         decorator.Decorate(dungeonMap, roomUnit);
         var surfaces = FindObjectsByType<NavMeshSurface>(FindObjectsSortMode.None);
-
-        Debug.Log($"Found {surfaces.Length} surfaces");
 
         foreach (NavMeshSurface surface in surfaces)
         {

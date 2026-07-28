@@ -36,7 +36,7 @@ public class DirectDamageComponent : CardComponent
         _effectiveness = effectiveness;
         Debug.Log($"Damage is hardcoded.");
         _damageConversion = damageConversion;
-        _damage.Add(_damageConversion, 2);
+        _damage.Add(_damageConversion, 5);
 
     }
 

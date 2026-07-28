@@ -32,13 +32,26 @@ public class LiquidWobble : MonoBehaviour
     private Vector3 wobbleAmountToAdd;
     private float pulse;
     private float time;
-    private IHealth healthHandler;
-    private IMana manaHandler;
+
+    private void OnValidate()
+    {
+        switch (type)
+        {
+            case LiquidGlobeType.Life:
+                lightColor = Color.red;
+                darkColor = new Color(0.2f, 0f, 0f);
+                break;
+
+            case LiquidGlobeType.Mana:
+                lightColor = Color.blue;
+                darkColor = new Color(0f, 0f, 0.2f);
+                break;
+        }
+        UpdatePropertyBlock(new Vector3());
+    }
 
     void Start()
     {
-        rend = GetComponent<Renderer>();
-        propBlock = new MaterialPropertyBlock();
         lastPos = transform.position;
     }
 
@@ -61,15 +74,23 @@ public class LiquidWobble : MonoBehaviour
         wobbleAmountToAdd.x = Mathf.Lerp(wobbleAmountToAdd.x, 0, Time.deltaTime * recovery);
         wobbleAmountToAdd.z = Mathf.Lerp(wobbleAmountToAdd.z, 0, Time.deltaTime * recovery);
 
-        Vector3 currentTilt = new Vector3(
-            wobbleAmount.x + Mathf.Sin(pulse * time) * wobbleAmountToAdd.x,
-            0,
-            wobbleAmount.z + Mathf.Cos(pulse * time) * wobbleAmountToAdd.z
-        );
+        float fillMultiplier = Mathf.Lerp(1.5f, 0.5f, fillPercentage);
 
+        Vector3 currentTilt = new Vector3(
+            (wobbleAmount.x + Mathf.Sin(pulse * time) * wobbleAmountToAdd.x) * fillMultiplier,
+            0,
+            (wobbleAmount.z + Mathf.Cos(pulse * time) * wobbleAmountToAdd.z) * fillMultiplier
+        );
         lastPos = transform.position;
 
-        // 4. Send Parameters to Shader efficiently using MaterialPropertyBlock
+        UpdatePropertyBlock(currentTilt);
+    }
+
+    private void UpdatePropertyBlock(Vector3 currentTilt)
+    {
+        if (rend == null) rend = GetComponent<Renderer>();
+        if (propBlock == null) propBlock = new MaterialPropertyBlock();
+
         rend.GetPropertyBlock(propBlock);
         propBlock.SetVector("_CurrentTilt", currentTilt);
         propBlock.SetFloat("_Fill", fillPercentage);
@@ -85,30 +106,28 @@ public class LiquidWobble : MonoBehaviour
         switch (type)
         {
             case LiquidGlobeType.Life:
-                healthHandler = player.Transform.GetComponent<IHealth>();
+                var healthHandler = player.Transform.GetComponent<IHealth>();
                 healthHandler.OnHealthChanged += UpdateHealth;
-                lightColor = Color.red;
                 break;
 
             case LiquidGlobeType.Mana:
-                manaHandler = player.Transform.GetComponent<IMana>();
+                var manaHandler = player.Transform.GetComponent<IMana>();
                 manaHandler.OnManaChanged += UpdateMana;
-                lightColor = Color.blue;
                 break;
         }
     }
 
-    private void UpdateMana()
+    private void UpdateMana(float current, float max)
     {
         fillPercentage =
-            manaHandler.CurrentMana /
-            manaHandler.MaxMana;
+            current /
+            max;
     }
 
-    private void UpdateHealth()
+    private void UpdateHealth(float current, float max)
     {
         fillPercentage =
-            healthHandler.CurrentHealth /
-            healthHandler.MaxHealth;
+            current /
+            max;
     }
 }

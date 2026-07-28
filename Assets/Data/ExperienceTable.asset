@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2474ec2399c9b134080d424b96a193bb, type: 3}
+  m_Name: ExperienceTable
+  m_EditorClassIdentifier: 
+  entries:
+  - rarity: {fileID: 11400000, guid: 0cc70850bff334441ae641c868a116af, type: 2}
+    multiplier: 1
+  - rarity: {fileID: 11400000, guid: 3bfd2a210b00f7c43bda0ae3cfb8cc0e, type: 2}
+    multiplier: 1.1
+  - rarity: {fileID: 11400000, guid: d6ff9afb257168b4182f67c3c79369b1, type: 2}
+    multiplier: 2
+  - rarity: {fileID: 11400000, guid: 85b4a1c90d9558549935a3360db8372d, type: 2}
+    multiplier: 4
+  - rarity: {fileID: 11400000, guid: e644bb2a6ae4ea84fb1c10194b1232c4, type: 2}
+    multiplier: 4

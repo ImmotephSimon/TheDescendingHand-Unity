@@ -36,7 +36,7 @@ public class EquipComponent : ItemComponent
         ownerStats = null;
     }
 
-    public override void Activate(Character user)
+    public override void Activate(IEntity user)
     {
         if (user is IEquipmentWearer wearer)
             wearer.Equip(item);
