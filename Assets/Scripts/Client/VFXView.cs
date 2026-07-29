@@ -33,6 +33,8 @@ public class VFXView : MonoBehaviour
         }
 
         var instance = Instantiate(prefab);
+        instance.transform.position = Vector3.zero;
+        instance.transform.rotation = Quaternion.identity;
         if (instance.TryGetComponent<IVfx>(out var vfx))
         {
             vfx.Initialize(target.position,target);

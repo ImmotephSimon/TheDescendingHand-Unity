@@ -62,7 +62,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <PointForce>k__BackingField: 300
-  <PointFalloff>k__BackingField: 100
+  <PointFalloff>k__BackingField: 50
   origin: {x: 0, y: -0.2}
   _canvasRT: {fileID: 8600000, guid: 84c1663b5ecf149c0bbe31adb8a81842, type: 2}
   _colorInjection: {fileID: 8400000, guid: 9f6f8ff8db5154ec3a818fdf0a35f31a, type: 2}

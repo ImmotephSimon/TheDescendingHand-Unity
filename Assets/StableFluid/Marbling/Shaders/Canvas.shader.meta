@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: bfaaf1fc05e084abc89dfb4591eec67c
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _InjectTex: {fileID: 8400000, guid: 9f6f8ff8db5154ec3a818fdf0a35f31a, type: 2}
+  - _VelocityTex: {fileID: 8400000, guid: a637d858b4e8a43e6babfe9244a39176, type: 2}
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
