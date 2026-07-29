@@ -15,7 +15,12 @@ public class PlayerInputController : MonoBehaviour
         _floorLayer = LayerMask.GetMask("Floor");
         _gameInput = new GameInput();
         _gameInput.Enable();
-        _gameInput.Player.Card.performed += OnPlayCard;
+        _gameInput.Player.Card1.performed += ctx => OnPlayCard(0);
+        _gameInput.Player.Card2.performed += ctx => OnPlayCard(1);
+        _gameInput.Player.Card3.performed += ctx => OnPlayCard(2);
+        _gameInput.Player.Card4.performed += ctx => OnPlayCard(3);
+        _gameInput.Player.Card5.performed += ctx => OnPlayCard(4);
+        
         _clientBridge = GetComponentInParent<ClientBridge>();
     }
 
@@ -26,15 +31,12 @@ public class PlayerInputController : MonoBehaviour
     }
 
 
-
-    private void OnPlayCard(InputAction.CallbackContext context)
+    private void OnPlayCard(int index)
     {
-        if (!context.performed)
-            return;
-        Debug.Log($"Playing index 0");
-        _clientBridge.AbilitySystem.RequestUseAbility(0);
-        
+        Debug.Log($"Playing index {index}");
+        _clientBridge.AbilitySystem.RequestUseAbility(index);
     }
+
     private void UpdateMovementInput()
     {
         if (_clientBridge.Movement == null) return;

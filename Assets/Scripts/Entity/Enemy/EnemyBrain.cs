@@ -57,8 +57,10 @@ public class EnemyBrain : MonoBehaviour, ISpawnable
 
             currentAction?.StartAction();
         }
-
-        currentAction?.UpdateAction();
+        if (currentAction.CanBeUpdated)
+        { 
+            currentAction?.UpdateAction();
+        }
     }
     public void OnSpawnComplete()
     {

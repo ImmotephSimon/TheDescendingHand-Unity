@@ -16,9 +16,45 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Card",
+                    "name": "Card1",
                     "type": "Button",
                     "id": "dad41c90-40d9-4dc4-a4c3-e353661f28df",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Card2",
+                    "type": "Button",
+                    "id": "b294992b-8f52-42c4-8aa6-58c870743c5a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Card3",
+                    "type": "Button",
+                    "id": "d796063f-61b0-4d28-ac9e-f2f0156fc28d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Card4",
+                    "type": "Button",
+                    "id": "5202b43a-12eb-4811-8eee-a0d630c0d3ac",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Card5",
+                    "type": "Button",
+                    "id": "38370327-6a1b-4fd4-8adf-4a6e3ae7ba12",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -88,7 +124,51 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Card",
+                    "action": "Card1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "904dfbef-a6c8-4016-8664-dd0b297c5431",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Card2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d4149941-b295-4923-b7e3-4c2a64a2b14e",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Card3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b8dd40d9-18f3-4c9a-b169-f0d0b0bd2489",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Card4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f4272750-3e5d-46ca-8c58-6628ade8972d",
+                    "path": "<Keyboard>/5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Card5",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

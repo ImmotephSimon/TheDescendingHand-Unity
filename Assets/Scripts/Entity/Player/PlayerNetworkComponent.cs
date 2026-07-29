@@ -57,7 +57,13 @@ public class PlayerNetworkComponent : NetworkBehaviour
     {
         base.OnStartClient();
 
-        if (IsOwner) ClientBridge.Instance.RegisterPlayer(GetComponent<Player>());
+        player = GetComponent<Player>();
+        if (IsOwner)
+        {
+            ClientBridge.Instance.RegisterLocalPlayer(player);
+            player.InitializeLocalPlayer();
+        }
     }
+
 
 }

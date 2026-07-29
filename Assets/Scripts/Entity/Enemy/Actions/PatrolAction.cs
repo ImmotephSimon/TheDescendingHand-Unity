@@ -19,6 +19,8 @@ public class PatrolAction : IEnemyAction
 
     public bool CanBeInterrupted => true;
 
+    public bool CanBeUpdated => true;
+
     public PatrolAction(Enemy owner, float radius)
     {
         movementHandler = owner.GetComponent<IEnemyMovement>();

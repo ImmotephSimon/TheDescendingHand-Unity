@@ -12,15 +12,11 @@ public class ARPGCamera : MonoBehaviour
         Quaternion.Euler(cameraAngle, 0f, 0f) * new Vector3(0f, 0f, -cameraDistance);
 
     private Transform playerTransform;
-    private LiquidWobble[] liquids;
-    private bool initialized;
+    
 
     private void Awake()
     {
-        liquids = GetComponentsInChildren<LiquidWobble>();
-
-        if (liquids.Length == 0)
-            Debug.LogError("ARPGCamera has no LiquidWobble children");
+        
     }
 
     private void Update()
@@ -49,16 +45,6 @@ public class ARPGCamera : MonoBehaviour
                 playerTransform = movement.transform;
         }
 
-        if (!initialized && playerTransform != null)
-        {
-            var entity = playerTransform.transform.GetComponent<IEntity>();
-            foreach (var liquid in liquids)
-            { 
-                liquid.Initialize(entity);
-            }
-
-            initialized = true;
-        }
     }
 
     private void SnapToPlayer()

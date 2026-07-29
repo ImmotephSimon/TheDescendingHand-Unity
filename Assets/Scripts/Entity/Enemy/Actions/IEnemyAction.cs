@@ -12,4 +12,5 @@ public interface IEnemyAction
     void StopAction();
     bool IsAvailable();
     bool CanBeInterrupted { get; }
+    bool CanBeUpdated { get; }
 }

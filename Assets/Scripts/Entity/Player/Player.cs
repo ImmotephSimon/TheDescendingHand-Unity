@@ -1,5 +1,6 @@
 using FishNet;
 using FishNet.Object;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ public class Player : Entity
     private CardManager _cardManager;
     public CardRegistry CardRegistry => cardRegistry;
     public ICardContainer CardProvider => _cardManager;
-
+    public ICardPiles CardPiles => _cardManager;
 
     protected override void Awake()
     {
@@ -28,8 +29,19 @@ public class Player : Entity
     {
         CardDefinition definition = cardRegistry.GetRandomCard();
         Card card = factory.CreateFromDefinition(definition, this);
+        Card card2 = factory.CreateFromDefinition(definition, this);
+        _cardManager = new CardManager(new Card[] { card, card2 }, handSize: 5);
+    }
 
-        _cardManager = new CardManager(new Card[] { card }, handSize: 5);
+    public void InitializeLocalPlayer()
+    {
+        var globePositioner = Camera.main.GetComponentInChildren<GlobePositioner>();
+        if (globePositioner == null)
+            Debug.LogError("Failed to register GlobePositioner");
+
+        globePositioner.Initialize(this);
+
+        _cardManager.DrawHand();
     }
 
     protected override void OnDeath(IEntity killer)
@@ -60,4 +72,5 @@ public class Player : Entity
             Debug.Log($"Provide exp from {victim} death");
         }
     }
+
 }

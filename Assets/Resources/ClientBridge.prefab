@@ -9,12 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1588361522031770242}
-  - component: {fileID: 7951664745228000729}
   - component: {fileID: 6981665846237183477}
   - component: {fileID: 6041473256373477496}
   - component: {fileID: 7881783565058136539}
   - component: {fileID: 1440030305545149092}
-  - component: {fileID: 6216139526593159133}
   - component: {fileID: 4930120298934782470}
   m_Layer: 0
   m_Name: ClientBridge
@@ -38,18 +36,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7951664745228000729
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2440746720248370019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2230a8792794ae642896de1712cad4ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &6981665846237183477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101,24 +87,9 @@ MonoBehaviour:
   projectileAttachments:
   - Visual: 1
     Prefab: {fileID: 8553150264899835645, guid: e7e405b0ae2a4b64499b3f5624b62bd0, type: 3}
-  castAnimations:
-  - Animation: 0
-    Prefab: {fileID: 0}
   impacts:
   - Visual: 1
     Prefab: {fileID: 5489294000875374177, guid: fe3d3f231b074684ba04ba547cfe4f92, type: 3}
---- !u!114 &6216139526593159133
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2440746720248370019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7801342e94b7f2c459f047c37d2f8415, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4930120298934782470
 MonoBehaviour:
   m_ObjectHideFlags: 0

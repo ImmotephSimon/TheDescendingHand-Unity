@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
-public class CardManager : ICardContainer
+public class CardManager : ICardContainer, ICardPiles
 {
     private readonly Card[] _hand;
     private readonly List<Card> _drawPile = new();
     private readonly List<Card> _discard = new();
     private readonly Random _random = new();
+
+    public event Action<int, Card> OnCardAdded;
+    public event Action<int, Card> OnCardRemoved;
 
     public CardManager(IEnumerable<Card> startingCards, int handSize = 5)
     {
@@ -15,11 +19,14 @@ public class CardManager : ICardContainer
 
         _drawPile.AddRange(startingCards);
         ShuffleDrawPile();
-
-        DrawHand();
     }
 
     public IReadOnlyList<Card> Hand => _hand;
+    public bool IsHandFull => _hand.All(card => card != null);
+
+    public bool IsHandEmpty => _hand.All(card => card == null);
+
+    public int Capacity => _hand.Length;
 
     public void DrawHand()
     {
@@ -61,13 +68,17 @@ public class CardManager : ICardContainer
         _drawPile.RemoveAt(0);
 
         _hand[emptySlot] = drawnCard;
+        OnCardAdded?.Invoke(emptySlot, drawnCard);
 
         return drawnCard;
     }
 
-    public bool IsHandFull => _hand.All(card => card != null);
 
-    public bool IsHandEmpty => _hand.All(card => card == null);
+    public IReadOnlyList<CardDefinition> DrawPile =>
+        _drawPile.Select(card => card.Definition).ToList();
+
+    public IReadOnlyList<CardDefinition> DiscardPile =>
+        _discard.Select(card => card.Definition).ToList();
 
     private int FindEmptyHandSlot()
     {
@@ -80,6 +91,7 @@ public class CardManager : ICardContainer
             throw new InvalidOperationException("No card to discard.");
 
         _discard.Add(_hand[index]);
+        OnCardRemoved?.Invoke(index, _hand[index]);
         _hand[index] = null;
 
         if (IsHandEmpty)
@@ -100,6 +112,7 @@ public class CardManager : ICardContainer
         if (index >= 0 && index < _hand.Length && _hand[index] != null)
         {
             card = _hand[index];
+            DiscardCardInHand(index);
             return true;
         }
 

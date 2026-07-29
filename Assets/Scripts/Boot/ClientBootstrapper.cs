@@ -8,6 +8,14 @@ public static class ClientBootstrapper
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Initialize()
     {
+        var prefab = Resources.Load<GameObject>("ClientBridge");
+
+        if (prefab != null)
+        {
+            var bridge = Object.Instantiate(prefab);
+            Object.DontDestroyOnLoad(bridge);
+        }
+
         if (InstanceFinder.NetworkManager == null)
         {
             Debug.LogError("[NetworkBootstrapper] FishNet NetworkManager not found in scene. Add a NetworkManager object to your startup scene.");
@@ -72,19 +80,8 @@ public static class ClientBootstrapper
         return NetworkMode.Client;
 #endif
     }
-
     private static void OnClientStateChanged(ClientConnectionStateArgs args)
     {
-        if (args.ConnectionState != LocalConnectionState.Started)
-            return;
-
-        var prefab = Resources.Load<GameObject>("ClientBridge");
-
-        if (prefab != null)
-        {
-            var bridge = Object.Instantiate(prefab);
-            Object.DontDestroyOnLoad(bridge);
-        }
     }
 
     private enum NetworkMode

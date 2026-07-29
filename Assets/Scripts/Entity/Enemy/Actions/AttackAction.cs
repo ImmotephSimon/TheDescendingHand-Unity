@@ -12,7 +12,9 @@ public class AttackAction : EnemyActionBase
     private readonly IStatContainer _stats;
     private bool _canBeInterrupted = false;
     private bool _isAttacking = false;
+    private bool _canBeUpdated = true;
 
+    public override bool CanBeUpdated => _canBeUpdated;
     public override bool CanBeInterrupted => _canBeInterrupted;
 
 
@@ -67,6 +69,8 @@ public class AttackAction : EnemyActionBase
 
     private void FinishAttack()
     {
+        
+
         StopAction();
     }
 
@@ -84,6 +88,7 @@ public class AttackAction : EnemyActionBase
 
         if (movementHandler.GetFacingAngle(perception.Target) < 5f)
         {
+            _canBeUpdated = false;
             _isAttacking = true;
             animationHandler.SetAnimationState(CharacterAnimationState.Attack);
             animationHandler.PlayAnimation(
@@ -107,5 +112,6 @@ public class AttackAction : EnemyActionBase
         _canBeInterrupted = true;
         _attack.OnHit -= HandleHit;
         movementHandler.UnlockRotation();
+        _canBeUpdated = true;
     }
 }

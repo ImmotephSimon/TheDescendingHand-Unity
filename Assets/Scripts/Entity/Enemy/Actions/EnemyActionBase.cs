@@ -9,6 +9,7 @@ public abstract class EnemyActionBase : IEnemyAction
     protected readonly IAbilityManager abilityManager;
 
     public virtual bool CanBeInterrupted => true;
+    public virtual bool CanBeUpdated => true;
 
     protected EnemyActionBase(Enemy owner)
     {
