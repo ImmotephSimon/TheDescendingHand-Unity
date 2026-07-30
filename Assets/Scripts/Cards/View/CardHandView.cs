@@ -10,11 +10,11 @@ public class CardHandView : MonoBehaviour
 
     private void Update()
     {
-        Layout();
+        UpdateLayout();
         MoveCards();
     }
 
-    private void Layout()
+    private void UpdateLayout()
     {
         if (cards.Count == 0) return;
 
@@ -51,12 +51,13 @@ public class CardHandView : MonoBehaviour
         CardView view = physicalCard.GetComponentInChildren<CardView>();
         cards.Add(view);
         view.UpdateParent(transform);
-        Layout();
+        UpdateLayout();
     }
 
     public void RemoveCard(CardView card)
     {
         cards.Remove(card);
-        Layout();
+        card.DestroyCard();
+        UpdateLayout();
     }
 }

@@ -948,6 +948,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   drawButton: {fileID: 8651830604305931271}
   discardButton: {fileID: 9187920178102377679}
+  pileView: {fileID: 8046990687995839623}
 --- !u!114 &8046990687995839623
 MonoBehaviour:
   m_ObjectHideFlags: 0

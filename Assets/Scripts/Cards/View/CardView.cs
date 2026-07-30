@@ -1,12 +1,21 @@
 using System;
+using TMPro;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CardView : MonoBehaviour
 {
+    [SerializeField] private TextMeshPro title;
+    [SerializeField] private TextMeshPro description;
+    [SerializeField] private TextMeshPro keybind;
+    [SerializeField] private MeshRenderer art;
+
     private Vector3 targetPosition;
     private Quaternion targetRotation;
     private CardDefinition definition;
-    private Transform outer;
+    private Transform root;
+
 
     public void SetHandTransform(Vector3 position, Quaternion rotation)
     {
@@ -16,30 +25,42 @@ public class CardView : MonoBehaviour
 
     public void MoveTowardsHandTransform(float speed)
     {
-        outer.transform.localPosition = Vector3.Lerp(
-            outer.transform.localPosition,
+        root.transform.localPosition = Vector3.Lerp(
+            root.transform.localPosition,
             targetPosition,
             speed * Time.deltaTime);
 
-        outer.transform.localRotation = Quaternion.Lerp(
-            outer.transform.localRotation,
+        root.transform.localRotation = Quaternion.Lerp(
+            root.transform.localRotation,
             targetRotation,
             speed * Time.deltaTime);
     }
 
 
-    public void Initialize(CardDefinition definition)
+    public void Initialize(CardDefinition definition, Transform root)
     {
         this.definition = definition;
+        this.root = root;
 
-        // set icon, name, art, etc. here
+        ApplyVisuals(definition.Visuals);
+    }
+
+    private void ApplyVisuals(CardVisuals visuals)
+    {
+        keybind.text = "1";
+        title.text = visuals.Name;
+        description.text = visuals.Description;
+        art.material.mainTexture = visuals.Art;
     }
 
     public void UpdateParent(Transform parent)
     {
-        if (outer == null) outer = transform.parent;
-        outer.transform.SetParent(parent, false);
-        outer.localScale = Vector3.one * 0.2f;
+        root.transform.SetParent(parent, true);
+        root.localScale = Vector3.one * 0.2f;
+    }
+    public void DestroyCard()
+    {
+        Destroy(root.gameObject);
     }
 
     // hover, selection, highlight, etc. stay here

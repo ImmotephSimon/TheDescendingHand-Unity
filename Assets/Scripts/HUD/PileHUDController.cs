@@ -1,16 +1,20 @@
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class PileHUDController : MonoBehaviour
 {
     [SerializeField] private Button drawButton;
     [SerializeField] private Button discardButton;
+    [SerializeField] private PileView pileView;
 
     private ICardPiles piles;
     private TMP_Text drawText;
     private TMP_Text discardText;
-    private PileView pileView;
+    private enum ActivePile { None, Draw, Discard }
+    private ActivePile active = ActivePile.None;
 
     private void Start()
     {
@@ -35,13 +39,16 @@ public class PileHUDController : MonoBehaviour
         discardText.text = piles.DiscardPile.Count.ToString();
     }
 
-    private void OnDrawClicked()
-    {
-        pileView.Show(piles.DrawPile);
-    }
 
-    private void OnDiscardClicked()
+    private void OnDrawClicked() => Toggle(ActivePile.Draw, piles.DrawPile);
+    private void OnDiscardClicked() => Toggle(ActivePile.Discard, piles.DiscardPile);
+
+    private void Toggle(ActivePile target, IReadOnlyList<CardDefinition> pile)
     {
-        pileView.Show(piles.DiscardPile);
+        bool isSame = active == target;
+        active = isSame ? ActivePile.None : target;
+
+        if (isSame) pileView.Clear();
+        else pileView.Show(pile);
     }
 }

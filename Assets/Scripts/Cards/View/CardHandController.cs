@@ -8,7 +8,7 @@ public class CardHandController : MonoBehaviour
     [SerializeField] private CardHandView handView;
     [SerializeField] private GameObject physicalCardPrefab;
 
-    private Transform[] cards;
+    private GameObject[] cards;
     
 
     private void Start()
@@ -22,7 +22,7 @@ public class CardHandController : MonoBehaviour
     private void Bind(Player player)
     {
         ICardContainer container = player.CardProvider;
-        cards = new Transform[container.Capacity];
+        cards = new GameObject[container.Capacity];
 
         container.OnCardAdded += OnCardAdded;
         container.OnCardRemoved += OnCardRemoved;
@@ -33,18 +33,17 @@ public class CardHandController : MonoBehaviour
         GameObject cardObject = Instantiate(physicalCardPrefab, handView.transform);
 
         CardView view = cardObject.GetComponentInChildren<CardView>();
-        view.Initialize(card.Definition);
+        view.Initialize(card.Definition, cardObject.transform);
 
-        cards[index] = cardObject.transform;
+        cards[index] = cardObject;
 
         handView.AddCard(cardObject);
     }
 
     private void OnCardRemoved(int index, Card card)
     {
-        handView.RemoveCard(cards[index].GetComponentInChildren<CardView>());
-
-        Destroy(cards[index].gameObject);
+        CardView view = cards[index].GetComponentInChildren<CardView>();
+        handView.RemoveCard(view);
         cards[index] = null;
     }
     private void OnDestroy()
