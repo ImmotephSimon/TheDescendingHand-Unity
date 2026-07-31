@@ -44,10 +44,16 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
 
     public void Die(IEntity killer)
     {
+        Debug.Log($"DIE {name} id={GetInstanceID()} dead={IsDead} frame={Time.frameCount}");
         if (IsDead) return;
 
         IsDead = true;
-        StopCoroutine(_stunRoutine);
+        if (_stunRoutine != null)
+        {
+            Debug.Log($"CANCEL STUN {name}");
+            StopCoroutine(_stunRoutine);
+            _stunRoutine = null;
+        }
         OnDeath(killer);
         animationHandler.SetAnimationState(CharacterAnimationState.Dead);
         GameWorld.Instance.NotifyDeath(this, killer);
@@ -60,15 +66,21 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
 
     public virtual void ApplyStun(float duration)
     {
+        if (IsDead) return;
+        if (_stunRoutine != null) StopCoroutine(_stunRoutine);
         OnStunBegin();
         animationHandler.SetAnimationState(CharacterAnimationState.Stun);
 
         _stunRoutine =  StartCoroutine(StunRoutine(duration));
     }
 
-    protected IEnumerator StunRoutine(float duration)
+    private IEnumerator StunRoutine(float duration)
     {
         yield return new WaitForSeconds(duration);
+        _stunRoutine = null;
+        if (IsDead)
+            yield break;
+
         animationHandler.SetAnimationState(CharacterAnimationState.Locomotion);
         OnStunEnd();
     }

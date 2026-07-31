@@ -6,9 +6,9 @@ using UnityEngine.VFX;
 public class ChainLightningView : MonoBehaviour, IVfx
 {
     [SerializeField] private VisualEffect visualEffect;
-    private float shrinkTime = 3f;
-    private float maxLength = 10f;
-    private Vector3 previousEnd;
+    
+
+
 
     private enum LightningState
     {
@@ -16,7 +16,10 @@ public class ChainLightningView : MonoBehaviour, IVfx
         Fixed,
         Shrink
     }
-
+    private float minShrinkTime = 1f;
+    private float maxLength = 10f;
+    private Vector3 previousEnd;
+    private float shrinkSpeed;
     private LightningState state = LightningState.Grow;
     private Vector3 start;
     private Vector3 end;
@@ -97,15 +100,39 @@ public class ChainLightningView : MonoBehaviour, IVfx
     }
     private void Shrink()
     {
-        start = Vector3.MoveTowards(
-            start,
-            end,
-            maxSpeed * Time.deltaTime
-        );
+        //start = Vector3.MoveTowards(
+        //    start,
+        //    end,
+        //    maxSpeed * Time.deltaTime
+        //);
 
-        shrinkTimer += Time.deltaTime;
-        if (shrinkTimer >= shrinkTime)
+        start = Vector3.MoveTowards(start, end, maxSpeed * Time.deltaTime);
+        shrinkTimer -= Time.deltaTime;
+
+        // Only destroy after start hits end AND minShrinkTime has elapsed
+        if (start == end && shrinkTimer <= 0f)
+        {
             Destroy(gameObject);
+        }
     }
 
+    public void Stop()
+    {
+        if (target != null)
+        {
+            end = target.position;
+            target = null;
+        }
+
+        transform.SetParent(null);
+
+        // Calculate how long maxSpeed would naturally take to collapse the distance
+        float distance = Vector3.Distance(start, end);
+        float naturalTime = maxSpeed > 0 ? distance / maxSpeed : 0f;
+
+        // Ensure the shrink state lasts at least minShrinkTime
+        shrinkTimer = Mathf.Max(minShrinkTime, naturalTime);
+
+        state = LightningState.Shrink;
+    }
 }

@@ -4,14 +4,14 @@ using UnityEngine;
 public class CardFactory
 {
     private readonly CardRegistry _registry;
-    private readonly Action<GameObject> _onNetworkSpawn;
+    private readonly Action<GameObject> _networkSpawn;
 
     public CardFactory(
         CardRegistry registry,
-        Action<GameObject> onNetworkSpawn)
+        Action<GameObject> networkSpawn)
     {
         _registry = registry;
-        _onNetworkSpawn = onNetworkSpawn;
+        _networkSpawn = networkSpawn;
     }
 
     public Card CreateFromDefinition(CardDefinition definition, IEntity owner)
@@ -26,7 +26,7 @@ public class CardFactory
             new CardInitContext(
                 Guid.NewGuid(), // Runtime instance identity
                 owner,
-                _onNetworkSpawn));
+                _networkSpawn));
     }
 
     public Card CreateFromNetworkId(string definitionId, IEntity owner)

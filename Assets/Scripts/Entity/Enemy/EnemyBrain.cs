@@ -75,5 +75,9 @@ public class EnemyBrain : MonoBehaviour, ISpawnable
             currentAction?.StopAction();
             currentAction = null;
         }
+        if (_state == BrainState.Dead)
+        {
+            enabled = false;
+        }
     }
 }

@@ -40,10 +40,10 @@ public class PlayerNetworkComponent : NetworkBehaviour
     
     private CardFactory CreateCardFactory(CardRegistry registry)
     {
-        return new CardFactory(registry, SpawnCard);
+        return new CardFactory(registry, SpawnNetworkObject);
     }
 
-    private void SpawnCard(GameObject go)
+    private void SpawnNetworkObject(GameObject go)
     {
         ServerManager.Spawn(go);
     }

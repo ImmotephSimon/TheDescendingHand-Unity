@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace GameKit.Dependencies.Utilities.ObjectPooling.Examples
 {
-    public class Projectile : MonoBehaviour
+    public class ProjectileLifetime : MonoBehaviour
     {
         [Tooltip("If above 0f projectiles are stored with a delay rather than when off screen.")]
         [Range(0f, 5f)]

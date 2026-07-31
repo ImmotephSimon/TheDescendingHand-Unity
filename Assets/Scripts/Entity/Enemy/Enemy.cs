@@ -17,7 +17,7 @@ public class Enemy : Entity, IExperienceSource
     private Perception perception;
     private Rarity rarity;
     private int baseExperience = 1;
-
+    private EnemyHealthBar _healthBar;
 
     public int ExperienceReward => experienceTable.ScaleByRarity(baseExperience, rarity);
 
@@ -45,7 +45,8 @@ public class Enemy : Entity, IExperienceSource
     }
     private void Start()
     {
-        GetComponentInChildren<EnemyHealthBar>().Bind(GetComponent<IHealth>());
+        _healthBar = GetComponentInChildren<EnemyHealthBar>();
+        _healthBar.Bind(GetComponent<IHealth>());
     }
 
     private void ApplyBaseStats()
@@ -76,6 +77,10 @@ public class Enemy : Entity, IExperienceSource
     protected override void OnDeath(IEntity killer)
     {
         brain.SetState(BrainState.Dead);
+        foreach (var col in GetComponentsInChildren<Collider>())
+            col.enabled = false;
+        Destroy(_healthBar.gameObject);
+
     }
 
     protected override void OnEntityDied(IEntity victim, IEntity killer)

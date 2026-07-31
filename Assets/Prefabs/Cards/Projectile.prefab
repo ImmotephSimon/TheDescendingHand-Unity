@@ -71,7 +71,7 @@ MonoBehaviour:
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
     Rotation: {x: 0, y: 0, z: 0, w: 1}
-    Scale: {x: 0.2, y: 0.2, z: 0.2}
+    Scale: {x: 1, y: 1, z: 1}
     IsValid: 1
   <IsNested>k__BackingField: 0
   WasActiveDuringEdit: 0
@@ -91,7 +91,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584169393713396620
+  _initializedTimestamp: -8584160837062223797
 --- !u!114 &7175949987687955276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,7 +109,10 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 748158798430338154}
   _hitMask:
     serializedVersion: 2
-    m_Bits: 904
+    m_Bits: 896
+  _targetMask:
+    serializedVersion: 2
+    m_Bits: 768
 --- !u!1 &8352997758175192186
 GameObject:
   m_ObjectHideFlags: 0

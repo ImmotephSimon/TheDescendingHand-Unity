@@ -22,7 +22,8 @@ public class VFXView : MonoBehaviour
     }
 
 
-    private readonly Dictionary<Transform, GameObject> _spawnedVisuals = new();
+    
+    private readonly Dictionary<Transform, List<GameObject>> _activeVisuals = new();
 
     public void AttachAbilityVisual(AbilityVisual visual, Transform target)
     {
@@ -35,15 +36,41 @@ public class VFXView : MonoBehaviour
         var instance = Instantiate(prefab);
         instance.transform.position = Vector3.zero;
         instance.transform.rotation = Quaternion.identity;
+
         if (instance.TryGetComponent<IVfx>(out var vfx))
         {
-            vfx.Initialize(target.position,target);
-
+            vfx.Initialize(target.position, target);
         }
+
+        if (!_activeVisuals.TryGetValue(target, out var list))
+        {
+            list = new List<GameObject>();
+            _activeVisuals[target] = list;
+        }
+        list.Add(instance);
     }
 
     public void DetachAbilityVisual(AbilityVisual visual, Transform target)
     {
+        if (!_activeVisuals.TryGetValue(target, out var list)) return;
+
+        for (int i = list.Count - 1; i >= 0; i--)
+        {
+            var instance = list[i];
+            if (instance != null)
+            {
+                if (instance.TryGetComponent<IVfx>(out var vfx))
+                {
+                    vfx.Stop(); // Or Destroy(instance) if your IVfx handles cleanup internally
+                }
+                else
+                {
+                    Destroy(instance);
+                }
+            }
+        }
+
+        _activeVisuals.Remove(target);
     }
 
     private bool TryGetPrefab(AbilityVisual visual, out GameObject prefab)

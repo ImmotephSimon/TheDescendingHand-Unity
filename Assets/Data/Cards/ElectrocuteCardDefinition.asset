@@ -29,6 +29,8 @@ MonoBehaviour:
       Forward: 1
     Visual: 1
     Count: 1
-    PierceCount: 0
+    Pierce: 0
+    Chains: 2
+    Bounces: 0
   effectiveness: 1
   damageConversion: {fileID: 11400000, guid: 5d7f8bcbc2d29b14bacc644813b18c7e, type: 2}

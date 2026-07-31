@@ -5,17 +5,16 @@ using UnityEngine;
 public class ProjectileComponent : CardComponent
 {
     private readonly ProjectileInfo _info;
-    private readonly Action<GameObject> _networkSpawn;
+    private readonly Action<GameObject> _onSpawnProjectile;
     private const float MultiProjectileAngle = 15f;
     public ProjectileComponent(
         ProjectileInfo info,
-        Action<GameObject> networkSpawn)
+        Action<GameObject> spawnNetworkObject)
     {
         _info = info;
-        _networkSpawn = networkSpawn;
+        _onSpawnProjectile = spawnNetworkObject;
 
-        if (info == null) Debug.LogError($"[{nameof(ProjectileComponent)}] Construction failed: ProjectileInfo is null.");
-        else if (info.Prefab == null) Debug.LogError($"[{nameof(ProjectileComponent)}] Construction failed: Prefab is unassigned in ProjectileInfo.");
+        if (info.IsEmpty) Debug.LogError($"[{nameof(ProjectileComponent)}] Construction failed: Prefab is unassigned in ProjectileInfo.");
 
     }
 
@@ -59,7 +58,7 @@ public class ProjectileComponent : CardComponent
         controller.OnHit += Card.OnHit;
         controller.Initialize(_info, Owner);
 
-        _networkSpawn?.Invoke(projectile);
+        _onSpawnProjectile?.Invoke(projectile);
     }
 
 

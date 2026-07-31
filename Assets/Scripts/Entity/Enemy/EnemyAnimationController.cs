@@ -58,7 +58,10 @@ public class EnemyAnimationController : MonoBehaviour, IAnimationHandler
             return;
 
         currentState = state;
-
+        Debug.Log(
+            $"ANIM {gameObject.name} id={gameObject.GetInstanceID()} -> {state} frame={Time.frameCount}\n" +
+            $"caller:\n{Environment.StackTrace}"
+        );
         switch (state)
         {
             case CharacterAnimationState.Locomotion:
