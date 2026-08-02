@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfcbead597cfa364493009300c53f682, type: 3}
+  m_Name: Miti4
+  m_EditorClassIdentifier: 
+  id: aadec790-35e1-4bc1-b9b4-d46d14d937b6
+  DisplayName: Miti4
+  BaseValue: 3
+  Modifier:
+    TagId: Mod.Defense.Mitigation
+  MathOp: 0
+  Restriction: {fileID: 11400000, guid: 5d7f8bcbc2d29b14bacc644813b18c7e, type: 2}

@@ -1,10 +1,10 @@
 using System;
-using static Unity.VisualScripting.Member;
+using UnityEngine;
 
 public enum MathOp
 {
-    Flat,
-    AdditivePercent,
+    Added,
+    Additive,
     Multiplicative
 }
 public enum ModifierSource
@@ -23,13 +23,14 @@ public readonly struct ModifierHandle
     }
 }
 
-public readonly struct StatModifier
+[Serializable]
+public struct StatModifier
 {
-    public readonly GameTag Stat;
-    public readonly MathOp Op;
-    public readonly float Value;
-    public readonly TagContainer RequiredTags;
-    public readonly ModifierSource Source;
+    public GameTag Stat;
+    public MathOp Op;
+    public float Value;
+    public TagContainer RequiredTags;
+    [HideInInspector] public ModifierSource Source;
 
     public StatModifier(GameTag stat, MathOp type, float value, TagContainer requiredTags, ModifierSource source)
     {

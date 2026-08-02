@@ -20,10 +20,10 @@ public class PlayerInputController : MonoBehaviour
         _gameInput.Player.Card3.performed += ctx => OnPlayCard(2);
         _gameInput.Player.Card4.performed += ctx => OnPlayCard(3);
         _gameInput.Player.Card5.performed += ctx => OnPlayCard(4);
-        
+        _gameInput.Player.Interact.performed += OnLoot;
+        _gameInput.Player.Inventory.performed += OnOpenInventory;
         _clientBridge = GetComponentInParent<ClientBridge>();
     }
-
 
     private void Update()
     {
@@ -59,6 +59,14 @@ public class PlayerInputController : MonoBehaviour
         _clientBridge.Movement.SetLocalInput(_rawInput, mouseWorldPosition);
     }
 
+    private void OnLoot(InputAction.CallbackContext ctx)
+    {
+        _clientBridge.Player.TryInteract();
+    }
+    private void OnOpenInventory(InputAction.CallbackContext context)
+    {
+        _clientBridge.HUD.ToggleInventory();
+    }
 
     private void OnDestroy()
     {

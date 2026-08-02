@@ -6,16 +6,19 @@ public class ItemDefinition : ScriptableObject
 {
     public string ID;
     public string DisplayName;
-    public Rarity Rarity;
 
+    
+    public Vector2Int InventorySize = new Vector2Int(2,2);
     public AppearanceData Appearance;
     public int RequiredLevel;
-
-    public List<ImplicitData> Implicits;
-
-    public List<ItemComponent> Components;
-
     public TagContainer Tags;
+
+    public List<StatModifier> Implicits;
+
+    [SerializeReference, SerializeReferenceDropdown]
+    public List<ItemComponent> Components = new();
+
+    
 
 #if UNITY_EDITOR
     private void OnValidate()

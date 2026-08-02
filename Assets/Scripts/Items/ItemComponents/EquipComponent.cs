@@ -1,44 +1,44 @@
 using System.Collections.Generic;
 using UnityEngine;
-[CreateAssetMenu(menuName = "Items/Components/Equip")]
+
+public enum SlotInfo { Default, TwoHanded}
+
 public class EquipComponent : ItemComponent
 {
-    [SerializeField] private List<StatModifier> modifiers;
+    [SerializeField] private EquipmentType equipmentType;
+    [SerializeField] private SlotInfo slotInfo = SlotInfo.Default;
 
+    private List<StatModifier> modifiers;
+    private IEntity _owner;
     private readonly List<ModifierHandle> handles = new();
 
-    private StatModifierComponent ownerStats;
-    public void Equip(StatModifierComponent stats)
+    public EquipmentType EquipmentType => equipmentType;
+
+    public void Equip()
     {
-        ownerStats = stats;
-
-        handles.Clear();
-
         foreach (var modifier in modifiers)
         {
-            ModifierHandle handle = ownerStats.AddModifier(modifier);
+            ModifierHandle handle = _owner.Stats.AddModifier(modifier);
             handles.Add(handle);
         }
+        item.SetVisible(true);
     }
 
 
     public void Unequip()
     {
-        if (ownerStats == null)
-            return;
 
         foreach (var handle in handles)
         {
-            ownerStats.RemoveModifier(handle);
+            _owner.Stats.RemoveModifier(handle);
         }
 
         handles.Clear();
-        ownerStats = null;
+        item.SetVisible(false);
     }
 
-    public override void Activate(IEntity user)
+    public override void Activate(IEntity owner)
     {
-        if (user is IEquipmentWearer wearer)
-            wearer.Equip(item);
+        _owner = owner;
     }
 }

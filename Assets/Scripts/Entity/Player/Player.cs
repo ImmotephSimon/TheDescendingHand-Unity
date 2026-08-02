@@ -7,12 +7,17 @@ using UnityEngine;
 public class Player : Entity
 {
     [SerializeField] private CardRegistry cardRegistry;
+    [SerializeField] private LayerMask interactLayer;
+    [SerializeField] private float interactRange = 2f;
 
     private PlayerMovementController playerMovement;
     private CardManager _cardManager;
+    private IInventory _inventory;
+
     public CardRegistry CardRegistry => cardRegistry;
     public ICardContainer CardProvider => _cardManager;
     public ICardPiles CardPiles => _cardManager;
+    public float InteractRange => interactRange;
 
     protected override void Awake()
     {
@@ -21,6 +26,7 @@ public class Player : Entity
         playerMovement = GetComponent<PlayerMovementController>();
         animationHandler = GetComponentInChildren<IAnimationHandler>();
         stats = GetComponent<IStatContainer>();
+        _inventory = GetComponent<IInventory>();
         if (animationHandler == null) Debug.LogError($"{name} missing IAnimationHandler", this);
         if (cardRegistry == null) Debug.LogWarning($"[{name}] Card Registry field is unassigned in the inspector.", this);
     }
@@ -33,14 +39,11 @@ public class Player : Entity
         _cardManager = new CardManager(new Card[] { card, card2 }, handSize: 5);
     }
 
+
     public void InitializeLocalPlayer()
     {
-        var globePositioner = Camera.main.GetComponentInChildren<GlobePositioner>();
-        if (globePositioner == null)
-            Debug.LogError("Failed to register GlobePositioner");
-
-        globePositioner.Initialize(this);
-
+        ClientBridge.Instance.HUD.Bind(this);
+        ClientBridge.Instance.GlobePositioner.Initialize(this);
         _cardManager.DrawHand();
     }
 
@@ -73,4 +76,28 @@ public class Player : Entity
         }
     }
 
+    public void TryInteract()
+    {
+        IInteractable interact = FindNearbyInteractable();
+
+        if (interact == null)
+            return;
+
+        interact.Interact(this);
+    }
+    private IInteractable FindNearbyInteractable()
+    {
+        Collider[] hits = Physics.OverlapSphere(
+            transform.position,
+            interactRange,
+            interactLayer);
+
+        foreach (var hit in hits)
+        {
+            if (hit.TryGetComponent<IInteractable>(out var interactable))
+                return interactable;
+        }
+
+        return null;
+    }
 }

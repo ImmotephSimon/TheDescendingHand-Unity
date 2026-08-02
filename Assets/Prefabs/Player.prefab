@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 5036442494900270532}
   - component: {fileID: 2784291924378910289}
   - component: {fileID: 6099822581306699113}
+  - component: {fileID: 6126683347723356868}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -135,7 +136,7 @@ MonoBehaviour:
   <AssetPathHash>k__BackingField: 2092870565765373345
   SceneId: 0
   SerializedTransformProperties:
-    Position: {x: 2.24863, y: 0.1, z: 1.63438}
+    Position: {x: 0, y: 0.1, z: 0}
     Rotation: {x: 0, y: 0, z: 0, w: 1}
     Scale: {x: 1, y: 1, z: 1}
     IsValid: 1
@@ -161,7 +162,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584165673073628114
+  _initializedTimestamp: -8584159352309721258
 --- !u!114 &20013263525237340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,6 +206,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardRegistry: {fileID: 11400000, guid: dbc5fdb1cbf049e43a5b28ed6e176ee2, type: 2}
+  interactLayer:
+    serializedVersion: 2
+    m_Bits: 2048
+  interactRange: 2
 --- !u!114 &8461922595216608990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -320,6 +325,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poiseMultiplier: 2
   stunThreshold: 0.2
+  stunImmunityDuration: 2
+--- !u!114 &6126683347723356868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673506913013919535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bb8fb19850c6ad4998fd068c8ac4686, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rows: 6
+  columns: 8
 --- !u!1001 &4825371266952317310
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -378,7 +398,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6178638726304578458, guid: 947bc5bfb8601c643b73b68ae987a038, type: 3}
       propertyPath: _initializedTimestamp
-      value: -8584165673073628114
+      value: -8584159352309721258
       objectReference: {fileID: 0}
     - target: {fileID: 6178638726304578458, guid: 947bc5bfb8601c643b73b68ae987a038, type: 3}
       propertyPath: <IsNested>k__BackingField

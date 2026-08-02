@@ -82,7 +82,7 @@ public class LevelComponent : MonoBehaviour
         _modifierHandle = stats.AddModifier(
             new StatModifier(
                 GameTags.ModStatHealth,
-                MathOp.Flat,
+                MathOp.Added,
                 balanceCurves.ExpectedPlayerLife.Evaluate(level)
             ));
     }

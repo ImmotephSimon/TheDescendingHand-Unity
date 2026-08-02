@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
-
-public abstract class ItemComponent : ScriptableObject
+[System.Serializable]
+public abstract class ItemComponent
 {
     protected Item item;
 

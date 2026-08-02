@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35d546714e5600244bf9148235d56df9, type: 3}
+  m_Name: GreatSword
+  m_EditorClassIdentifier: 
+  ID: great_sword
+  DisplayName: Great Sword
+  InventorySize: {x: 2, y: 2}
+  Appearance:
+    WorldModel: {fileID: -3203246011114522609, guid: 05ce57e582a1d844bbc1e311bb8c09bf, type: 3}
+    Icon: {fileID: 21300000, guid: 8a35f12c62f2ee546bf2d247b6fc569d, type: 3}
+  RequiredLevel: 0
+  Tags:
+    Tags: []
+  Implicits:
+  - Stat:
+      TagId: Mod.Offense.Damage
+    Op: 0
+    Value: 3
+    RequiredTags:
+      Tags: []
+    Source: 0
+  - Stat:
+      TagId: Mod.Offense.Critical
+    Op: 0
+    Value: 10
+    RequiredTags:
+      Tags: []
+    Source: 0
+  - Stat:
+      TagId: Mod.Offense.CastSpeed
+    Op: 2
+    Value: 0.9
+    RequiredTags:
+      Tags: []
+    Source: 0
+  Components:
+  - rid: 7617656288784417222
+  references:
+    version: 2
+    RefIds:
+    - rid: 7617656288784417222
+      type: {class: EquipComponent, ns: , asm: Assembly-CSharp}
+      data:
+        equipmentType: 0
+        slotInfo: 1

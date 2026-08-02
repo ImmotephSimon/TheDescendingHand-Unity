@@ -54,12 +54,12 @@ public class Enemy : Entity, IExperienceSource
         stats.AddModifier(
             new StatModifier(
                 GameTags.ModStatHealth, 
-                MathOp.Flat, 
+                MathOp.Added, 
                 20));
         stats.AddModifier(
             new StatModifier(
                 GameTags.ModOffenseDamage, 
-                MathOp.Flat, 
+                MathOp.Added, 
                 balanceCurves.ExpectedPlayerLife.Evaluate(level) * 0.1f));
     }
 
@@ -80,7 +80,7 @@ public class Enemy : Entity, IExperienceSource
         foreach (var col in GetComponentsInChildren<Collider>())
             col.enabled = false;
         Destroy(_healthBar.gameObject);
-
+        GetComponent<DropsComponent>().DropAtLocation();
     }
 
     protected override void OnEntityDied(IEntity victim, IEntity killer)

@@ -57,8 +57,8 @@ public class StatModifierComponent : MonoBehaviour, IStatContainer
 
             switch (modifier.Op)
             {
-                case MathOp.Flat: value += modifier.Value; break;
-                case MathOp.AdditivePercent: additive += modifier.Value; break;
+                case MathOp.Added: value += modifier.Value; break;
+                case MathOp.Additive: additive += modifier.Value; break;
                 case MathOp.Multiplicative: multiplier *= modifier.Value; break;
             }
         }

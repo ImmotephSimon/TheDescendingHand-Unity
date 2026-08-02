@@ -1,0 +1,135 @@
+[
+    {
+        "Id": "BaseMult",
+        "BaseValue": 1.1,
+        "Modifier": "Mod.Implicit",
+        "MathOp": "Multiplicative",
+        "Restriction": "None"
+    },
+    {
+        "Id": "BaseMin",
+        "BaseValue": 2,
+        "Modifier": "Mod.Implicit",
+        "MathOp": "Added",
+        "Restriction": "Minimum"
+    },
+    {
+        "Id": "BaseMax",
+        "BaseValue": 2,
+        "Modifier": "Mod.Implicit",
+        "MathOp": "Added",
+        "Restriction": "Maximum"
+    },
+    {
+        "Id": "FireFlat",
+        "BaseValue": 2,
+        "Modifier": "Mod.Implicit",
+        "MathOp": "Added",
+        "Restriction": "Fire"
+    },
+    {
+        "Id": "ColdFlat",
+        "BaseValue": 2,
+        "Modifier": "Mod.Implicit",
+        "MathOp": "Added",
+        "Restriction": "Cold"
+    },
+    {
+        "Id": "LightningFlat",
+        "BaseValue": 2,
+        "Modifier": "Mod.Implicit",
+        "MathOp": "Added",
+        "Restriction": "Lightning"
+    },
+    {
+        "Id": "EleMult",
+        "BaseValue": 1.1,
+        "Modifier": "Mod.Implicit",
+        "MathOp": "Multiplicative",
+        "Restriction": "Elemental"
+    },
+    {
+        "Id": "Mana",
+        "BaseValue": 2,
+        "Modifier": "Mod.Stat.Mana",
+        "MathOp": "Added",
+        "Restriction": "None"
+    },
+    {
+        "Id": "ManaDamage",
+        "BaseValue": 0.01,
+        "Modifier": "Mod.Offense.DamagePerMana",
+        "MathOp": "Additive",
+        "Restriction": "None"
+    },
+    {
+        "Id": "CastSpeed",
+        "BaseValue": 1.015,
+        "Modifier": "Mod.Offense.CastSpeed",
+        "MathOp": "Multiplicative",
+        "Restriction": "None"
+    },
+    {
+        "Id": "PhysInc",
+        "BaseValue": 0.01,
+        "Modifier": "Mod.Offense.Damage",
+        "MathOp": "Additive",
+        "Restriction": "Physical"
+    },
+    {
+        "Id": "LifeCost",
+        "BaseValue": -0.015,
+        "Modifier": "Mod.Utility.Cost",
+        "MathOp": "Additive",
+        "Restriction": "Life"
+    },
+    {
+        "Id": "ManaCost",
+        "BaseValue": -0.01,
+        "Modifier": "Mod.Utility.Cost",
+        "MathOp": "Additive",
+        "Restriction": "Mana"
+    },
+    {
+        "Id": "ChaosDuration",
+        "BaseValue": 0.015,
+        "Modifier": "Mod.Utility.Duration",
+        "MathOp": "Additive",
+        "Restriction": "Chaos"
+    },
+    {
+        "Id": "ImplicitDamage",
+        "BaseValue": 60,
+        "Modifier": "Mod.Implicit",
+        "MathOp": "Added",
+        "Restriction": "None"
+    },
+    {
+        "Id": "ImplicitCritHigh",
+        "BaseValue": 15,
+        "Modifier": "Mod.Offense.Critical",
+        "MathOp": "Added",
+        "Restriction": "None"
+    },
+    {
+        "Id": "ImplicitCritLow",
+        "BaseValue": 5,
+        "Modifier": "Mod.Offense.Critical",
+        "MathOp": "Added",
+        "Restriction": "None"
+    },
+    {
+        "Id": "ImplicitSpeedHigh",
+        "BaseValue": 1.1,
+        "Modifier": "Mod.Offense.CastSpeed",
+        "MathOp": "Multiplicative",
+        "Restriction": "None"
+    },
+    {
+        "Id": "ImplicitSpeedLow",
+        "BaseValue": 0.9,
+        "Modifier": "Mod.Offense.CastSpeed",
+        "MathOp": "Multiplicative",
+        "Restriction": "None"
+    }
+]

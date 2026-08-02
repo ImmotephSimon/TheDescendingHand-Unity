@@ -8,12 +8,6 @@ public class HUD : MonoBehaviour
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private TMP_Text manaText;
 
-    private LevelComponent levelComponent;
-
-    private void Awake()
-    {
-        
-    }
     public void Bind(LevelComponent comp)
     {
 

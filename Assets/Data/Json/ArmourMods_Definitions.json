@@ -1,0 +1,93 @@
+[
+    {
+        "Id": "Life",
+        "BaseValue": 0.01,
+        "Modifier": "Mod.Stat.Life",
+        "MathOp": "Additive",
+        "Restriction": "None"
+    },
+    {
+        "Id": "Mana",
+        "BaseValue": 2,
+        "Modifier": "Mod.Stat.Mana",
+        "MathOp": "Added",
+        "Restriction": "None"
+    },
+    {
+        "Id": "IncImplicit",
+        "BaseValue": 0.05,
+        "Modifier": "Mod.Implicit",
+        "MathOp": "Additive",
+        "Restriction": "None"
+    },
+    {
+        "Id": "Miti1",
+        "BaseValue": 2,
+        "Modifier": "Mod.Defense.Mitigation",
+        "MathOp": "Added",
+        "Restriction": "Physical"
+    },
+    {
+        "Id": "Miti2",
+        "BaseValue": 3,
+        "Modifier": "Mod.Defense.Mitigation",
+        "MathOp": "Added",
+        "Restriction": "Fire"
+    },
+    {
+        "Id": "Miti3",
+        "BaseValue": 3,
+        "Modifier": "Mod.Defense.Mitigation",
+        "MathOp": "Added",
+        "Restriction": "Cold"
+    },
+    {
+        "Id": "Miti4",
+        "BaseValue": 3,
+        "Modifier": "Mod.Defense.Mitigation",
+        "MathOp": "Added",
+        "Restriction": "Lightning"
+    },
+    {
+        "Id": "Miti5",
+        "BaseValue": 3,
+        "Modifier": "Mod.Defense.Mitigation",
+        "MathOp": "Added",
+        "Restriction": "Chaos"
+    },
+    {
+        "Id": "Glancing",
+        "BaseValue": 0.015,
+        "Modifier": "Mod.Defense.Glancing",
+        "MathOp": "Additive",
+        "Restriction": "None"
+    },
+    {
+        "Id": "LifeCost",
+        "BaseValue": -0.015,
+        "Modifier": "Mod.Utility.Cost",
+        "MathOp": "Additive",
+        "Restriction": "Life"
+    },
+    {
+        "Id": "ManaCost",
+        "BaseValue": -0.005,
+        "Modifier": "Mod.Utility.Cost",
+        "MathOp": "Additive",
+        "Restriction": "Mana"
+    },
+    {
+        "Id": "ChaosDuration",
+        "BaseValue": 0.02,
+        "Modifier": "Mod.Utility.Duration",
+        "MathOp": "Additive",
+        "Restriction": "Chaos"
+    },
+    {
+        "Id": "ImplicitMitiPhys",
+        "BaseValue": 5,
+        "Modifier": "Mod.Defense.Mitigation",
+        "MathOp": "Added",
+        "Restriction": "Physical"
+    }
+]

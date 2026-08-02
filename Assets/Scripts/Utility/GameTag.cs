@@ -12,6 +12,8 @@ public class GameTag
         TagId = id;
     }
 
+    public static GameTag Empty => new GameTag(string.Empty);
+
     public override bool Equals(object obj)
     {
         return obj is GameTag other && TagId == other.TagId;

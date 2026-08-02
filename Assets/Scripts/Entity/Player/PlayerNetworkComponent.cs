@@ -61,7 +61,6 @@ public class PlayerNetworkComponent : NetworkBehaviour
         if (IsOwner)
         {
             ClientBridge.Instance.RegisterLocalPlayer(player);
-            player.InitializeLocalPlayer();
         }
     }
 

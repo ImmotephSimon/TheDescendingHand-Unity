@@ -5,16 +5,22 @@ public class ClientBridge : MonoBehaviour
 {
     public static ClientBridge Instance { get; private set; }
     public VFXView VFXView { get; private set; }
+    public GlobePositioner GlobePositioner { get; private set; }
     public IAbilitySystem AbilitySystem { get; private set; }
     public IPlayerMovement Movement { get; private set; }
     public Player Player { get; private set; }
     public PlayerHUD HUD { get; private set; }
+
     public event Action<Player> OnLocalPlayerRegistered;
 
     private void Awake()
     {
         Instance = this;
         VFXView = GetComponentInChildren<VFXView>();
+        GlobePositioner = Camera.main.GetComponentInChildren<GlobePositioner>();
+
+        if (GlobePositioner == null)
+            Debug.LogError("Failed to find GlobePositioner");
     }
 
     public void RegisterLocalPlayer(Player player)
@@ -23,6 +29,8 @@ public class ClientBridge : MonoBehaviour
         
         AbilitySystem = player.GetComponentInChildren<IAbilitySystem>();
         Movement = player.GetComponent<IPlayerMovement>();
+        HUD = player.GetComponent<PlayerHUD>();
+        GlobePositioner.Initialize(player);
 
         OnLocalPlayerRegistered?.Invoke(player);
         player.InitializeLocalPlayer();
