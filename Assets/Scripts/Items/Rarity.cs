@@ -1,17 +1,18 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 [CreateAssetMenu(menuName = "Items/Rarity")]
 public class Rarity : ScriptableObject
 {
-    public string DisplayName;
-
     public float DropWeight;
-
-    public Color DisplayColor;
-
     public int MaxAffixes;
-
     public int MinAffixes;
 
+    [SerializeReference, SerializeReferenceDropdown]
+    public List<LootDefinition> AllowedDrops;
     public bool CanHaveUniqueMods;
+
+    public Color DisplayColor;
+    public float LightIntensity = 0.05f; // Default low for Normal
+    public float LightRange = 0.05f;
 }

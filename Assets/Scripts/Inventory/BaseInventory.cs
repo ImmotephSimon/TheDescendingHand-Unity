@@ -1,24 +1,23 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class BaseInventory : MonoBehaviour, IInventory
 {
-    [SerializeField] protected int rows = 6;
-    [SerializeField] protected int columns = 8;
+    public virtual int Rows => 4;
+    public virtual int Columns => 4;
 
     private ItemInstance[,] occupancyGrid;
 
     // Fast lookup for item top-left origin points
     private readonly Dictionary<ItemInstance, Vector2Int> itemPositions = new();
 
-    public int Rows => rows;
-    public int Columns => columns;
     public event Action OnChanged;
 
-    private void Awake()
+    protected virtual void Awake()
     {
-        occupancyGrid = new ItemInstance[rows, columns];
+        occupancyGrid = new ItemInstance[Rows, Columns];
     }
 
     public IReadOnlyDictionary<ItemInstance, Vector2Int> GetPlacedItems()
@@ -26,10 +25,16 @@ public class BaseInventory : MonoBehaviour, IInventory
         return itemPositions;
     }
 
-    public ItemInstance Get(int row, int column)
+    public bool TryGet(int row, int column, out ItemInstance item)
     {
-        if (!IsWithinGrid(row, column)) return null;
-        return occupancyGrid[row, column];
+        if (!IsWithinGrid(row, column))
+        {
+            item = null;
+            return false;
+        }
+
+        item = occupancyGrid[row, column];
+        return item != null;
     }
     public bool TryAdd(ItemInstance item)
     {
@@ -52,6 +57,22 @@ public class BaseInventory : MonoBehaviour, IInventory
         OnChanged?.Invoke();
         return true;
     }
+    public bool TryAddAt(ItemInstance item, int row, int column)
+    {
+        if (item?.BaseType == null) return false;
+        Vector2Int size = item.BaseType.InventorySize;
+
+        // Check grid bounds and availability
+        if (row < 0 || column < 0 || row + size.y > Rows || column + size.x > Columns)
+            return false;
+
+        if (!CanFitAt(row, column, size))
+            return false;
+
+        OccupyCells(item, new Vector2Int(column, row));
+        OnChanged?.Invoke();
+        return true;
+    }
 
     public bool TryRemove(ItemInstance item)
     {
@@ -64,34 +85,16 @@ public class BaseInventory : MonoBehaviour, IInventory
         return true;
     }
 
-    public bool TryGetPosition(ItemInstance item, out Vector2Int origin)
+    public bool CanAdd(Vector2Int itemSize)
     {
-        return itemPositions.TryGetValue(item, out origin);
-    }
-
-    public bool CanPlaceAt(ItemInstance item, Vector2Int origin)
-    {
-        Vector2Int size = item.BaseType.InventorySize;
-        if (origin.x < 0 || origin.y < 0 || origin.x + size.x > columns || origin.y + size.y > rows)
-            return false;
-
-        for (int r = 0; r < size.y; r++)
-        {
-            for (int c = 0; c < size.x; c++)
-            {
-                ItemInstance existing = occupancyGrid[origin.y + r, origin.x + c];
-                if (existing != null && existing != item)
-                    return false;
-            }
-        }
-        return true;
+        return TryFindFreeSlot(itemSize, out _);
     }
 
     private bool TryFindFreeSlot(Vector2Int size, out Vector2Int origin)
     {
-        for (int r = 0; r <= rows - size.y; r++)
+        for (int r = 0; r <= Rows - size.y; r++)
         {
-            for (int c = 0; c <= columns - size.x; c++)
+            for (int c = 0; c <= Columns - size.x; c++)
             {
                 if (CanFitAt(r, c, size))
                 {
@@ -143,7 +146,21 @@ public class BaseInventory : MonoBehaviour, IInventory
         }
     }
 
-    private bool IsWithinGrid(int r, int c) => r >= 0 && r < rows && c >= 0 && c < columns;
+    private bool IsWithinGrid(int r, int c) => r >= 0 && r < Rows && c >= 0 && c < Columns;
 
+    public virtual void SlotClicked(int row, int column, PointerEventData eventData)
+    {
+    }
 
+    public virtual void SlotRightClicked(int row, int column, PointerEventData eventData)
+    {   
+
+    }
+    public virtual void SlotHovered(int row, int column)
+    {   
+    }
+
+    public virtual void SlotUnhovered(int row, int column)
+    {   
+    }
 }

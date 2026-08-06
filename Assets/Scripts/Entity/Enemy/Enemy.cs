@@ -18,8 +18,8 @@ public class Enemy : Entity, IExperienceSource
     private Rarity rarity;
     private int baseExperience = 1;
     private EnemyHealthBar _healthBar;
-
     public int ExperienceReward => experienceTable.ScaleByRarity(baseExperience, rarity);
+    public event Action<Enemy> Died;
 
     private void OnValidate()
     {
@@ -47,6 +47,9 @@ public class Enemy : Entity, IExperienceSource
     {
         _healthBar = GetComponentInChildren<EnemyHealthBar>();
         _healthBar.Bind(GetComponent<IHealth>());
+        GetComponent<DropsComponent>().DropAtLocation();
+        GetComponent<DropsComponent>().DropAtLocation();
+        GetComponent<DropsComponent>().DropAtLocation();
     }
 
     private void ApplyBaseStats()
@@ -77,10 +80,13 @@ public class Enemy : Entity, IExperienceSource
     protected override void OnDeath(IEntity killer)
     {
         brain.SetState(BrainState.Dead);
+
         foreach (var col in GetComponentsInChildren<Collider>())
             col.enabled = false;
         Destroy(_healthBar.gameObject);
         GetComponent<DropsComponent>().DropAtLocation();
+
+        Died?.Invoke(this);
     }
 
     protected override void OnEntityDied(IEntity victim, IEntity killer)

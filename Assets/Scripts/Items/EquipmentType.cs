@@ -1,12 +1,9 @@
-﻿public enum EquipmentType
+﻿using UnityEngine;
+
+[CreateAssetMenu(fileName = "NewEquipmentType", menuName = "Items/Equipment Type")]
+public class EquipmentType : ScriptableObject
 {
-    Sword,
-    Shield,
-    Helmet,
-    BodyArmor,
-    Gloves,
-    Boots,
-    Amulet,
-    Ring,
-    Belt
+    [SerializeField] private ModifierPool modifierPool;
+
+    public ModifierPool ModifierPool => modifierPool;
 }

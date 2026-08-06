@@ -32,15 +32,19 @@ public class HealthComponent : MonoBehaviour, IHealth
         OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
     }
 
-    public void AdjustHealth(float healthAdjustment, IEntity source)
+    public void AdjustHealth(float healthAdjustment, object source)
     {
-        _currentHealth += healthAdjustment;
+        _currentHealth = Mathf.Clamp(
+            _currentHealth + healthAdjustment,
+            0,
+            _maxHealth
+        );
         OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
 
-        Debug.Log($"{owner} health now {_currentHealth} (-{healthAdjustment} from {source})");
+        Debug.Log($"{owner} health now {_currentHealth} ({healthAdjustment:+#;-#;0} from {source ?? "Environment"})");
 
         if (_currentHealth <= 0)
-            owner.Die(source);
+            owner.Die(source as IEntity);
     }
 
     public void Restore(float amount)

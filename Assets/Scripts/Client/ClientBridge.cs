@@ -10,6 +10,7 @@ public class ClientBridge : MonoBehaviour
     public IPlayerMovement Movement { get; private set; }
     public Player Player { get; private set; }
     public PlayerHUD HUD { get; private set; }
+    public EquipmentVisuals EquipmentVisuals { get; private set; }
 
     public event Action<Player> OnLocalPlayerRegistered;
 
@@ -31,6 +32,17 @@ public class ClientBridge : MonoBehaviour
         Movement = player.GetComponent<IPlayerMovement>();
         HUD = player.GetComponent<PlayerHUD>();
         GlobePositioner.Initialize(player);
+        EquipmentVisuals = player.GetComponentInChildren<EquipmentVisuals>();
+        if (AbilitySystem == null)
+            Debug.LogError("Failed to register AbilitySystem");
+
+        if (Movement == null)
+            Debug.LogError("Failed to register PlayerMovement");
+
+        if (EquipmentVisuals == null)
+            Debug.LogError("Failed to register EquipmentVisuals");
+
+
 
         OnLocalPlayerRegistered?.Invoke(player);
         player.InitializeLocalPlayer();

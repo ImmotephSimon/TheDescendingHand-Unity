@@ -7,5 +7,5 @@ public interface IHealth
 
     event Action<float, float> OnHealthChanged; // current, max
 
-    void AdjustHealth(float finalDamage, IEntity source);
+    void AdjustHealth(float finalDamage, object source);
 }

@@ -9,6 +9,8 @@ public class TagContainer
 
     public GameTag PrimaryTag => Tags.Count > 0 ? Tags[0] : null;
 
+    public bool IsEmpty => Tags == null || Tags.Count == 0;
+
     public TagContainer() { }
 
     public TagContainer(TagContainer other)
@@ -49,5 +51,11 @@ public class TagContainer
         }
 
         return true;
+    }
+
+    public override string ToString()
+    {
+        if (IsEmpty || PrimaryTag == null) return string.Empty;
+        return PrimaryTag.ToString();
     }
 }

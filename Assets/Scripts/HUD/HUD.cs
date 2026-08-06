@@ -29,7 +29,6 @@ public class HUD : MonoBehaviour
 
     public void Bind(IMana mana)
     {
-        
         mana.OnManaChanged += UpdateMana;
         UpdateMana(mana.CurrentMana, mana.MaxMana);
     }

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0b84949ac503a244915b061c29d6d6b, type: 3}
+  m_Name: Rare
+  m_EditorClassIdentifier: 
+  DropWeight: 25
+  MaxAffixes: 6
+  MinAffixes: 6
+  AllowedDrops:
+  - rid: 7617656375266771147
+  CanHaveUniqueMods: 0
+  DisplayColor: {r: 1, g: 0.90650845, b: 0, a: 1}
+  LightIntensity: 0.3
+  LightRange: 2
+  references:
+    version: 2
+    RefIds:
+    - rid: 7617656375266771147
+      type: {class: ItemLootDefinition, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 442775255196232616, guid: e8296fc36f1e33548afb362aa70fd075, type: 3}

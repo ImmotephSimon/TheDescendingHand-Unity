@@ -1,29 +1,50 @@
 using FishNet;
-using System.Linq;
 using UnityEngine;
 
 public class DropsComponent : MonoBehaviour
 {
-    [SerializeField] private GameObject itemPrefab;
 
     public void DropAtLocation()
     {
-
-        if (ItemDatabase.Instance == null || ItemDatabase.Instance.Items == null || ItemDatabase.Instance.Items.Count == 0)
+        if (ItemDatabase.Instance == null)
         {
-            Debug.LogError("ItemDatabase instance or Items list is missing!");
+            Debug.LogError($"No ItemDatabase found.");
             return;
         }
-        var drops = ItemDatabase.Instance.Items;
 
-        var definition = drops[Random.Range(0, drops.Count)];
+        var rarity = GetRarity();
+        if (rarity == null || rarity.AllowedDrops == null || rarity.AllowedDrops.Count == 0)
+            return;
 
-        var obj = Instantiate(itemPrefab, transform.position, Quaternion.identity);
+        LootDefinition definition = rarity.AllowedDrops[Random.Range(0, rarity.AllowedDrops.Count)];
 
-        // Set SyncVar before Spawn()
-        obj.GetComponent<Item>().Initialize(definition);
+        var obj = Instantiate(
+            definition.Prefab,
+            transform.position,
+            Quaternion.identity);
+
+        ApplyRarityVisuals(obj, rarity);
+        WorldDrop drop = obj.GetComponent<WorldDrop>();
+
+
+        definition.Initialize(drop, rarity);
 
         InstanceFinder.ServerManager.Spawn(obj);
         Debug.Log($"Spawned {obj.name}, active={obj.activeSelf}");
+    }
+
+    private static Rarity GetRarity()
+    {
+        return ItemDatabase.Instance.RollRandomRarity(new System.Random());
+    }
+
+    private void ApplyRarityVisuals(GameObject obj, Rarity rarity)
+    {
+        if (obj.TryGetComponent<Light>(out var light))
+        {
+            light.color = rarity.DisplayColor;
+            light.intensity = rarity.LightIntensity;
+            light.range = rarity.LightRange;
+        }
     }
 }

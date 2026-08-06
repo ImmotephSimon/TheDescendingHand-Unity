@@ -134,24 +134,31 @@ Shader "Custom/URPGlassRefraction"
                 float distortionMask = SAMPLE_TEXTURE2D(_DistortionTex, sampler_DistortionTex, input.uv).r;
                 half4 tintTex = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv) * _BaseColor;
 
-                // 3. Controlled Refraction (Normal offset * Noise, hard-clamped)
-                float2 screenUV = input.screenPos.xy / input.screenPos.w;
+                // 3. Screen Refraction with Aspect Ratio Correction
+                float2 screenUV = input.screenPos.xy / max(input.screenPos.w, 0.0001);
                 float2 distortionOffset = normalTS.xy * _Distortion * distortionMask;
-                float2 refractedUV = saturate(screenUV + distortionOffset);
+                float2 refractedUV = screenUV + distortionOffset;
 
-                // 4. Sample background (Opaque scene / Liquid)
+                // 4. Sample Opaque/Liquid Background
                 half3 sceneColor = SAMPLE_TEXTURE2D(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, refractedUV).rgb;
 
-                // 5. Fresnel Edge Math
-                float fresnel = pow(1.0 - saturate(dot(N, V)), _FresnelPower);
+                // 5. Fresnel Edge & Specular Shading
+                float NdotV = saturate(dot(N, V));
+                float fresnel = pow(1.0 - NdotV, _FresnelPower);
 
-                // 6. Composite (Background + Edge-only Tint + Edge Rim Reflection)
+                // Hardcoded fixed HUD specular glint for glass highlights
+                float3 fakeLightDir = normalize(float3(-0.4, 0.8, -0.4));
+                float3 halfDir = normalize(fakeLightDir + V);
+                float spec = pow(saturate(dot(N, halfDir)), 64.0);
+
+                // 6. Compositing Glass Layers
                 half3 finalColor = sceneColor;
-                finalColor = lerp(finalColor, tintTex.rgb, _AlbedoOpacity * fresnel); // Tint only hits the rim
-                finalColor += _FresnelColor.rgb * fresnel * 0.1;
+                finalColor = lerp(finalColor, tintTex.rgb, _AlbedoOpacity * fresnel); // Subtle edge tint
+                finalColor += _FresnelColor.rgb * fresnel * 0.35;                      // Fresnel rim reflection
+                finalColor += spec * _FresnelColor.rgb * 1.5;                         // Sharp specular glint
 
-                // 7. Dynamic Transparency (Clear center, glassy edges)
-                float alpha = saturate(fresnel * 0.75 + _MinAlpha);
+                // 7. Dynamic Transparency
+                float alpha = saturate(fresnel * 0.85 + _MinAlpha);
 
                 return half4(finalColor, alpha);
             }

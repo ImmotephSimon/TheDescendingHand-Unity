@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "NewItemDefinition", menuName = "Items/Item Definition")]
 public class ItemDefinition : ScriptableObject
 {
     public string ID;
@@ -11,13 +12,13 @@ public class ItemDefinition : ScriptableObject
     public Vector2Int InventorySize = new Vector2Int(2,2);
     public AppearanceData Appearance;
     public int RequiredLevel;
+    public string Lore;
     public TagContainer Tags;
-
     public List<StatModifier> Implicits;
 
     [SerializeReference, SerializeReferenceDropdown]
-    public List<ItemComponent> Components = new();
-
+    public List<ItemComponentDefinition> Components = new();
+    
     
 
 #if UNITY_EDITOR

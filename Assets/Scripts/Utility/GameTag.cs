@@ -39,4 +39,14 @@ public class GameTag
     {
         return !(a == b);
     }
+
+    public override string ToString()
+    {
+        if (string.IsNullOrEmpty(TagId)) return string.Empty;
+
+        string[] parts = TagId.Split('.');
+        string lastName = parts[parts.Length - 1];
+
+        return System.Text.RegularExpressions.Regex.Replace(lastName, "(\\B[A-Z])", " $1");
+    }
 }

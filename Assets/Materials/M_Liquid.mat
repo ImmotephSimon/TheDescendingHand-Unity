@@ -25,7 +25,7 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _Fill: 0.5
+    - _Fill: 1
     m_Colors:
     - _CurrentTilt: {r: 0, g: 0, b: 0, a: 0}
     - _DarkColor: {r: 0.19999996, g: 0, b: 0, a: 1}

@@ -44,8 +44,9 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
 
     public void Die(IEntity killer)
     {
-        Debug.Log($"DIE {name} id={GetInstanceID()} dead={IsDead} frame={Time.frameCount}");
         if (IsDead) return;
+        if (killer == null) { }
+            Debug.LogWarning($"Die {name} with NULL killer");
 
         IsDead = true;
         if (_stunRoutine != null)

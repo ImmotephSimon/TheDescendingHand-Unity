@@ -4,7 +4,11 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Items/Item Database")]
 public class ItemDatabase : ScriptableObject
 {
+    [SerializeField] private List<Rarity> rarities = new();
+
     public List<ItemDefinition> Items = new();
+
+    public List<Rarity> Rarities => rarities;
 
     private static ItemDatabase _instance;
     public static ItemDatabase Instance
@@ -41,5 +45,36 @@ public class ItemDatabase : ScriptableObject
     {
         Initialize();
         return _lookup.TryGetValue(id, out definition);
+    }
+
+    public Rarity RollRandomRarity(System.Random rng)
+    {
+        if (rarities == null || rarities.Count == 0) return null;
+
+        float totalWeight = 0f;
+        foreach (var rarity in rarities)
+            totalWeight += rarity.DropWeight;
+
+        if (totalWeight <= 0f) return rarities[0];
+
+        double roll = rng.NextDouble() * totalWeight;
+        float currentWeight = 0f;
+
+        for (int i = 0; i < rarities.Count; i++)
+        {
+            currentWeight += rarities[i].DropWeight;
+            if (roll < currentWeight)
+                return rarities[i];
+        }
+
+        return rarities[0];
+    }
+
+    public ItemDefinition RollRandomItem()
+    {
+        if (Items == null || Items.Count == 0)
+            return null;
+
+        return Items[Random.Range(0, Items.Count)];
     }
 }

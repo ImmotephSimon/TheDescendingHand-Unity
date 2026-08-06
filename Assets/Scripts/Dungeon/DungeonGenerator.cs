@@ -8,6 +8,8 @@ public class DungeonGenerator : MonoBehaviour
     [SerializeField] private DungeonConfig config;
     [SerializeField] private int roomUnit = 3;
 
+    public static DungeonGenerator Instance { get; private set; }
+
     private const int MaxGenerationAttempts = 10;
     private const int BossDepth = 5;
     List<Room> generatedRooms = new();
@@ -17,11 +19,12 @@ public class DungeonGenerator : MonoBehaviour
 
     void Start()
     {
-        decorator = GetComponentInChildren<DungeonDecorator>();
-        StartGenerating();
+        
     }
-    void StartGenerating()
+    public void StartGenerating()
     {
+        if (decorator == null) decorator = GetComponentInChildren<DungeonDecorator>();
+
         for (int attempt = 1; attempt <= MaxGenerationAttempts; attempt++)
         {
             ClearDungeon();
@@ -42,8 +45,8 @@ public class DungeonGenerator : MonoBehaviour
     {
         Room startRoom = Instantiate(
             config.startRooms[Random.Range(0, config.startRooms.Length)],
-            Vector3.zero,
-            Quaternion.identity
+            transform.position,
+            transform.rotation
         );
 
         AddStartRoom(startRoom);
@@ -70,7 +73,7 @@ public class DungeonGenerator : MonoBehaviour
     private void AddStartRoom(Room room)
     {
         generatedRooms.Add(room);
-        RegisterRoom(room, Vector2Int.zero);
+        RegisterRoom(room, room.GetRoomGridPosition());
     }
 
     void ClearDungeon()
@@ -230,7 +233,7 @@ public class DungeonGenerator : MonoBehaviour
         }
         else
         {
-            Destroy(room.gameObject);
+            DestroyImmediate(room.gameObject);
             parentDoor.Disconnect();
             Debug.Log("[DungeonGenerator] Dead end rejected due to overlap");
         }
@@ -242,8 +245,11 @@ public class DungeonGenerator : MonoBehaviour
         {
             Vector2Int position = origin + cell;
 
-            if (dungeonMap.ContainsKey(position))
+            if (dungeonMap.TryGetValue(position, out Room existing))
+            {
+                Debug.Log($"Overlap: {room.name} wants {position}, occupied by {existing.name}");
                 return false;
+            }
         }
 
         return true;
@@ -301,27 +307,24 @@ public class DungeonGenerator : MonoBehaviour
         Vector3 offset = childDoor.transform.position - parentDoor.transform.position;
         childRoom.position -= offset;
 
-        return GetRoomGridPosition(room);
+        return room.GetRoomGridPosition();
     }
 
-    Vector2Int GetRoomGridPosition(Room room)
-    {
-        return new Vector2Int(
-            Mathf.RoundToInt(room.transform.position.x / roomUnit),
-            Mathf.RoundToInt(room.transform.position.z / roomUnit)
-        );
-    }
+
 
     void FinishDungeon()
     {
+
         decorator.Decorate(dungeonMap, roomUnit);
         var surfaces = FindObjectsByType<NavMeshSurface>(FindObjectsSortMode.None);
 
         foreach (NavMeshSurface surface in surfaces)
         {
+
             surface.BuildNavMesh();
 
             if (surface.navMeshData == null) Debug.LogError($"Failed to bake: {surface.gameObject.name}");
         }
+
     }
 }

@@ -6,11 +6,12 @@ using UnityEngine;
 public class Room : MonoBehaviour
 {
     [SerializeField] private float roomUnit = 3f;
+    [SerializeField] private BoxCollider bounds;
 
     private DoorSocket[] doorSockets;
-    private BoxCollider bounds;
     private DoorSocket entranceDoor;
-
+    private readonly List<DoorController> _doors = new();
+    public List<DoorController> Doors => _doors;
     public Vector3 RoomExtent => bounds.size;
     
     public event Action Entered;
@@ -20,26 +21,47 @@ public class Room : MonoBehaviour
     private void OnValidate()
     {
         UpdateDoors();
+
+        if (bounds == null)
+            return;
+
+        CheckGridAlignment();
     }
 
     public void UpdateDoors()
     {
-        bounds = GetComponentInChildren<BoxCollider>();
         doorSockets = GetComponentsInChildren<DoorSocket>();
 
         foreach (DoorSocket doorSocket in doorSockets)
         {
             doorSocket.UpdatePosition(bounds, roomUnit);
         }
-
-        
     }
 
     private void Awake()
     {
         doorSockets = GetComponentsInChildren<DoorSocket>();
-        bounds = GetComponentInChildren<BoxCollider>();
     }
+
+    private void CheckGridAlignment()
+    {
+        float x = bounds.size.x / roomUnit;
+        float z = bounds.size.z / roomUnit;
+
+        bool invalidX = !Mathf.Approximately(x, Mathf.Round(x));
+        bool invalidZ = !Mathf.Approximately(z, Mathf.Round(z));
+
+        if (invalidX || invalidZ)
+        {
+            Debug.LogError(
+                $"Room '{gameObject.name}' has invalid extent {bounds.size}. " +
+                $"roomUnit={roomUnit}. " +
+                $"X={x:F2} tiles, Z={z:F2} tiles. " +
+                $"Collider='{bounds.name}'.",
+                this);
+        }
+    }
+
 
     public DoorSocket GetEntranceDoor()
     {
@@ -70,21 +92,29 @@ public class Room : MonoBehaviour
             return;
 
         entered = true;
-        foreach (DoorController door in doors)
+        foreach (DoorController door in _doors)
         {
             door.PlayerEntered -= OnDoorEntered;
         }
         Entered?.Invoke();
     }
 
-    private readonly List<DoorController> doors = new();
+    
 
     public void RegisterDoor(DoorController door)
     {
         if (door == null)
             return;
 
-        doors.Add(door);
+        _doors.Add(door);
         door.PlayerEntered += OnDoorEntered;
+    }
+    public Vector2Int GetRoomGridPosition()
+    {
+
+        return new Vector2Int(
+            Mathf.RoundToInt(transform.position.x / roomUnit),
+            Mathf.RoundToInt(transform.position.z / roomUnit)
+        );
     }
 }

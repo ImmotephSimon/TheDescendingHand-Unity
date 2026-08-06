@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class InventoryView : MonoBehaviour
@@ -29,6 +30,7 @@ public class InventoryView : MonoBehaviour
 
         InitializeGrid();
         Refresh();
+        ToggleVisibility();
     }
 
     private void OnDestroy()
@@ -39,10 +41,13 @@ public class InventoryView : MonoBehaviour
 
     private void InitializeGrid()
     {
-        // Clear existing slot children if re-initializing
-        foreach (Transform child in transform)
+        if (slots != null)
         {
-            Destroy(child.gameObject);
+            foreach (var slot in slots)
+            {
+                if (slot != null)
+                    Destroy(slot.gameObject);
+            }
         }
 
         int rows = inventory.Rows;
@@ -62,10 +67,41 @@ public class InventoryView : MonoBehaviour
         {
             for (int c = 0; c < cols; c++)
             {
-                slots[r, c] = Instantiate(slotPrefab, transform);
-                slots[r, c].Initialize(r, c); 
+                var slot = Instantiate(slotPrefab, transform);
+                slot.Initialize(r, c);
+
+                slot.OnSlotClicked += HandleSlotClicked;
+                slot.OnSlotRightClicked += HandleSlotRightClicked;
+                slot.OnSlotHovered += HandleSlotHovered;
+                slot.OnSlotUnhovered += HandleSlotUnhovered;
+
+                slots[r, c] = slot;
             }
         }
+    }
+    private void HandleSlotRightClicked(InventorySlotView slot, PointerEventData eventData)
+    {
+        inventory.SlotRightClicked(slot.Row, slot.Column, eventData);
+    }
+    private void HandleSlotClicked(InventorySlotView slot, PointerEventData eventData)
+    {
+        inventory.SlotClicked(slot.Row, slot.Column, eventData);
+    }
+
+    private void HandleSlotHovered(InventorySlotView slot)
+    {
+        if (!inventory.TryGet(slot.Row, slot.Column, out ItemInstance item)) return;
+
+        if (item != null)
+        {
+            TooltipController.Instance.ShowItem(item);
+        }
+    }
+
+    private void HandleSlotUnhovered(InventorySlotView slot)
+    {
+        TooltipController.Instance.Hide();
+        inventory.SlotUnhovered(slot.Row, slot.Column);
     }
 
     private void Refresh()

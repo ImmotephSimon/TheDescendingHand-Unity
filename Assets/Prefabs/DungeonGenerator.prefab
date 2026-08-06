@@ -61,4 +61,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: NewAssembly::RoomDecorator
   wallPrefab: {fileID: 3273507634397097229, guid: e794ef6281667614cac380cdd895bdf9, type: 3}
   doorWallPrefab: {fileID: 7017249610731780099, guid: 88b0bd32fdfe67946bc7044c5a1ac00c, type: 3}
-  wallThickness: 0.2

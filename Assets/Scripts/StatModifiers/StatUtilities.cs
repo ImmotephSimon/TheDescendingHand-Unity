@@ -42,4 +42,24 @@ public struct StatModifier
     }
     public StatModifier(GameTag stat, MathOp type, float value)
         : this(stat, type, value, TagContainer.Empty, ModifierSource.Explicit) { }
+
+    public override string ToString()
+    {
+        bool isPercent = Op == MathOp.Additive || Op == MathOp.Multiplicative;
+        float displayValue = isPercent ? Value * 100f : Value;
+
+        int roundedValue = Mathf.RoundToInt(displayValue);
+        int absValue = Mathf.Abs(roundedValue);
+
+        string statName = Stat != null ? Stat.ToString() : "Unknown";
+        string tagPrefix = (RequiredTags != null && !RequiredTags.IsEmpty) ? $"{RequiredTags} " : "";
+
+        return Op switch
+        {
+            MathOp.Added => $"{tagPrefix}{statName}: {(roundedValue >= 0 ? "+" : "-")}{absValue}",
+            MathOp.Additive => $"{tagPrefix}{(roundedValue >= 0 ? "Increased" : "Decreased")} {statName}: {absValue}%",
+            MathOp.Multiplicative => $"{tagPrefix}{(roundedValue >= 0 ? "More" : "Less")} {statName}: {absValue}%",
+            _ => $"{tagPrefix}{statName}: {roundedValue}"
+        };
+    }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewAffixDefinition", menuName = "Items/Affix Definition")]
 public class AffixDefinition : ScriptableObject
@@ -16,7 +17,6 @@ public class AffixDefinition : ScriptableObject
 
     public string Id => id;
 
-    
 
 #if UNITY_EDITOR
     private void OnValidate()

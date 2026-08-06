@@ -12,5 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1f1dd2dc4f2fb844b42ffc0bf4d5eb4, type: 3}
   m_Name: ItemDatabase
   m_EditorClassIdentifier: 
+  rarities:
+  - {fileID: 11400000, guid: 0cc70850bff334441ae641c868a116af, type: 2}
+  - {fileID: 11400000, guid: 3bfd2a210b00f7c43bda0ae3cfb8cc0e, type: 2}
+  - {fileID: 11400000, guid: d6ff9afb257168b4182f67c3c79369b1, type: 2}
+  - {fileID: 11400000, guid: 85b4a1c90d9558549935a3360db8372d, type: 2}
+  - {fileID: 11400000, guid: e644bb2a6ae4ea84fb1c10194b1232c4, type: 2}
   Items:
   - {fileID: 11400000, guid: b25f7aad10707834d91a1ab44fcb7e26, type: 2}
+  - {fileID: 11400000, guid: 03ad957ae97c36e4eb634533f492b6fc, type: 2}

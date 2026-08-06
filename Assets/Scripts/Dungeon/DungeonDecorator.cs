@@ -1,3 +1,4 @@
+using FishNet.Utility.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,10 +6,11 @@ using UnityEngine;
 
 public class DungeonDecorator : MonoBehaviour
 {
+    private const float FloorHeight = 0.5f;
     [SerializeField] private GameObject wallPrefab;
     [SerializeField] private GameObject doorWallPrefab;
     private int roomUnit;
-    private float roomHeight;
+
     private Dictionary<Vector2Int, Room> dungeonMap;
 
     private void OnValidate()
@@ -82,9 +84,10 @@ public class DungeonDecorator : MonoBehaviour
         if (!isBoundary)
             return;
 
-        float roomBottom = -room.RoomExtent.y / 2 + roomUnit / 2;
-
-        for (float y = roomBottom; y < room.RoomExtent.y / 2; y += roomUnit)
+        float roomBottom = room.transform.position.y - room.RoomExtent.y / 2 + roomUnit / 2;
+        float roomTop = room.transform.position.y + room.RoomExtent.y / 2;
+        
+        for (float y = roomBottom; y < roomTop ; y += roomUnit)
         {
             if (HasDoorOnEdge(cell, direction, room, y))
                 continue;
@@ -113,6 +116,7 @@ public class DungeonDecorator : MonoBehaviour
             float distance = direction.x != 0
                 ? Mathf.Abs(door.transform.position.z - wallPosition.z)
                 : Mathf.Abs(door.transform.position.x - wallPosition.x);
+            Debug.Log($"Door {door.transform.position}, Wall {wallPosition}");
             if (distance <= door.Width / 2f)
                 return true;
         }
@@ -134,12 +138,19 @@ public class DungeonDecorator : MonoBehaviour
 
     private Vector3 GridToWorldPosition(Vector2Int cell, Vector2Int direction, float y)
     {
+        Room room = dungeonMap[cell];
+
+        Vector2Int roomGridPosition = room.GetRoomGridPosition();
+
+        Vector3 pos = room.transform.position;
+        pos.y = y + FloorHeight;
+
         float half = roomUnit / 2f;
 
-        Vector3 pos = new Vector3(
-            cell.x * roomUnit + half,
-            y,
-            cell.y * roomUnit + half
+        pos += new Vector3(
+            (cell.x - roomGridPosition.x) * roomUnit + half,
+            0,
+            (cell.y - roomGridPosition.y) * roomUnit + half
         );
 
         
@@ -155,4 +166,5 @@ public class DungeonDecorator : MonoBehaviour
 
         return pos;
     }
+
 }

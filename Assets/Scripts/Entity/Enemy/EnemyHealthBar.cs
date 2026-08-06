@@ -13,6 +13,9 @@ public class EnemyHealthBar : MonoBehaviour
     private void Awake()
     {
         cam = Camera.main;
+    }
+    private void Start()
+    {
         SetVisbility(false);
     }
 
