@@ -43,11 +43,4 @@ public class SequenceComponent : CardComponent
             _running = false;
     }
 
-    protected override void OnBegin()
-    {
-    }
-
-    protected override void OnCancel()
-    {
-    }
 }

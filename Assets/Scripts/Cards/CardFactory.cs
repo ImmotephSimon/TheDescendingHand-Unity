@@ -1,17 +1,23 @@
 using System;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEditor.FilePathAttribute;
 
 public class CardFactory
 {
     private readonly CardRegistry _registry;
-    private readonly Action<GameObject> _networkSpawn;
+    private readonly Action<GameObject> _serverNetworkSpawn;
+    private readonly Action<CardDefinition, Vector3, Quaternion> _clientNetworkSpawn;
+    
 
     public CardFactory(
         CardRegistry registry,
-        Action<GameObject> networkSpawn)
+        Action<GameObject> serverNetworkSpawn,
+        Action<CardDefinition, Vector3, Quaternion> clientNetworkSpawn)
     {
         _registry = registry;
-        _networkSpawn = networkSpawn;
+        _serverNetworkSpawn = serverNetworkSpawn;
+        _clientNetworkSpawn = clientNetworkSpawn;
     }
 
     public Card CreateFromDefinition(CardDefinition definition, IEntity owner)
@@ -26,7 +32,8 @@ public class CardFactory
             new CardInitContext(
                 Guid.NewGuid(), // Runtime instance identity
                 owner,
-                _networkSpawn));
+                _serverNetworkSpawn,
+                _clientNetworkSpawn));
     }
 
     public Card CreateFromNetworkId(string definitionId, IEntity owner)

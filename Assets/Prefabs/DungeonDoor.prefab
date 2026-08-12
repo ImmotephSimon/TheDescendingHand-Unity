@@ -114,6 +114,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DoorFrame
       objectReference: {fileID: 0}
+    - target: {fileID: 1997251982290999323, guid: 4d3f9829ae08e3e44b26d6db12b345ac, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5158648497875084755, guid: 4d3f9829ae08e3e44b26d6db12b345ac, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -153,6 +157,10 @@ PrefabInstance:
     - target: {fileID: 5158648497875084755, guid: 4d3f9829ae08e3e44b26d6db12b345ac, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5439318028308926662, guid: 4d3f9829ae08e3e44b26d6db12b345ac, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

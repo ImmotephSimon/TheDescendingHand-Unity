@@ -7,7 +7,7 @@ public class DungeonGenerator : MonoBehaviour
 {
     [SerializeField] private DungeonConfig config;
     [SerializeField] private int roomUnit = 3;
-
+    [SerializeField] private NavMeshSurface navMeshSurface;
     public static DungeonGenerator Instance { get; private set; }
 
     private const int MaxGenerationAttempts = 10;
@@ -16,11 +16,8 @@ public class DungeonGenerator : MonoBehaviour
 
     private Dictionary<Vector2Int, Room> dungeonMap = new();
     private DungeonDecorator decorator;
-
-    void Start()
-    {
-        
-    }
+    public DungeonGenerator ParentDungeon { get; set; }
+    public int ZoneLevel = 0;
     public void StartGenerating()
     {
         if (decorator == null) decorator = GetComponentInChildren<DungeonDecorator>();
@@ -46,7 +43,8 @@ public class DungeonGenerator : MonoBehaviour
         Room startRoom = Instantiate(
             config.startRooms[Random.Range(0, config.startRooms.Length)],
             transform.position,
-            transform.rotation
+            transform.rotation,
+            transform
         );
 
         AddStartRoom(startRoom);
@@ -173,7 +171,7 @@ public class DungeonGenerator : MonoBehaviour
             // Double check the engine hasn't lost the asset reference
             if (prefab == null) continue;
 
-            Room spawnedRoom = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+            Room spawnedRoom = Instantiate(prefab, Vector3.zero, Quaternion.identity, transform);
 
             Vector2Int gridPosition = SnapRoom(
                 parentDoor,
@@ -217,7 +215,8 @@ public class DungeonGenerator : MonoBehaviour
         Room room = Instantiate(
             config.deadEndRoom,
             Vector3.zero,
-            Quaternion.identity
+            Quaternion.identity,
+            transform
         );
 
         Vector2Int gridPosition = SnapRoom(
@@ -316,15 +315,10 @@ public class DungeonGenerator : MonoBehaviour
     {
 
         decorator.Decorate(dungeonMap, roomUnit);
-        var surfaces = FindObjectsByType<NavMeshSurface>(FindObjectsSortMode.None);
+        navMeshSurface.BuildNavMesh();
 
-        foreach (NavMeshSurface surface in surfaces)
-        {
-
-            surface.BuildNavMesh();
-
-            if (surface.navMeshData == null) Debug.LogError($"Failed to bake: {surface.gameObject.name}");
-        }
+        if (navMeshSurface.navMeshData == null)
+            Debug.LogError($"Failed to bake: {navMeshSurface.gameObject.name}");
 
     }
 }

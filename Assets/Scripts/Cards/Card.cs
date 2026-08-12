@@ -7,7 +7,19 @@ public class Card : IHitReceiver
     public IEntity Owner => _owner;
     public Guid Id { get; }
     public float CastTime => Definition.CastTime;
+    public bool SpawnAtCursor => Definition.SpawnAtCursor;
+    public Vector3 TargetLocation => SpawnAtCursor ? _owner.CursorPosition : _owner.Transform.position;
+    public TagContainer Tags { get; } = new();
+
     public CardDefinition Definition { get; }
+    public bool IsTicking {
+        get { 
+            foreach (var component in _components)
+                if (component.IsTicking)
+                    return true;
+            return false; 
+        }}
+
 
     private readonly IEntity _owner;
     private readonly List<CardComponent> _components = new();
@@ -22,7 +34,18 @@ public class Card : IHitReceiver
     internal void AddComponent(CardComponent component)
     {
         component.Initialize(this, _owner);
+        Tags.AddRange(component.GetTags());
         _components.Add(component);
+    }
+
+    // Direct peer lookup added right here to avoid messy component flow
+    public T GetComponent<T>() where T : CardComponent 
+    { 
+        for (int i = 0; i < _components.Count; i++) 
+        { 
+            if (_components[i] is T typed) return typed; 
+        } 
+        return null; 
     }
 
     public void OnHit(HitInfo info)
@@ -33,10 +56,11 @@ public class Card : IHitReceiver
 
     public void Tick(float deltaTime)
     {
-        Debug.LogError($"Tick is currently not being called.");
-
         foreach (var component in _components)
-            component.Tick(deltaTime);
+        {
+            if (component.IsTicking)
+                component.Tick(deltaTime);
+        }
     }
 
     public void ExecuteBegin()

@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 [Serializable]
-public class GameTag
+public class GameTag : IEquatable<GameTag>
 {
     public string TagId;
 
@@ -14,25 +15,28 @@ public class GameTag
 
     public static GameTag Empty => new GameTag(string.Empty);
 
+    public bool Equals(GameTag other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return string.Equals(TagId, other.TagId, StringComparison.OrdinalIgnoreCase);
+    }
+
     public override bool Equals(object obj)
     {
-        return obj is GameTag other && TagId == other.TagId;
+        return Equals(obj as GameTag);
     }
 
     public override int GetHashCode()
     {
-        return TagId?.GetHashCode() ?? 0;
+        return TagId != null ? StringComparer.OrdinalIgnoreCase.GetHashCode(TagId) : 0;
     }
 
     public static bool operator ==(GameTag a, GameTag b)
     {
-        if (ReferenceEquals(a, b))
-            return true;
-
-        if (a is null || b is null)
-            return false;
-
-        return a.TagId == b.TagId;
+        if (ReferenceEquals(a, b)) return true;
+        if (a is null || b is null) return false;
+        return a.Equals(b);
     }
 
     public static bool operator !=(GameTag a, GameTag b)
@@ -44,9 +48,9 @@ public class GameTag
     {
         if (string.IsNullOrEmpty(TagId)) return string.Empty;
 
-        string[] parts = TagId.Split('.');
-        string lastName = parts[parts.Length - 1];
+        int lastDot = TagId.LastIndexOf('.');
+        string lastName = lastDot >= 0 ? TagId.Substring(lastDot + 1) : TagId;
 
-        return System.Text.RegularExpressions.Regex.Replace(lastName, "(\\B[A-Z])", " $1");
+        return Regex.Replace(lastName, "(\\B[A-Z])", " $1");
     }
 }

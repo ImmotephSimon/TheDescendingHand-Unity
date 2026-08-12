@@ -1,16 +1,46 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
-public class StatModifierComponent : MonoBehaviour, IStatContainer
+public class StatModifierComponent : MonoBehaviour, IStatContainer, ICalculator
 {
-    [SerializeField] private TagRestriction[] damageTypes;
 
     private readonly Dictionary<int, StatModifier> modifiers = new();
+    private readonly Dictionary<GameTag, Action<float>> listeners = new();
     private int nextId = 0;
-    GameTag _damageStat = new("Mod.Offense.Damage");
-    public event Action<GameTag> OnStatChanged;
+
+    public void Listen(GameTag stat, Action<float> callback)
+    {
+        if (stat == null || callback == null) return;
+
+        if (!listeners.ContainsKey(stat))
+            listeners[stat] = null;
+
+        listeners[stat] += callback;
+    }
+
+    public void StopListening(GameTag stat, Action<float> callback)
+    {
+        if (stat == null || callback == null) return;
+
+        if (listeners.ContainsKey(stat))
+        {
+            listeners[stat] -= callback;
+            if (listeners[stat] == null)
+                listeners.Remove(stat);
+        }
+    }
+
+    private void NotifyStatChanged(GameTag stat)
+    {
+        if (stat == null) return;
+
+        if (listeners.TryGetValue(stat, out var callback) && callback != null)
+        {
+            float newValue = GetStat(stat);
+            callback.Invoke(newValue);
+        }
+    }
 
     public ModifierHandle AddModifier(StatModifier modifier)
     {
@@ -22,7 +52,7 @@ public class StatModifierComponent : MonoBehaviour, IStatContainer
 
         int id = nextId++;
         modifiers.Add(id, modifier);
-        OnStatChanged?.Invoke(modifier.Stat);
+        NotifyStatChanged(modifier.Stat);
         return new ModifierHandle(id);
     }
 
@@ -35,7 +65,7 @@ public class StatModifierComponent : MonoBehaviour, IStatContainer
         }
 
         modifiers.Remove(handle.Id);
-        OnStatChanged?.Invoke(modifier.Stat);
+        NotifyStatChanged(modifier.Stat);
     }
 
     public float GetStat(GameTag stat, TagContainer context, float baseValue = 0)
@@ -48,7 +78,6 @@ public class StatModifierComponent : MonoBehaviour, IStatContainer
 
         foreach (var modifier in modifiers.Values)
         {
-            // modifier.Stat should be a GameTag
             if (!modifier.Stat.Equals(stat))
                 continue;
 
@@ -73,8 +102,26 @@ public class StatModifierComponent : MonoBehaviour, IStatContainer
 
     public float GetStat(GameTag stat)
     {
-        return GetStat(stat, new TagContainer(), 0);
+        return GetStat(stat, TagContainer.Empty, 0);
     }
+
+    public Dictionary<GameTag, float> CalculateDamage(TagContainer tags, float effectiveness, TagRestriction damageConversion)
+    {
+        Dictionary<GameTag, float> _damage = new();
+
+        foreach (GameTag damageType in GameTags.DamageTypes)
+        {
+            var baseDamage = GetStat(
+                GameTags.ModOffenseDamage,
+                tags.With(damageType)
+            );
+
+            _damage.Add(damageType, baseDamage * effectiveness);
+        }
+        Debug.Log("ignoring damage conversion atm");
+        return _damage;
+    }
+
 
     private void OnGUI()
     {
@@ -91,16 +138,5 @@ public class StatModifierComponent : MonoBehaviour, IStatContainer
 
         GUILayout.EndArea();
     }
-    public Dictionary<TagRestriction, float> GetDamageRatios(TagContainer context)
-    {
-        var map = new Dictionary<TagRestriction, float>(damageTypes.Length);
 
-        for (int i = 0; i < damageTypes.Length; i++)
-        {
-            var type = damageTypes[i];
-            map[type] = GetStat(_damageStat, context.With(type.Tags.PrimaryTag));
-        }
-
-        return map;
-    }
 }

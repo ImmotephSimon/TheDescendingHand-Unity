@@ -33,6 +33,8 @@ Mod.Utility.Cost
 Mod.Utility.Duration
 Mod.Utility.ItemRarity
 Mod.Utility.TimeDilation
+Mod.Special.ColdDamageCanIgnite
+Mod.Special.PoisonDamageCanFreeze
 
 
 Req.Mods.2

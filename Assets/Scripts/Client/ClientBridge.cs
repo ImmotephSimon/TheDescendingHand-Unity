@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class ClientBridge : MonoBehaviour
 {
+    [SerializeField] private CardRegistry cardRegistry;
     public static ClientBridge Instance { get; private set; }
     public VFXView VFXView { get; private set; }
     public GlobePositioner GlobePositioner { get; private set; }
@@ -10,9 +11,10 @@ public class ClientBridge : MonoBehaviour
     public IPlayerMovement Movement { get; private set; }
     public Player Player { get; private set; }
     public PlayerHUD HUD { get; private set; }
+    public CardHandController CardHandController { get; private set; }
     public EquipmentVisuals EquipmentVisuals { get; private set; }
+    public CardRegistry CardRegistry => cardRegistry;
 
-    public event Action<Player> OnLocalPlayerRegistered;
 
     private void Awake()
     {
@@ -42,9 +44,9 @@ public class ClientBridge : MonoBehaviour
         if (EquipmentVisuals == null)
             Debug.LogError("Failed to register EquipmentVisuals");
 
+        CardHandController = Camera.main.GetComponentInChildren<CardHandController>();
 
 
-        OnLocalPlayerRegistered?.Invoke(player);
         player.InitializeLocalPlayer();
 
         if (AbilitySystem == null)

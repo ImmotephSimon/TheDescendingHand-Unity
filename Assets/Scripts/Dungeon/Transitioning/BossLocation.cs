@@ -51,6 +51,7 @@ public class BossLocation : MonoBehaviour
             _boss.Died -= OnEnemyDied;
     }
 
+
     private void OnEnemyDied(Enemy enemy)
     {
         enemy.Died -= OnEnemyDied;

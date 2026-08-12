@@ -15,14 +15,24 @@ public class PlayerInputController : MonoBehaviour
         _floorLayer = LayerMask.GetMask("Floor");
         _gameInput = new GameInput();
         _gameInput.Enable();
+
         _gameInput.Player.Card1.performed += ctx => OnPlayCard(0);
         _gameInput.Player.Card2.performed += ctx => OnPlayCard(1);
         _gameInput.Player.Card3.performed += ctx => OnPlayCard(2);
         _gameInput.Player.Card4.performed += ctx => OnPlayCard(3);
         _gameInput.Player.Card5.performed += ctx => OnPlayCard(4);
+
+        _gameInput.Player.Card1.canceled += ctx => OnReleaseCard(0);
+        _gameInput.Player.Card2.canceled += ctx => OnReleaseCard(1);
+        _gameInput.Player.Card3.canceled += ctx => OnReleaseCard(2);
+        _gameInput.Player.Card4.canceled += ctx => OnReleaseCard(3);
+        _gameInput.Player.Card5.canceled += ctx => OnReleaseCard(4);
+
         _gameInput.Player.Interact.performed += OnLoot;
         _gameInput.Player.Inventory.performed += OnOpenInventory;
         _clientBridge = GetComponentInParent<ClientBridge>();
+
+
     }
 
     private void Update()
@@ -30,11 +40,16 @@ public class PlayerInputController : MonoBehaviour
         UpdateMovementInput();
     }
 
-
     private void OnPlayCard(int index)
     {
         Debug.Log($"Playing index {index}");
         _clientBridge.AbilitySystem.RequestUseAbility(index);
+    }
+
+    private void OnReleaseCard(int index)
+    {
+        Debug.Log($"[Input] Card{index} CANCELED event fired");
+        _clientBridge.AbilitySystem.RequestCancelAbility(index);
     }
 
     private void UpdateMovementInput()
@@ -63,6 +78,7 @@ public class PlayerInputController : MonoBehaviour
     {
         _clientBridge.Player.TryInteract();
     }
+
     private void OnOpenInventory(InputAction.CallbackContext context)
     {
         _clientBridge.HUD.ToggleInventory();

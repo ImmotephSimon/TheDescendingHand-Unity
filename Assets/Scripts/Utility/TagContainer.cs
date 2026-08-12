@@ -5,13 +5,20 @@ using System.Collections.Generic;
 public class TagContainer
 {
     public List<GameTag> Tags = new();
-    public static TagContainer Empty => new TagContainer();
+
+    public static readonly TagContainer Empty = new();
 
     public GameTag PrimaryTag => Tags.Count > 0 ? Tags[0] : null;
 
     public bool IsEmpty => Tags == null || Tags.Count == 0;
 
     public TagContainer() { }
+
+    public TagContainer(GameTag tag)
+    {
+        if (tag != null)
+            Tags.Add(tag);
+    }
 
     public TagContainer(TagContainer other)
     {
@@ -30,13 +37,23 @@ public class TagContainer
 
     public bool HasTag(GameTag tag)
     {
-        foreach (var existing in Tags)
+        if (tag == null || string.IsNullOrEmpty(tag.TagId)) return false;
+
+        for (int i = 0; i < Tags.Count; i++)
         {
-            if (existing.TagId == tag.TagId)
+            var existingId = Tags[i]?.TagId;
+            if (existingId == null) continue;
+
+            if (existingId == tag.TagId)
                 return true;
 
-            if (existing.TagId.StartsWith(tag.TagId + "."))
+            // Check hierarchy without allocating a string
+            if (existingId.StartsWith(tag.TagId, StringComparison.Ordinal) &&
+                existingId.Length > tag.TagId.Length &&
+                existingId[tag.TagId.Length] == '.')
+            {
                 return true;
+            }
         }
 
         return false;
@@ -44,13 +61,28 @@ public class TagContainer
 
     public bool HasAll(TagContainer required)
     {
-        foreach (var tag in required.Tags)
+        if (required == null || required.IsEmpty) return true;
+
+        for (int i = 0; i < required.Tags.Count; i++)
         {
-            if (!HasTag(tag))
+            if (!HasTag(required.Tags[i]))
                 return false;
         }
 
         return true;
+    }
+
+    public void AddRange(IEnumerable<GameTag> tags)
+    {
+        if (tags == null) return;
+
+        foreach (var tag in tags)
+            Add(tag);
+    }
+    public void Add(GameTag tag)
+    {
+        if (tag != null)
+            Tags.Add(tag);
     }
 
     public override string ToString()

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1051362448419978199}
   - component: {fileID: 4819669219746137910}
   - component: {fileID: 959545188080898593}
+  - component: {fileID: 6179433214050386463}
   m_Layer: 0
   m_Name: DungeonGenerator
   m_TagString: Untagged
@@ -27,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 4011628898227018519}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.62376, y: 1.44485, z: 11.55014}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -47,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   config: {fileID: 11400000, guid: 93324807452a3d743a7e8c58bb74c3e8, type: 2}
   roomUnit: 3
+  navMeshSurface: {fileID: 6179433214050386463}
 --- !u!114 &959545188080898593
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,3 +63,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: NewAssembly::RoomDecorator
   wallPrefab: {fileID: 3273507634397097229, guid: e794ef6281667614cac380cdd895bdf9, type: 3}
   doorWallPrefab: {fileID: 7017249610731780099, guid: 88b0bd32fdfe67946bc7044c5a1ac00c, type: 3}
+--- !u!114 &6179433214050386463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4011628898227018519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 2
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 136
+  m_UseGeometry: 1
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: 760f2384b63f6c34cbae02bf9979fc18, type: 2}
+  m_BuildHeightMesh: 0

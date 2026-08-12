@@ -1,6 +1,3 @@
-using GameKit.Dependencies.Utilities;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CardHandController : MonoBehaviour
@@ -8,47 +5,25 @@ public class CardHandController : MonoBehaviour
     [SerializeField] private CardHandView handView;
     [SerializeField] private GameObject physicalCardPrefab;
 
-    private GameObject[] cards;
-    
+    private GameObject[] cards = new GameObject[10];
 
-    private void Start()
-    {
-        if (ClientBridge.Instance.Player != null)
-            Bind(ClientBridge.Instance.Player);
-        else
-            ClientBridge.Instance.OnLocalPlayerRegistered += Bind;
-    }
-
-    private void Bind(Player player)
-    {
-        ICardContainer container = player.CardProvider;
-        cards = new GameObject[container.Capacity];
-
-        container.OnCardAdded += OnCardAdded;
-        container.OnCardRemoved += OnCardRemoved;
-    }
-
-    private void OnCardAdded(int index, Card card)
+    public void OnCardAdded(int index, string cardDefinitionId)
     {
         GameObject cardObject = Instantiate(physicalCardPrefab, handView.transform);
 
         CardView view = cardObject.GetComponentInChildren<CardView>();
-        view.Initialize(card.Definition, cardObject.transform);
+        ClientBridge.Instance.CardRegistry.TryGet(cardDefinitionId, out CardDefinition def);
+        view.Initialize(def, cardObject.transform);
 
         cards[index] = cardObject;
 
         handView.AddCard(cardObject);
     }
 
-    private void OnCardRemoved(int index, Card card)
+    public void OnCardRemoved(int index)
     {
         CardView view = cards[index].GetComponentInChildren<CardView>();
         handView.RemoveCard(view);
         cards[index] = null;
-    }
-    private void OnDestroy()
-    {
-        if (ClientBridge.Instance != null)
-            ClientBridge.Instance.OnLocalPlayerRegistered -= Bind;
     }
 }

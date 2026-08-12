@@ -7,7 +7,7 @@ public class AffixInstance
 
     public StatModifier ToStatModifier()
     {
-        var tags = Definition.Restriction is TagRestriction tagRestriction
+        var requiredTags = Definition.Restriction is TagRestriction tagRestriction
                 ? tagRestriction.Tags
                 : TagContainer.Empty;
 
@@ -15,7 +15,6 @@ public class AffixInstance
             Definition.Modifier,
             Definition.MathOp,
             Definition.BaseValue * Roll,
-            tags,
-            ModifierSource.Explicit);
+            requiredTags);
     }
 }

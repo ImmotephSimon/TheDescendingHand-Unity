@@ -178,7 +178,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fc60441f19260841b768455006c045d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardRegistry: {fileID: 11400000, guid: dbc5fdb1cbf049e43a5b28ed6e176ee2, type: 2}
   interactLayer:
     serializedVersion: 2
     m_Bits: 2048
@@ -195,8 +194,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7275eb417b7d7ef40aee2db0975e8cb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LifeTag:
-    TagId: Mod.Stat.Health
 --- !u!114 &2854528134519433273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,12 +206,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc5ca062254c93c418040936b963dd5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageTypes:
-  - {fileID: 11400000, guid: 519c1345743010546999a4520005845f, type: 2}
-  - {fileID: 11400000, guid: 5d7f8bcbc2d29b14bacc644813b18c7e, type: 2}
-  - {fileID: 11400000, guid: faded6a3bbba72e42a8413232d9ce768, type: 2}
-  - {fileID: 11400000, guid: 676097f7fdd799d4fb364694a46373ec, type: 2}
-  - {fileID: 11400000, guid: 1188d5d82842d334fb06d942df8b95ec, type: 2}
 --- !u!114 &8123409046431912342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,6 +259,7 @@ MonoBehaviour:
   _componentIndexCache: 2
   _addedNetworkObject: {fileID: 927076904386195409}
   _networkObjectCache: {fileID: 927076904386195409}
+  cardRegistry: {fileID: 11400000, guid: dbc5fdb1cbf049e43a5b28ed6e176ee2, type: 2}
 --- !u!114 &2784291924378910289
 MonoBehaviour:
   m_ObjectHideFlags: 0

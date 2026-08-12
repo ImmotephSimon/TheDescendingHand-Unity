@@ -7,11 +7,6 @@ public enum MathOp
     Additive,
     Multiplicative
 }
-public enum ModifierSource
-{
-    Implicit,
-    Explicit
-}
 
 public readonly struct ModifierHandle
 {
@@ -30,18 +25,18 @@ public struct StatModifier
     public MathOp Op;
     public float Value;
     public TagContainer RequiredTags;
-    [HideInInspector] public ModifierSource Source;
 
-    public StatModifier(GameTag stat, MathOp type, float value, TagContainer requiredTags, ModifierSource source)
+    public StatModifier(GameTag stat, MathOp type, float value, TagContainer requiredTags)
     {
         Stat = stat;
         Op = type;
         Value = value;
         RequiredTags = requiredTags;
-        Source = source;
     }
+
     public StatModifier(GameTag stat, MathOp type, float value)
-        : this(stat, type, value, TagContainer.Empty, ModifierSource.Explicit) { }
+        : this(stat, type, value, TagContainer.Empty) { }
+
 
     public override string ToString()
     {

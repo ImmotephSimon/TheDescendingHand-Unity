@@ -42,7 +42,6 @@ public class DoorSocket : MonoBehaviour
         else
             position.z += offset.x * roomUnit;
 
-        Debug.Log($"{name} bounds size: {bounds.size}");
         transform.localPosition = position;
         transform.localRotation = Quaternion.LookRotation(GetForward(side));
     }

@@ -1,53 +1,50 @@
-using UnityEngine;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Cards.CardComponents
 {
     public class DurationDamageComponent : CardComponent
     {
+        private readonly ICalculator _calc;
+        private readonly float _effectiveness;
         private readonly float _duration;
         private readonly float _tickInterval;
-        private readonly int _damagePerTick;
+        private readonly int _maxStacks;
 
-        private float _elapsed;
-        private float _tickTimer;
+        private Dictionary<GameTag, float> _damage;
+        private TagRestriction _damageConversion;
 
         public DurationDamageComponent(
+            TagRestriction damageConversion,
+            float effectiveness,
             float duration,
             float tickInterval,
-            int damagePerTick)
+            int maxStacks)
         {
+            _damageConversion = damageConversion;
+            _effectiveness = effectiveness;
             _duration = duration;
             _tickInterval = tickInterval;
-            _damagePerTick = damagePerTick;
+            _maxStacks = maxStacks;
+
+            _calc = Owner.Transform.GetComponent<ICalculator>();
+            Debug.Assert(_calc != null, $"Failed to find calculator.");
         }
 
-        protected virtual void Complete()
+        public override void OnHit(HitInfo info)
         {
-            OnComplete();
-        }
-        protected virtual void OnComplete() { }
-
-        public override void Tick(float deltaTime)
-        {
-            _elapsed += deltaTime;
-            _tickTimer += deltaTime;
-
-            if (_elapsed >= _duration)
+            if (info.Target is IDamageable damageable)
             {
-                Complete();
-                return;
-            }
+                var degenInfo = new DegenInfo(
+                    _damage,
+                    info.Source,
+                    info.Position,
+                    _duration,
+                    _tickInterval,
+                    _maxStacks);
 
-            if (_tickTimer >= _tickInterval)
-            {
-                _tickTimer -= _tickInterval;
-                ApplyTickDamage();
+                damageable.ApplyDegen(degenInfo);
             }
-        }
-
-        private void ApplyTickDamage()
-        {
-            // Needs target from whoever applied this effect
         }
 
         protected override void OnBegin()
@@ -56,10 +53,7 @@ namespace Cards.CardComponents
 
         protected override void OnActivate()
         {
-        }
-
-        protected override void OnCancel()
-        {
+            _damage = _calc.CalculateDamage(Card.Tags, _effectiveness, _damageConversion);
         }
     }
 }

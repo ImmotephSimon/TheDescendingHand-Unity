@@ -5,7 +5,7 @@ void CalculateWorldOcclusion_float(
     float3 WorldNormal,
     out float OutMask)
 {
-    float radius = 4.0;
+    float radius = 5.0;
     float depthBias = 2.0; // Offset ahead of player to avoid wall-hacking
     float distToPixel = distance(CameraWorldPos, PixelWorldPos);
     float distToPlayer = distance(CameraWorldPos, PlayerWorldPos);

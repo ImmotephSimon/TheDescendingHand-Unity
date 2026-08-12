@@ -1,18 +1,21 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public struct DamageInfo
 {
-    public float Amount;
+    public readonly Dictionary<GameTag, float> DamageMap;
     public IEntity Source;
     public Vector3 HitPosition;
 
     public DamageInfo(
-        float amount,
+        Dictionary<GameTag, float> damageMap,
         IEntity source,
         Vector3 hitPosition)
     {
-        Amount = amount;
+        DamageMap = damageMap;
         Source = source;
         HitPosition = hitPosition;
     }
+
+    public TagContainer Tags => TagContainer.Empty;
 }

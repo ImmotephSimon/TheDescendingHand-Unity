@@ -18,10 +18,10 @@ TagManager:
   - Enemy
   - Projectile
   - Interact
-  - 
-  - 
-  - 
-  - 
+  - Door
+  - EnemyAttack
+  - PlayerAttack
+  - Debris
   - 
   - 
   - 

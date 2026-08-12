@@ -1,14 +1,18 @@
 using UnityEngine;
+using System;
 
 public class StairsTrigger : MonoBehaviour
 {
-    [SerializeField] private bool goingDown;
-    [SerializeField] private Stairs stairs;
+    public event Action OnPlayerEnter;
+    public event Action OnPlayerExit;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("Player")) return;
+        if (other.CompareTag("Player")) OnPlayerEnter?.Invoke();
+    }
 
-        stairs.Transition(goingDown);
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player")) OnPlayerExit?.Invoke();
     }
 }

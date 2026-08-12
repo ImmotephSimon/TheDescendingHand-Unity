@@ -26,7 +26,7 @@ MonoBehaviour:
   - Stat:
       TagId: Mod.Defense.Mitigation
     Op: 0
-    Value: 4
+    Value: 5
     RequiredTags:
       Tags:
       - TagId: Restriction.Physical

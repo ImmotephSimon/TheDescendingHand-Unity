@@ -23,10 +23,6 @@ public class SuctionComponent : CardComponent
         _isSuctionActive = true;
     }
 
-    protected override void OnCancel()
-    {
-        _isSuctionActive = false;
-    }
 
     public override void Tick(float deltaTime)
     {

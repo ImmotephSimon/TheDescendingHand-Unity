@@ -35,6 +35,8 @@ public static class GameTags
     public static readonly GameTag ModUtilityDuration = new("Mod.Utility.Duration");
     public static readonly GameTag ModUtilityItemRarity = new("Mod.Utility.ItemRarity");
     public static readonly GameTag ModUtilityTimeDilation = new("Mod.Utility.TimeDilation");
+    public static readonly GameTag ModSpecialColdDamageCanIgnite = new("Mod.Special.ColdDamageCanIgnite");
+    public static readonly GameTag ModSpecialPoisonDamageCanFreeze = new("Mod.Special.PoisonDamageCanFreeze");
     public static readonly GameTag ReqMods2 = new("Req.Mods.2");
     public static readonly GameTag ReqMods4 = new("Req.Mods.4");
     public static readonly GameTag ReqPrefixExists = new("Req.Prefix.Exists");
@@ -54,4 +56,6 @@ public static class GameTags
     public static readonly GameTag TypeDoT = new("Type.DoT");
     public static readonly GameTag TypeMelee = new("Type.Melee");
     public static readonly GameTag TypeProjectile = new("Type.Projectile");
+
+    public static readonly GameTag[] DamageTypes = new GameTag[] { RestrictionElementFire, RestrictionElementCold, RestrictionElementLightning, RestrictionPhysical, RestrictionChaos };
 }

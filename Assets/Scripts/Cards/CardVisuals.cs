@@ -8,17 +8,11 @@ public class CardVisuals
     public string Description;
     public Texture2D Art;
     public CardCastAnimation CastAnimation;
-    public CardImpactVisual Impact;
+    public GameObject Impact;
 }
 
 public enum CardCastAnimation
 {
     Default,
     Special
-}
-
-public enum CardImpactVisual
-{
-    None,
-    Explosion
 }

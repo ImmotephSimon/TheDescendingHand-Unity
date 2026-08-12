@@ -840,7 +840,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c04af62b6b04ff4ebf789bb99db0f99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipPrefab: {fileID: 8132317394821477086, guid: 6bf1a8018410ed948b899570f44c96a2, type: 3}
+  tooltipPrefab: {fileID: 5131487604771474550, guid: 5ee7ac51846b06d419df71f4bf9dda94, type: 3}
   tooltipLayer: {fileID: 4346269659506228650}
   fixedTooltipAnchor: {fileID: 6928122778567732364}
 --- !u!114 &5192165426277771900

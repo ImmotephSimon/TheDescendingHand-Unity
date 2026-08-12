@@ -6,12 +6,21 @@ using UnityEngine;
 public class DungeonManager : MonoBehaviour
 {
     [SerializeField] private DungeonGenerator dungeonGeneratorPrefab;
-    [SerializeField] private int maxCachedFloors = 3;
+    [SerializeField] private Light directionalLight;
+    [SerializeField] private GameObject overworld;
 
-    private readonly Dictionary<int, DungeonGenerator> dungeonCache = new();
-    private int currentDepth = 0;
+    private readonly Dictionary<Transform, DungeonGenerator> dungeonCache = new();
+    private DungeonGenerator activeDungeon;
+    private bool isGenerating;
 
+    public int ZoneLevel => activeDungeon != null ? activeDungeon.ZoneLevel : 0;
     public static DungeonManager Instance { get; private set; }
+
+    public DungeonGenerator ActiveDungeon => IsOverworld ? null : dungeonStack.Peek();
+    public bool IsOverworld => dungeonStack.Count == 0;
+    private Stack<DungeonGenerator> dungeonStack = new();
+
+    private GameObject stairs;
 
     private void Awake()
     {
@@ -21,77 +30,81 @@ public class DungeonManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+        stairs = overworld.GetComponentInChildren<Stairs>().gameObject;
+        stairs.transform.SetParent(transform);
     }
 
-    internal void EnterDungeon(Transform anchor)
+    public void EnterDungeon(Transform anchor)
     {
-        // Hide current level before moving down
-        if (dungeonCache.TryGetValue(currentDepth, out var current))
-            SetDungeonVisible(current, false);
+        if (isGenerating || anchor == null) return;
 
-        currentDepth++;
-        LoadOrGenerateFloor(anchor);
-    }
+        SetCurrentVisible(false);
+        overworld.SetActive(false);
 
-    internal void LeaveDungeon(Transform anchor)
-    {
-        if (currentDepth <= 0) return;
-
-        // Hide current level before moving up
-        if (dungeonCache.TryGetValue(currentDepth, out var current))
-            SetDungeonVisible(current, false);
-
-        currentDepth--;
-
-        // Unhide previous floor if returning to it
-        if (dungeonCache.TryGetValue(currentDepth, out var previous))
-            SetDungeonVisible(previous, true);
-    }
-
-    private void LoadOrGenerateFloor(Transform anchor)
-    {
-        if (dungeonCache.TryGetValue(currentDepth, out var existing))
+        if (dungeonCache.TryGetValue(anchor, out var cachedDungeon))
         {
-            existing.gameObject.SetActive(true);
+            dungeonStack.Push(cachedDungeon);
+            AssignDungeon(cachedDungeon);
             return;
         }
 
-        Vector3 position = new Vector3(
+        Vector3 spawnPosition = new Vector3(
             Mathf.Round(anchor.position.x / 3f) * 3f,
             anchor.position.y + 3f,
             Mathf.Round(anchor.position.z / 3f) * 3f
         );
 
-        var newDungeon = Instantiate(dungeonGeneratorPrefab, position, anchor.rotation);
-        dungeonCache[currentDepth] = newDungeon;
+        var newDungeon = Instantiate(dungeonGeneratorPrefab, spawnPosition, anchor.rotation);
+        newDungeon.ZoneLevel = (activeDungeon != null) ? activeDungeon.ZoneLevel + 1 : 1;
 
-        StartCoroutine(GenerateNextFrame(newDungeon));
-        PruneOldFloors();
+        dungeonCache[anchor] = newDungeon;
+        dungeonStack.Push(newDungeon);
+
+        AssignDungeon(newDungeon);
+        StartCoroutine(GenerateRoutine(newDungeon));
     }
 
-    private IEnumerator GenerateNextFrame(DungeonGenerator dungeon)
+    public void LeaveDungeon()
     {
-        yield return null;
-        dungeon.StartGenerating();
-    }
+        if (isGenerating || dungeonStack.Count == 0) return;
 
-    private void PruneOldFloors()
-    {
-        int oldestAllowed = currentDepth - maxCachedFloors;
-        if (dungeonCache.TryGetValue(oldestAllowed, out var oldDungeon))
+        SetCurrentVisible(false);
+        dungeonStack.Pop();
+
+        if (IsOverworld)
         {
-            Destroy(oldDungeon.gameObject);
-            dungeonCache.Remove(oldestAllowed);
+            activeDungeon = null;
+            overworld.SetActive(true);
+            if (directionalLight != null) directionalLight.enabled = true;
+        }
+        else
+        {
+            AssignDungeon(dungeonStack.Peek());
         }
     }
-    private void SetDungeonVisible(DungeonGenerator dungeon, bool visible)
-    {
-        //foreach (var r in dungeon.GetComponentsInChildren<Renderer>())
-        //    r.enabled = visible;
 
-        //foreach (var c in dungeon.GetComponentsInChildren<Collider>())
-        //    c.enabled = visible;
-        dungeon.gameObject.SetActive(visible);
+    private void AssignDungeon(DungeonGenerator dungeon)
+    {
+        activeDungeon = dungeon;
+        if (directionalLight != null) directionalLight.enabled = IsOverworld;
+        SetCurrentVisible(true);
+    }
+
+    private void SetCurrentVisible(bool visible)
+    {
+        if (activeDungeon != null)
+        {
+            activeDungeon.gameObject.SetActive(visible);
+        }
+    }
+
+    private IEnumerator GenerateRoutine(DungeonGenerator dungeon)
+    {
+        isGenerating = true;
+        yield return null;
+        dungeon.StartGenerating();
+        isGenerating = false;
     }
 
     internal void OnDungeonCompleted(BossLocation bossLocation)

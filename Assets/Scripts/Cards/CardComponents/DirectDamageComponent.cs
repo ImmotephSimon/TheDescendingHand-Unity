@@ -1,75 +1,62 @@
 using Cards.CardComponents;
 using System.Collections.Generic;
 using UnityEngine;
-using static DirectDamageComponent;
 
-public class DamagePayload
-{
-    public readonly List<DamagePortion> Portions = new();
-
-    public void AddPortion(DamagePortion portion)
-    {
-        Portions.Add(portion);
-    }
-}
 
 public class DirectDamageComponent : CardComponent
 {
-    public readonly struct DamagePortion
-    {
-        public readonly TagRestriction DamageType;
-        public readonly float Amount;
-
-        public DamagePortion(TagRestriction damageType, float amount)
-        {
-            DamageType = damageType;
-            Amount = amount;
-        }
-    }
-
-    private readonly Dictionary<Restriction, float> _damage = new();
+    private Dictionary<GameTag, float> _damage = new();
     private readonly TagRestriction _damageConversion;
     private readonly float _effectiveness;
+    private ICalculator _calc;
+
+    public override bool IsTicking => false;
 
     public DirectDamageComponent(float effectiveness, TagRestriction damageConversion)
     {
         _effectiveness = effectiveness;
-        Debug.Log($"Damage is hardcoded.");
         _damageConversion = damageConversion;
-        _damage.Add(_damageConversion, 5);
+    }
 
+    public override void Initialize(Card card, IEntity owner)
+    {
+        base.Initialize(card, owner);
+        
+        _calc = Card.Owner.Transform.GetComponent<ICalculator>();
     }
 
 
     public override void OnHit(HitInfo info)
     {
-        float amount = 0f;
-        foreach (KeyValuePair<Restriction, float> pair in _damage)
-        {
-            amount += pair.Value;
-        }
-
         DamageInfo damageInfo = new(
-            amount,
+            _damage,
             info.Source,
             info.Position
         );
+
         if (info.Target is IDamageable damageable)
         {
             damageable.TakeDamage(damageInfo);
         }
     }
 
+    public void ForceDamage(HitInfo hit, float scalar)
+    {
+        var damageDict = _calc.CalculateDamage(Card.Tags, _effectiveness * scalar, _damageConversion);
+
+        if (hit.Target is IDamageable damageable)
+        {
+            damageable.TakeDamage(new DamageInfo(damageDict, hit.Source, hit.Position));
+        }
+    }
+
 
     protected override void OnActivate()
     {
+        _damage = _calc.CalculateDamage(Card.Tags, _effectiveness, _damageConversion);
     }
 
     protected override void OnBegin()
-    {
-    }
-
-    protected override void OnCancel()
     {
     }
 }

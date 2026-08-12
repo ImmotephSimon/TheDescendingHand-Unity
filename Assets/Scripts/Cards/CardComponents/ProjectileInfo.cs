@@ -2,34 +2,40 @@
 using UnityEngine;
 
 [Serializable]
-public struct ProjectileInfo
+public class ProjectileInfo
 {
     public GameObject Prefab;
-    public float Speed;
-    public LaunchDirection Direction;
-    public AbilityVisual Visual;
-    public int Count;
-    public int Pierce;
-    public int Chains;
-    public int Bounces;
 
-    public readonly bool IsEmpty => Prefab == null;
+    [Range(5f, 20f)]
+    public float Speed = 5;
+
+    public LaunchDirection Direction;
+    public GameObject Visual;
+
+    [Range(1, 10)]
+    public int Count = 1;
+
+    [Range(0, 10)]
+    public int Pierce = 0;
+
+    [Range(0, 10)]
+    public int Chains = 0;
+
+    [Range(0, 10)]
+    public int Bounces = 0;
+    public bool IsEmpty => Prefab == null;
 
     public Vector3 GetSpawnPosition(IEntity owner)
-    {
-        return owner.Transform.position
-            + owner.Transform.up * 1.5f;
-    }
+        => owner.Transform.position + owner.Transform.up * 1.5f;
 
     public Quaternion GetSpawnRotation(IEntity owner)
-    {
-        return Quaternion.LookRotation(GetLaunchVelocity(owner));
-    }
+        => Quaternion.LookRotation(GetLaunchVelocity(owner));
 
     public Vector3 GetLaunchVelocity(IEntity owner)
-    {
-        Vector3 direction = Direction.GetDirection(owner);
+        => Direction.GetDirection(owner).normalized * Speed;
 
-        return direction.normalized * Speed;
+    public ProjectileInfo Clone()
+    {
+        return (ProjectileInfo)MemberwiseClone();
     }
 }

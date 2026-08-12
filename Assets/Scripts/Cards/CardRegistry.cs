@@ -65,4 +65,5 @@ public class CardRegistry : ScriptableObject
     {
         return cards[Random.Range(0, cards.Count)];
     }
+
 }

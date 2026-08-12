@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -17,6 +18,7 @@ public static class GameTagGenerator
         }
 
         var lines = File.ReadAllLines(TagFile);
+        var restrictionIdentifiers = new List<string>();
 
         using (var writer = new StreamWriter(OutputFile))
         {
@@ -30,26 +32,34 @@ public static class GameTagGenerator
                 if (string.IsNullOrWhiteSpace(line))
                     continue;
 
+                var parts = line.Split('.');
                 string propertyName = ToIdentifier(line);
 
-                writer.WriteLine(
-                    $"    public static readonly GameTag {propertyName} = new(\"{line}\");");
+                if (parts[0] == "Restriction")
+                {
+                    restrictionIdentifiers.Add(propertyName);
+                }
+
+                writer.WriteLine($"    public static readonly GameTag {propertyName} = new(\"{line}\");");
+            }
+
+            if (restrictionIdentifiers.Count > 0)
+            {
+                writer.WriteLine();
+                string elements = string.Join(", ", restrictionIdentifiers);
+                writer.WriteLine($"    public static readonly GameTag[] DamageTypes = new GameTag[] {{ {elements} }};");
             }
 
             writer.WriteLine("}");
         }
 
-        
-
         AssetDatabase.Refresh();
-
         Debug.Log("Generated GameTags.cs");
     }
 
     private static string ToIdentifier(string tag)
     {
         var parts = tag.Split('.');
-
         return string.Concat(parts);
     }
 

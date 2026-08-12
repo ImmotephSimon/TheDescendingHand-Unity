@@ -23,7 +23,7 @@ public class PileHUDController : MonoBehaviour
         if (drawText == null || discardText == null)
             Debug.LogError($"Missing text: drawText: {drawText}, discardText: {discardText}");
 
-        piles = ClientBridge.Instance.Player.CardPiles;
+        piles = ClientBridge.Instance.Player.CardController.CardPiles;
         if (piles == null)
             Debug.LogError($"Missing piles on player");
 

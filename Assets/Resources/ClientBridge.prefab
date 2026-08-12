@@ -75,12 +75,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d25b42818a7d4742b0385bbd63948f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileAttachments:
-  - Visual: 1
-    Prefab: {fileID: 8553150264899835645, guid: e7e405b0ae2a4b64499b3f5624b62bd0, type: 3}
-  impacts:
-  - Visual: 1
-    Prefab: {fileID: 5489294000875374177, guid: fe3d3f231b074684ba04ba547cfe4f92, type: 3}
 --- !u!114 &4930120298934782470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93,3 +87,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e483c58dc3a651349810992a2cbf78cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardRegistry: {fileID: 11400000, guid: dbc5fdb1cbf049e43a5b28ed6e176ee2, type: 2}

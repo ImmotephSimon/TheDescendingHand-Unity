@@ -145,24 +145,23 @@ public class DungeonDecorator : MonoBehaviour
         Vector3 pos = room.transform.position;
         pos.y = y + FloorHeight;
 
-        float half = roomUnit / 2f;
+        float pivotOffset = roomUnit / 2f;
 
         pos += new Vector3(
-            (cell.x - roomGridPosition.x) * roomUnit + half,
+            (cell.x - roomGridPosition.x) * roomUnit + pivotOffset,
             0,
-            (cell.y - roomGridPosition.y) * roomUnit + half
+            (cell.y - roomGridPosition.y) * roomUnit + pivotOffset
         );
-
         
 
         if (direction == Vector2Int.right)
-            pos.x += half;
+            pos.x += pivotOffset;
         else if (direction == Vector2Int.left)
-            pos.x -= half;
+            pos.x -= pivotOffset;
         else if (direction == Vector2Int.up)
-            pos.z += half;
+            pos.z += pivotOffset;
         else if (direction == Vector2Int.down)
-            pos.z -= half;
+            pos.z -= pivotOffset;
 
         return pos;
     }
