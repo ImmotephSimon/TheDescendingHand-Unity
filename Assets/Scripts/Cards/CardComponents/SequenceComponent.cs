@@ -1,46 +1,59 @@
+using System;
+
 public class SequenceComponent : CardComponent
 {
-    private readonly CardComponent[] _steps;
+    private readonly CardComponent _step;
+    private readonly int _steps;
     private readonly float _delay;
 
     private int _currentStep;
-    private float _timer;
     private bool _running;
+    private ServerScheduler _scheduler;
 
-    public SequenceComponent(CardComponent[] steps, float delay)
+    public override bool IsTicking => false;
+
+    public SequenceComponent(CardComponent step, int steps, float delay)
     {
+        _step = step ?? throw new ArgumentNullException(nameof(step));
         _steps = steps;
         _delay = delay;
     }
 
-    protected override void OnActivate()
+    public override void Initialize(Card card, IEntity owner)
     {
-        _running = true;
-        _currentStep = 0;
-        _timer = 0f;
+        base.Initialize(card, owner);
+        _scheduler = GameWorld.Instance.Scheduler;
     }
 
-    public override void Tick(float deltaTime)
+    protected override void OnActivate()
     {
-        if (!_running)
+        _currentStep = 1;
+        _running = true;
+
+        ScheduleNextStep();
+    }
+
+    private void ExecuteNextStep()
+    {
+        if (!_running || _currentStep >= _steps)
+        {
+            _running = false;
             return;
-
-        _timer += deltaTime;
-
-        if (_timer < _delay)
-            return;
-
-        _timer = 0f;
-
-        var step = _steps[_currentStep];
-
-        step.ExecuteBegin();
-        step.Activate();
+        }
 
         _currentStep++;
 
-        if (_currentStep >= _steps.Length)
+        _step.ExecuteBegin();
+        _step.Activate();
+
+        if (_currentStep < _steps)
+            ScheduleNextStep();
+        else
             _running = false;
     }
 
+    private void ScheduleNextStep()
+    {
+        _scheduler.Schedule(_delay, ExecuteNextStep);
+    }
 }

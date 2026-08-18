@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfcbead597cfa364493009300c53f682, type: 3}
   m_Name: IncImplicit
   m_EditorClassIdentifier: 
-  id: 
+  id: 15668c15-f6c5-4343-b21d-edf3203badc6
   DisplayName: IncImplicit
-  BaseValue: 0.05
+  BaseValue: 0.1
   Modifier:
     TagId: Mod.Implicit
   MathOp: 1
-  Restriction: {fileID: 0}
+  TagRequirement:
+    MatchAll: 0
+    Tags:
+      Tags: []

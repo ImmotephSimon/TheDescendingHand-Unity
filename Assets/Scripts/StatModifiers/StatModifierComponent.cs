@@ -81,7 +81,7 @@ public class StatModifierComponent : MonoBehaviour, IStatContainer, ICalculator
             if (!modifier.Stat.Equals(stat))
                 continue;
 
-            if (modifier.RequiredTags != null && !context.HasAll(modifier.RequiredTags))
+            if (!modifier.RequiredTags.IsSatisfiedBy(context))
                 continue;
 
             switch (modifier.Op)

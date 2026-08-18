@@ -28,7 +28,7 @@ MonoBehaviour:
     - rid: 7617656375266771144
       type: {class: ItemLootDefinition, ns: , asm: Assembly-CSharp}
       data:
-        Prefab: {fileID: 442775255196232616, guid: e8296fc36f1e33548afb362aa70fd075, type: 3}
+        Prefab: {fileID: 8306120704131742554, guid: 6c79d7ddd1e323c4da84468ac13b9cda, type: 3}
     - rid: 7617656375266771145
       type: {class: GlobeLootDefinition, ns: , asm: Assembly-CSharp}
       data:

@@ -65,6 +65,8 @@ public class PatrolAction : IEnemyAction
 
     private void MoveToNextPoint()
     {
+        patrolState = PatrolState.Moving;
+
         Vector3 randomPoint = anchorPosition + Random.insideUnitSphere * radius;
 
         // sample onto NavMesh here

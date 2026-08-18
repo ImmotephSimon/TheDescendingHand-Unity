@@ -7,7 +7,7 @@ public abstract class CardComponent
     protected IStatContainer Stats { get; private set; }
     protected Card Card { get; private set; }
     protected IEntity Owner { get; private set; }
-    public virtual bool IsTicking => true;
+    public virtual bool IsTicking => false;
     public virtual void OnHit(HitInfo info) { }
     public IEnumerable<GameTag> GetTags() => _tags;
     private readonly GameTag[] _tags;

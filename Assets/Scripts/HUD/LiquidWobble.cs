@@ -26,6 +26,9 @@ public class LiquidWobble : MonoBehaviour
     private Renderer rend;
     private MaterialPropertyBlock propBlock;
 
+    private float targetFillPercentage;
+    private float fillTimer;
+    private const float FillDuration = 0.2f;
     private Vector3 lastPos;
     private Vector3 velocity;
     private Vector3 wobbleAmount;
@@ -53,6 +56,7 @@ public class LiquidWobble : MonoBehaviour
     void Start()
     {
         lastPos = transform.position;
+        targetFillPercentage = fillPercentage;
     }
 
     void Update()
@@ -82,6 +86,16 @@ public class LiquidWobble : MonoBehaviour
             (wobbleAmount.z + Mathf.Cos(pulse * time) * wobbleAmountToAdd.z) * fillMultiplier
         );
         lastPos = transform.position;
+
+        // Lerp degens
+        if (fillTimer < FillDuration)
+        {
+            fillTimer += Time.deltaTime;
+            fillPercentage = Mathf.Lerp(
+                fillPercentage,
+                targetFillPercentage,
+                Time.deltaTime / (FillDuration - fillTimer + Time.deltaTime));
+        }
 
         UpdatePropertyBlock(currentTilt);
     }
@@ -117,17 +131,28 @@ public class LiquidWobble : MonoBehaviour
         }
     }
 
-    private void UpdateMana(float current, float max)
+    private void UpdateMana(float current, float max, bool isInstant)
     {
-        fillPercentage =
-            current /
-            max;
+        SetFill(current / max, isInstant);
     }
 
-    private void UpdateHealth(float current, float max)
+    private void UpdateHealth(float current, float max, bool isInstant)
     {
-        fillPercentage =
-            current /
-            max;
+        SetFill(current / max, isInstant);
+    }
+
+    private void SetFill(float value, bool isInstant)
+    {
+        targetFillPercentage = value;
+
+        if (isInstant)
+        {
+            fillPercentage = value;
+            fillTimer = FillDuration;
+        }
+        else
+        {
+            fillTimer = 0f;
+        }
     }
 }

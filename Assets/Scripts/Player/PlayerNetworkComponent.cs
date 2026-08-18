@@ -1,5 +1,7 @@
 ﻿using FishNet;
 using FishNet.Object;
+using System;
+using UnityEditor;
 using UnityEngine;
 
 public class PlayerNetworkComponent : NetworkBehaviour
@@ -75,10 +77,37 @@ public class PlayerNetworkComponent : NetworkBehaviour
         if (IsOwner)
         {
             ClientBridge.Instance.RegisterLocalPlayer(player);
-            cardController.OnLocalPlayerReady();
         }
         
     }
 
+    [ServerRpc]
+    internal void RequestDrop(string itemId)
+    {
+        if (!Guid.TryParse(itemId, out Guid id))
+            return;
 
+        IInventory inventory = player.GetComponent<IInventory>();
+
+        if (!inventory.TryGet(id, out IInventoryItem inventoryItem))
+            return;
+
+        if (inventoryItem is not ItemInstance item)
+        {
+            Debug.LogWarning($"Dropping non-equipment not supported.");
+            return;
+        }
+
+        if (!inventory.TryRemove(item))
+            return;
+
+        
+
+        GameObject obj = Instantiate(ItemDatabase.Instance.ItemPrefab, player.transform.position, Quaternion.identity);
+
+        ItemDrop drop = obj.GetComponent<ItemDrop>();
+        drop.Initialize(item.BaseType, item.Rarity);
+        drop.Instance = item;
+        ServerManager.Spawn(obj);
+    }
 }

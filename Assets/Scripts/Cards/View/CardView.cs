@@ -36,18 +36,22 @@ public class CardView : MonoBehaviour
             speed * Time.deltaTime);
     }
 
+    public void InitializeTooltipCard(CardDefinition definition)
+    {
+        this.definition = definition;
+        ApplyVisuals(definition.Visuals);
+    }
 
-    public void Initialize(CardDefinition definition, Transform root)
+    public void InitializePhysicalCard(CardDefinition definition, Transform root, string keybindText)
     {
         this.definition = definition;
         this.root = root;
-
+        this.keybind.SetText($"{keybindText}");
         ApplyVisuals(definition.Visuals);
     }
 
     private void ApplyVisuals(CardVisuals visuals)
     {
-        keybind.text = "1";
         title.text = visuals.Name;
         description.text = visuals.Description;
         art.material.mainTexture = visuals.Art;
@@ -62,6 +66,7 @@ public class CardView : MonoBehaviour
     {
         Destroy(root.gameObject);
     }
+
 
     // hover, selection, highlight, etc. stay here
 }

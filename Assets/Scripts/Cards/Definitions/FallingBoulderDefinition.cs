@@ -24,9 +24,9 @@ public class FallingBoulderDefinition : CardDefinition
 
             // FractureComponent handles its own CollisionNotifier internally,
             // so we just grab it to trigger the area overlap damage on impact.
-            if (spawnedGo.TryGetComponent<CollisionNotifier>(out var notifier))
+            if (spawnedGo.TryGetComponent<PhysicsCollisionNotifier>(out var notifier))
             {
-                notifier.OnImpact += (impactPoint) =>
+                notifier.OnCollision += (impactPoint) =>
                 {
                     overlap.TriggerAt(impactPoint);
                 };

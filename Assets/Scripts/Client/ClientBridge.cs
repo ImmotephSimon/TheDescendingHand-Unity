@@ -10,11 +10,13 @@ public class ClientBridge : MonoBehaviour
     public IAbilitySystem AbilitySystem { get; private set; }
     public IPlayerMovement Movement { get; private set; }
     public Player Player { get; private set; }
-    public PlayerHUD HUD { get; private set; }
+    public PlayerHUD PlayerHUD { get; private set; }
     public CardHandController CardHandController { get; private set; }
+    public PlayerNetworkComponent PlayerNetwork { get; private set; }
     public EquipmentVisuals EquipmentVisuals { get; private set; }
     public CardRegistry CardRegistry => cardRegistry;
 
+    public event Action<IEntity> OnPlayerReady;
 
     private void Awake()
     {
@@ -29,30 +31,23 @@ public class ClientBridge : MonoBehaviour
     public void RegisterLocalPlayer(Player player)
     {
         Player = player;
-        
+
         AbilitySystem = player.GetComponentInChildren<IAbilitySystem>();
         Movement = player.GetComponent<IPlayerMovement>();
-        HUD = player.GetComponent<PlayerHUD>();
+        PlayerHUD = player.GetComponent<PlayerHUD>();
         GlobePositioner.Initialize(player);
         EquipmentVisuals = player.GetComponentInChildren<EquipmentVisuals>();
-        if (AbilitySystem == null)
-            Debug.LogError("Failed to register AbilitySystem");
-
-        if (Movement == null)
-            Debug.LogError("Failed to register PlayerMovement");
-
-        if (EquipmentVisuals == null)
-            Debug.LogError("Failed to register EquipmentVisuals");
-
         CardHandController = Camera.main.GetComponentInChildren<CardHandController>();
+        PlayerNetwork = player.GetComponent<PlayerNetworkComponent>();
 
+        Debug.Assert(AbilitySystem != null, "Failed to register AbilitySystem");
+        Debug.Assert(Movement != null, "Failed to register PlayerMovement");
+        Debug.Assert(PlayerHUD != null, "Failed to register HUD");
+        Debug.Assert(EquipmentVisuals != null, "Failed to register EquipmentVisuals");
+        Debug.Assert(CardHandController != null, "Failed to register CardHandController");
+        Debug.Assert(PlayerNetwork != null, "Failed to register PlayerNetwork");
 
         player.InitializeLocalPlayer();
-
-        if (AbilitySystem == null)
-            Debug.LogError("Failed to register AbilitySystem");
-
-        if (Movement == null)
-            Debug.LogError("Failed to register PlayerMovement");
+        OnPlayerReady?.Invoke(player);
     }
 }

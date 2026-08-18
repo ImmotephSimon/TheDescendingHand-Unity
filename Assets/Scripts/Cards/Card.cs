@@ -8,7 +8,7 @@ public class Card : IHitReceiver
     public Guid Id { get; }
     public float CastTime => Definition.CastTime;
     public bool SpawnAtCursor => Definition.SpawnAtCursor;
-    public Vector3 TargetLocation => SpawnAtCursor ? _owner.CursorPosition : _owner.Transform.position;
+    public Vector3 TargetLocation { get; private set; }
     public TagContainer Tags { get; } = new();
 
     public CardDefinition Definition { get; }
@@ -38,7 +38,11 @@ public class Card : IHitReceiver
         _components.Add(component);
     }
 
-    // Direct peer lookup added right here to avoid messy component flow
+    public void SetTargetLocation(Vector3 location)
+    {
+        TargetLocation = location;
+    }
+
     public T GetComponent<T>() where T : CardComponent 
     { 
         for (int i = 0; i < _components.Count; i++) 

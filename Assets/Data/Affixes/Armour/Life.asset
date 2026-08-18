@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfcbead597cfa364493009300c53f682, type: 3}
   m_Name: Life
   m_EditorClassIdentifier: 
-  id: 
+  id: e91a2b90-31ec-4da5-b118-c8eccd4a11c1
   DisplayName: Life
-  BaseValue: 0.01
+  BaseValue: 0.2
   Modifier:
-    TagId: 
+    TagId: Mod.Stat.Health
   MathOp: 1
-  Restriction: {fileID: 0}
+  TagRequirement:
+    MatchAll: 0
+    Tags:
+      Tags: []

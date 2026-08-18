@@ -1,59 +1,77 @@
 using System.Collections.Generic;
-using System.Diagnostics;
+using UnityEngine;
 
-namespace Cards.CardComponents
+public class DurationDamageComponent : CardComponent
 {
-    public class DurationDamageComponent : CardComponent
+    private ICalculator _calc;
+    private readonly float _effectiveness;
+    private readonly float _duration;
+    private readonly int _maxStacks;
+
+    private Dictionary<GameTag, float> _damage;
+    private TagRestriction _damageConversion;
+
+    public DurationDamageComponent(
+        TagRestriction damageConversion,
+        float effectiveness,
+        float duration,
+        int maxStacks)
     {
-        private readonly ICalculator _calc;
-        private readonly float _effectiveness;
-        private readonly float _duration;
-        private readonly float _tickInterval;
-        private readonly int _maxStacks;
+        _damageConversion = damageConversion;
+        _effectiveness = effectiveness;
+        _duration = duration;
+        _maxStacks = maxStacks;
+    }
 
-        private Dictionary<GameTag, float> _damage;
-        private TagRestriction _damageConversion;
+    public override void Initialize(Card card, IEntity owner)
+    {
+        base.Initialize(card, owner);
 
-        public DurationDamageComponent(
-            TagRestriction damageConversion,
-            float effectiveness,
-            float duration,
-            float tickInterval,
-            int maxStacks)
+        _calc = Owner.Transform.GetComponent<ICalculator>();
+        Debug.Assert(_calc != null, $"Failed to find calculator.");
+    }
+
+    public override void OnHit(HitInfo info)
+    {
+        if (info.Target is IDamageable damageable)
         {
-            _damageConversion = damageConversion;
-            _effectiveness = effectiveness;
-            _duration = duration;
-            _tickInterval = tickInterval;
-            _maxStacks = maxStacks;
+            var degenInfo = new DegenInfo(
+                Card.Id,
+                _damage,
+                info.Source,
+                info.Position,
+                _duration,
+                _maxStacks);
 
-            _calc = Owner.Transform.GetComponent<ICalculator>();
-            Debug.Assert(_calc != null, $"Failed to find calculator.");
+            damageable.ApplyDegen(degenInfo);
         }
+    }
 
-        public override void OnHit(HitInfo info)
+    public void ApplyDegen(IEntity target)
+    {
+        if (target is IDamageable damageable)
         {
-            if (info.Target is IDamageable damageable)
-            {
-                var degenInfo = new DegenInfo(
-                    _damage,
-                    info.Source,
-                    info.Position,
-                    _duration,
-                    _tickInterval,
-                    _maxStacks);
-
-                damageable.ApplyDegen(degenInfo);
-            }
+            var degenInfo = new DegenInfo(
+                Card.Id,
+                _damage,
+                Owner,
+                target.Transform.position,
+                _duration,
+                _maxStacks);
+            damageable.ApplyDegen(degenInfo);
         }
+    }
 
-        protected override void OnBegin()
+    public void StopDegen(IEntity target)
+    {
+        if (target is IDamageable damageable)
         {
+            damageable.RemoveDegen(Card.Id); 
         }
+    }
 
-        protected override void OnActivate()
-        {
-            _damage = _calc.CalculateDamage(Card.Tags, _effectiveness, _damageConversion);
-        }
+    protected override void OnActivate()
+    {
+        _damage = _calc.CalculateDamage(Card.Tags, _effectiveness, _damageConversion);
     }
 }

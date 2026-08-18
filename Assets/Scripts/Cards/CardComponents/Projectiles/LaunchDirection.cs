@@ -10,6 +10,8 @@ public class LaunchDirection
 
     public float Forward = 1f;
 
+    public float Gravity = 0f;
+
     public LaunchDirection(float sideways, float upward, float forward)
     {
         Sideways = sideways;

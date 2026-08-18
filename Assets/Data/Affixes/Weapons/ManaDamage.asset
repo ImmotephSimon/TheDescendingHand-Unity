@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfcbead597cfa364493009300c53f682, type: 3}
   m_Name: ManaDamage
   m_EditorClassIdentifier: 
-  id: 
+  id: 0eac233e-4c0e-451a-9922-2a54e9cf7e5f
   DisplayName: ManaDamage
-  BaseValue: 0.01
+  BaseValue: 0.2
   Modifier:
     TagId: Mod.Offense.DamagePerMana
   MathOp: 1
-  Restriction: {fileID: 0}
+  TagRequirement:
+    MatchAll: 0
+    Tags:
+      Tags: []

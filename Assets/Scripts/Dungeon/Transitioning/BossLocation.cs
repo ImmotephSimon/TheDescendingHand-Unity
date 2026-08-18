@@ -3,7 +3,7 @@ using UnityEngine;
 public class BossLocation : MonoBehaviour
 {
     [SerializeField] private FloorOpening floorOpening;
-    [SerializeField] private GameObject bossPrefab;
+    [SerializeField] private EnemyDefinition bossDefinition;
     [SerializeField] private Transform bossTransform;
     
     private Enemy _boss;
@@ -18,7 +18,7 @@ public class BossLocation : MonoBehaviour
             return;
         }
 
-        spawner.enemyPrefab = bossPrefab;
+        spawner.enemyDefinition = bossDefinition;
         spawner.fixedSpawnPoint = bossTransform;
         spawner.OnSpawned += HandleEnemySpawned;
     }
@@ -37,7 +37,7 @@ public class BossLocation : MonoBehaviour
         if (floorOpening == null)
             Debug.LogError($"{name}: FloorOpening is not assigned on {GetType().Name}!", this);
 
-        if (bossPrefab == null)
+        if (bossDefinition == null)
             Debug.LogError($"{name}: Boss prefab is not assigned on {GetType().Name}!", this);
 
         if (bossTransform == null)
@@ -52,7 +52,7 @@ public class BossLocation : MonoBehaviour
     }
 
 
-    private void OnEnemyDied(Enemy enemy)
+    private void OnEnemyDied(IEntity enemy)
     {
         enemy.Died -= OnEnemyDied;
         floorOpening.OpenFloor();

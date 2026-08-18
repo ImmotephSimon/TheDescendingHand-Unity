@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfcbead597cfa364493009300c53f682, type: 3}
   m_Name: BaseMin
   m_EditorClassIdentifier: 
-  id: 
+  id: 2bd5ecbc-defe-4519-888f-1bbd1de15a37
   DisplayName: BaseMin
-  BaseValue: 2
+  BaseValue: 40
   Modifier:
-    TagId: Mod.Implicit
+    TagId: Mod.Offense.Damage.Min
   MathOp: 0
-  Restriction: {fileID: 0}
+  TagRequirement:
+    MatchAll: 0
+    Tags:
+      Tags: []

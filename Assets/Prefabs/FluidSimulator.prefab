@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 5376221456616203928}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.065412, y: -13.164355, z: 21.318693}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -61,11 +61,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68b35f6f5dea6274db0eda640e08abc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <PointForce>k__BackingField: 300
-  <PointFalloff>k__BackingField: 50
-  origin: {x: 0, y: -0.2}
-  _canvasRT: {fileID: 8600000, guid: 84c1663b5ecf149c0bbe31adb8a81842, type: 2}
   _colorInjection: {fileID: 8400000, guid: 9f6f8ff8db5154ec3a818fdf0a35f31a, type: 2}
   _forceField: {fileID: 8400000, guid: 50e986256d755482fb4dcb092d19f666, type: 2}
   _shader: {fileID: 4800000, guid: ae8ec69a42aab44e58c38501811bda46, type: 3}
-  forceHz: 3
+  _canvasRT: {fileID: 8600000, guid: 84c1663b5ecf149c0bbe31adb8a81842, type: 2}
+  origin: {x: 0, y: -0.2}

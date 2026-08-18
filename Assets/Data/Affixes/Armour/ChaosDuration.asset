@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: c1b24f79-44dd-4607-b291-6feffd183e75
   DisplayName: ChaosDuration
-  BaseValue: 0.02
+  BaseValue: 0.4
   Modifier:
     TagId: Mod.Utility.Duration
   MathOp: 1
-  Restriction: {fileID: 11400000, guid: 1188d5d82842d334fb06d942df8b95ec, type: 2}
+  TagRequirement:
+    MatchAll: 0
+    Tags:
+      Tags:
+      - TagId: Restriction.Chaos

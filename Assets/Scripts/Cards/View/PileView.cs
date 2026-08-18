@@ -25,7 +25,7 @@ public class PileView : MonoBehaviour
             tooltip.transform.localPosition = new Vector3(xOffset, 0f, 2f);
             tooltip.transform.localRotation = Quaternion.identity;
 
-            tooltip.Initialize(cardDefinitions[i], tooltip.transform);
+            tooltip.InitializePhysicalCard(cardDefinitions[i], tooltip.transform, "");
             views.Add(tooltip);
         }
     }

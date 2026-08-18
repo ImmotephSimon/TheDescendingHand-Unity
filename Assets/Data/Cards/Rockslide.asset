@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4850475fc77982043a2c92eccd7f8e26, type: 3}
+  m_Name: Rockslide
+  m_EditorClassIdentifier: 
+  id: a186691a-a7ab-4264-9ce5-fe869c8008e5
+  castTime: 1
+  spawnAtCursor: 1
+  visuals:
+    Name: Rockslide
+    Description: 
+    Art: {fileID: 0}
+    CastAnimation: 0
+    Impact: {fileID: 0}
+  DeckOverrides:
+    addedDraws: 0
+    addedDiscards: 0
+  rockPrefab: {fileID: 8151445253895366970, guid: 391cef2f5a7abd245b9f51c78235caa7, type: 3}
+  effectiveness: 0.4
+  damageConversion: {fileID: 11400000, guid: 676097f7fdd799d4fb364694a46373ec, type: 2}
+  radius: 0.7
+  spawnOffset: {x: 0, y: 6, z: 0}
+  spread: 1.5
+  count: 6
+  interval: 0.5

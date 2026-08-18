@@ -1,12 +1,10 @@
 using FishNet.Connection;
 using FishNet.Object;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public abstract class WorldDrop : NetworkBehaviour, IInteractable
 {
-    private ItemDefinition _item;
-    private Rarity _rarity;
+    public int DropLevel { get; set; } = 1;
 
     public void Interact(Player player)
     {
@@ -31,11 +29,6 @@ public abstract class WorldDrop : NetworkBehaviour, IInteractable
         {
             Despawn(gameObject);
         }
-    }
-    public virtual void Initialize(ItemDefinition item, Rarity rarity)
-    {
-        _item = item;
-        _rarity = rarity;
     }
 
     protected virtual bool TryPickup(Player player)

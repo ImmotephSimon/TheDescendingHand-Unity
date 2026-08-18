@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: aadec790-35e1-4bc1-b9b4-d46d14d937b6
   DisplayName: Miti4
-  BaseValue: 3
+  BaseValue: 60
   Modifier:
     TagId: Mod.Defense.Mitigation
   MathOp: 0
-  Restriction: {fileID: 11400000, guid: 5d7f8bcbc2d29b14bacc644813b18c7e, type: 2}
+  TagRequirement:
+    MatchAll: 0
+    Tags:
+      Tags:
+      - TagId: Restriction.Element.Lightning

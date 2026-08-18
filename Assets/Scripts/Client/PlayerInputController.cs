@@ -22,17 +22,18 @@ public class PlayerInputController : MonoBehaviour
         _gameInput.Player.Card4.performed += ctx => OnPlayCard(3);
         _gameInput.Player.Card5.performed += ctx => OnPlayCard(4);
 
+
         _gameInput.Player.Card1.canceled += ctx => OnReleaseCard(0);
         _gameInput.Player.Card2.canceled += ctx => OnReleaseCard(1);
         _gameInput.Player.Card3.canceled += ctx => OnReleaseCard(2);
         _gameInput.Player.Card4.canceled += ctx => OnReleaseCard(3);
         _gameInput.Player.Card5.canceled += ctx => OnReleaseCard(4);
 
+        _gameInput.Player.LeftClick.performed += OnLeftClick;
         _gameInput.Player.Interact.performed += OnLoot;
         _gameInput.Player.Inventory.performed += OnOpenInventory;
         _clientBridge = GetComponentInParent<ClientBridge>();
-
-
+        
     }
 
     private void Update()
@@ -74,14 +75,19 @@ public class PlayerInputController : MonoBehaviour
         _clientBridge.Movement.SetLocalInput(_rawInput, mouseWorldPosition);
     }
 
+    private void OnLeftClick(InputAction.CallbackContext ctx)
+    {
+        CursorItemController.Instance?.TryDropHeldItem();
+    }
+
     private void OnLoot(InputAction.CallbackContext ctx)
     {
-        _clientBridge.Player.TryInteract();
+        _clientBridge?.Player?.TryInteract();
     }
 
     private void OnOpenInventory(InputAction.CallbackContext context)
     {
-        _clientBridge.HUD.ToggleInventory();
+        _clientBridge.PlayerHUD.ToggleInventory();
     }
 
     private void OnDestroy()

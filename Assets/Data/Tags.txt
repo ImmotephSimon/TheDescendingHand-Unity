@@ -17,6 +17,8 @@ Mod.Item
 Mod.Offense.CastSpeed
 Mod.Offense.Critical
 Mod.Offense.Damage
+Mod.Offense.Damage.Min
+Mod.Offense.Damage.Max
 Mod.Offense.DamagePerMana
 Mod.Stat.Armour
 Mod.Stat.Evasion

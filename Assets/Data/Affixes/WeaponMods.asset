@@ -1,0 +1,151 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b42bee6b99756a428009c4389e46573, type: 3}
+  m_Name: WeaponMods
+  m_EditorClassIdentifier: 
+  Entries:
+  - Definition: {fileID: 11400000, guid: 43b261392f5406a4a868238143fefe2d, type: 2}
+    Weight: 3
+    Slot: 0
+    Modifier:
+      TagId: Mod.Offense.Damage
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: 3dcdeed2c2d403a4ab028de185771600, type: 2}
+    Weight: 2
+    Slot: 0
+    Modifier:
+      TagId: Mod.Offense.Damage.Min
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: ec3ed1a6b90e3d5408a1fb4f5cf83bc8, type: 2}
+    Weight: 2
+    Slot: 0
+    Modifier:
+      TagId: Mod.Offense.Damage.Max
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: 66b9b20eb33f5dc429019cb8a6d99532, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: Mod.Offense.Damage
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags:
+        - TagId: Restriction.Element.Fire
+  - Definition: {fileID: 11400000, guid: a1899a56d5b7b734494a2a754ede6444, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: Mod.Offense.Damage
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags:
+        - TagId: Restriction.Element.Cold
+  - Definition: {fileID: 11400000, guid: 9d1fe0a2d35150f40b2f92c9e8acda7a, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: Mod.Offense.Damage
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags:
+        - TagId: Restriction.Element.Lightning
+  - Definition: {fileID: 11400000, guid: e91551c82b40bb242b6d2e8e822f71ef, type: 2}
+    Weight: 4
+    Slot: 0
+    Modifier:
+      TagId: Mod.Offense.Damage
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags:
+        - TagId: Restriction.Element.Fire
+        - TagId: Restriction.Element.Cold
+        - TagId: Restriction.Element.Lightning
+  - Definition: {fileID: 11400000, guid: 556bb3032c3ef84449b447e157da43fe, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: Mod.Offense.DamagePerMana
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: 7704b6415dd359a4d9fd9b804098d6a4, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: Mod.Offense.CastSpeed
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: d018f5fa8b81286449f0c3f9aa198676, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: Mod.Offense.Damage
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags:
+        - TagId: Restriction.Physical
+  - Definition: {fileID: 11400000, guid: 835aa230b21185248913f135c321fe7a, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: Mod.Utility.Duration
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags:
+        - TagId: Restriction.Chaos
+  - Definition: {fileID: 11400000, guid: 4ad4961ac8d10da4bb18e2aafa3cbd0a, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: Mod.Utility.Cost
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags:
+        - TagId: Mod.Stat.Health
+  - Definition: {fileID: 11400000, guid: f41073806da31694a87ad7911c876278, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: Mod.Stat.Mana
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: b6e8f8b63feea0d4e8c1b491acd5f8ec, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: Mod.Utility.Cost
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags:
+        - TagId: Mod.Stat.Mana

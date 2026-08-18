@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 5406631e-a5c7-4c0a-872d-4715aef5ab8a
   DisplayName: LightningFlat
-  BaseValue: 2
+  BaseValue: 40
   Modifier:
-    TagId: Mod.Implicit
+    TagId: Mod.Offense.Damage
   MathOp: 0
-  Restriction: {fileID: 11400000, guid: 5d7f8bcbc2d29b14bacc644813b18c7e, type: 2}
+  TagRequirement:
+    MatchAll: 0
+    Tags:
+      Tags:
+      - TagId: Restriction.Element.Lightning

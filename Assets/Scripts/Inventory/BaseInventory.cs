@@ -8,24 +8,24 @@ public class BaseInventory : MonoBehaviour, IInventory
     public virtual int Rows => 4;
     public virtual int Columns => 4;
 
-    private ItemInstance[,] occupancyGrid;
+    private IInventoryItem[,] occupancyGrid;
 
     // Fast lookup for item top-left origin points
-    private readonly Dictionary<ItemInstance, Vector2Int> itemPositions = new();
+    private readonly Dictionary<IInventoryItem, Vector2Int> itemPositions = new();
 
     public event Action OnChanged;
 
     protected virtual void Awake()
     {
-        occupancyGrid = new ItemInstance[Rows, Columns];
+        occupancyGrid = new IInventoryItem[Rows, Columns];
     }
 
-    public IReadOnlyDictionary<ItemInstance, Vector2Int> GetPlacedItems()
+    public IReadOnlyDictionary<IInventoryItem, Vector2Int> GetPlacedItems()
     {
         return itemPositions;
     }
 
-    public bool TryGet(int row, int column, out ItemInstance item)
+    public bool TryGet(int row, int column, out IInventoryItem item)
     {
         if (!IsWithinGrid(row, column))
         {
@@ -36,31 +36,27 @@ public class BaseInventory : MonoBehaviour, IInventory
         item = occupancyGrid[row, column];
         return item != null;
     }
-    public bool TryAdd(ItemInstance item)
+    public bool TryAdd(IInventoryItem item)
     {
         if (item == null)
             throw new ArgumentNullException(nameof(item), "Cannot add null ItemInstance to inventory.");
 
-        if (item.BaseType == null)
-            throw new InvalidOperationException($"[{nameof(TryAdd)}] ItemInstance missing BaseType definition.");
-
         if (itemPositions.ContainsKey(item))
         {
-            Debug.LogWarning($"[{nameof(TryAdd)}] Item '{item.BaseType.name}' is already present in inventory.");
+            Debug.LogWarning($"[{nameof(TryAdd)}] Item '{item}' is already present in inventory.");
             return false;
         }
 
-        if (!TryFindFreeSlot(item.BaseType.InventorySize, out Vector2Int origin))
+        if (!TryFindFreeSlot(item.Size, out Vector2Int origin))
             return false; // Grid full / no space
 
         OccupyCells(item, origin);
         OnChanged?.Invoke();
         return true;
     }
-    public bool TryAddAt(ItemInstance item, int row, int column)
+    public bool TryAddAt(IInventoryItem item, int row, int column)
     {
-        if (item?.BaseType == null) return false;
-        Vector2Int size = item.BaseType.InventorySize;
+        Vector2Int size = item.Size;
 
         // Check grid bounds and availability
         if (row < 0 || column < 0 || row + size.y > Rows || column + size.x > Columns)
@@ -74,9 +70,9 @@ public class BaseInventory : MonoBehaviour, IInventory
         return true;
     }
 
-    public bool TryRemove(ItemInstance item)
+    public bool TryRemove(IInventoryItem item)
     {
-        if (item?.BaseType == null || !itemPositions.TryGetValue(item, out Vector2Int origin))
+        if (!itemPositions.TryGetValue(item, out Vector2Int origin))
             return false;
 
         ClearCells(item, origin);
@@ -121,9 +117,9 @@ public class BaseInventory : MonoBehaviour, IInventory
         return true;
     }
 
-    private void OccupyCells(ItemInstance item, Vector2Int origin)
+    private void OccupyCells(IInventoryItem item, Vector2Int origin)
     {
-        Vector2Int size = item.BaseType.InventorySize;
+        Vector2Int size = item.Size;
         for (int r = 0; r < size.y; r++)
         {
             for (int c = 0; c < size.x; c++)
@@ -134,9 +130,9 @@ public class BaseInventory : MonoBehaviour, IInventory
         itemPositions[item] = origin;
     }
 
-    private void ClearCells(ItemInstance item, Vector2Int origin)
+    private void ClearCells(IInventoryItem item, Vector2Int origin)
     {
-        Vector2Int size = item.BaseType.InventorySize;
+        Vector2Int size = item.Size;
         for (int r = 0; r < size.y; r++)
         {
             for (int c = 0; c < size.x; c++)
@@ -162,5 +158,20 @@ public class BaseInventory : MonoBehaviour, IInventory
 
     public virtual void SlotUnhovered(int row, int column)
     {   
+    }
+
+    public bool TryGet(Guid id, out IInventoryItem item)
+    {
+        foreach (var entry in itemPositions)
+        {
+            if (entry.Key.Id == id)
+            {
+                item = entry.Key;
+                return true;
+            }
+        }
+
+        item = null;
+        return false;
     }
 }

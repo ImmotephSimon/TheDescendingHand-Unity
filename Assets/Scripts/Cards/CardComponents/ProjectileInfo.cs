@@ -6,7 +6,7 @@ public class ProjectileInfo
 {
     public GameObject Prefab;
 
-    [Range(5f, 20f)]
+    [Range(2f, 20f)]
     public float Speed = 5;
 
     public LaunchDirection Direction;

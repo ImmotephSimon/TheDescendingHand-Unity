@@ -5,7 +5,7 @@ public interface IHealth
     float CurrentHealth { get; }
     float MaxHealth { get; }
 
-    event Action<float, float> OnHealthChanged; // current, max
+    event Action<float, float, bool> OnHealthChanged; // current, max, isInstant
 
-    void AdjustHealth(float finalDamage, object source);
+    void AdjustHealth(float finalDamage, object source, bool isInstant = true);
 }

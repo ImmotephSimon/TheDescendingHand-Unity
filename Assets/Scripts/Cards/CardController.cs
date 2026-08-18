@@ -3,15 +3,19 @@ using FishNet.Object;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class CardController : NetworkBehaviour, IAbilitySystem
 {
-    public static ClientBridge Instance { get; private set; }
+    public static CardController Instance;
+
     public ICardContainer CardProvider => _cardManager;
     public ICardPiles CardPiles => _cardManager;
+
+    public event Action<bool, IReadOnlyList<CardDefinition>> OnPileReceived;
 
     private Card _activeCard;
     private int _activeCardSlotIndex = -1;
@@ -49,6 +53,8 @@ public class CardController : NetworkBehaviour, IAbilitySystem
 
         _cardManager.OnCardAdded += OnCardAdded;
         _cardManager.OnCardRemoved += OnCardRemoved;
+
+        ClientBridge.Instance.OnPlayerReady += OnLocalPlayerReady;
     }
 
     public void InitializeServer(IEntity owner, CardFactory factory, CardRegistry registry)
@@ -62,8 +68,9 @@ public class CardController : NetworkBehaviour, IAbilitySystem
         _cardManager = new CardManager(new Card[] { card, card2 }, handSize: 5);
     }
 
-    internal void OnLocalPlayerReady()
+    private void OnLocalPlayerReady(IEntity player)
     {
+        ClientBridge.Instance.OnPlayerReady -= OnLocalPlayerReady;
         _cardManager.DrawHand();
     }
 
@@ -106,6 +113,7 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     [ServerRpc]
     public void RequestUseAbility(int cardIndex)
     {
+        Debug.Log($"RPC received. IsOwner={IsOwner}, Owner={Owner.ClientId}");
         if (isCasting || _activeCard != null) return;
 
         if (_cardManager.TryGetCardAtIndex(cardIndex, out Card card))
@@ -113,6 +121,7 @@ public class CardController : NetworkBehaviour, IAbilitySystem
             _activeCardSlotIndex = cardIndex;
             _isInputHeld = true;
             Server_StartCast(card);
+            Camera.main.GetComponent<CardHandView>();
         }
     }
 
@@ -134,6 +143,9 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     {
         isCasting = true;
         playerMovement.LockMovement();
+
+        card.SetTargetLocation(card.SpawnAtCursor ? _owner.CursorPosition : _owner.Transform.position);
+
         CardStartedObserversRpc(card.Definition.Visuals.CastAnimation);
         var castHandle = StartCoroutine(Server_CastTimeRoutine(card));
         _pendingCastHandles[card] = castHandle;
@@ -236,6 +248,39 @@ public class CardController : NetworkBehaviour, IAbilitySystem
         yield return new WaitForSeconds(stats.GetStat(GameTags.ModOffenseCastSpeed, card.Tags, card.CastTime));
         _pendingCastHandles.Remove(card);
         Server_ExecuteCard(card);
+    }
+
+    [ServerRpc]
+    public void RequestPile(bool drawPile)
+    {
+        var pile = drawPile
+            ? _cardManager.DrawPile
+            : _cardManager.DiscardPile;
+
+        string[] ids = pile
+            .Select(card => card.Id)
+            .ToArray();
+
+        SendPileTargetRpc(Owner, drawPile, ids);
+    }
+
+    [TargetRpc]
+    private void SendPileTargetRpc(
+        NetworkConnection conn,
+        bool drawPile,
+        string[] ids)
+    {
+        var cards = new List<CardDefinition>();
+
+        foreach (var id in ids)
+        {
+            if (_registry.TryGet(id, out var definition))
+                cards.Add(definition);
+            else
+                Debug.LogError($"Unknown CardDefinition ID '{id}'.");
+        }
+
+        OnPileReceived?.Invoke(drawPile, cards);
     }
 
 }

@@ -4,6 +4,7 @@ using FishNet.Object.Prediction;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using System;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -57,23 +58,26 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
     private MovementLogicProcessor _processor = new MovementLogicProcessor();
     private CharacterController _controller;
     private Animator _animator;
-    private PlayerStats _stats;
 
     private Vector3 _velocity;
     private Vector3 _currentMoveVelocity;
     private Vector2 _bufferedInput;
     private Vector3 _bufferedMousePos;
     private int _movementLocks = 0;
+    private IStatContainer _statContainer;
     public Vector3 CursorPosition => _bufferedMousePos;
     public bool CanMove => _movementLocks == 0;
     public Vector3 Position => transform.position;
+    private readonly SyncVar<float> _networkedMoveSpeed = new SyncVar<float>(3f);
+    public float Gravity { get; private set; } = -9.81f;
+    public float MoveSpeed => _networkedMoveSpeed.Value;
 
     private void Awake()
     {
         _controller = GetComponent<CharacterController>();
         _animator = GetComponentInChildren<Animator>();
-        _stats = GetComponent<PlayerStats>();
-
+        _statContainer = GetComponent<IStatContainer>();
+        Debug.Assert(_statContainer != null, $"No stat container.");
         // Ensure the build processes network ticks properly even when alt-tabbed
         Application.runInBackground = true;
         _animator.Play("Locomotion");
@@ -90,6 +94,19 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
     {
         InstanceFinder.TimeManager.OnTick += TimeManager_OnTick;
         InstanceFinder.TimeManager.OnPostTick += TimeManager_OnPostTick;
+
+        if (IsServerStarted)
+        { 
+            _statContainer.Listen(GameTags.ModStatMovement, OnMovementStatChanged);
+            OnMovementStatChanged(_statContainer.GetStat(GameTags.ModStatMovement, TagContainer.Empty, 3f));
+        }
+    }
+
+    private void OnMovementStatChanged(float newValue)
+    {
+        // Calculate base 3f with stat modifiers applied
+        float calculated = _statContainer.GetStat(GameTags.ModStatMovement, TagContainer.Empty, 3f);
+        _networkedMoveSpeed.Value = calculated;
     }
 
     public override void OnStopNetwork()
@@ -98,6 +115,11 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         {
             InstanceFinder.TimeManager.OnTick -= TimeManager_OnTick;
             InstanceFinder.TimeManager.OnPostTick -= TimeManager_OnPostTick;
+        }
+
+        if (IsServerStarted && _statContainer != null)
+        {
+            _statContainer.StopListening(GameTags.ModStatMovement, OnMovementStatChanged);
         }
     }
 
@@ -149,19 +171,19 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         }
         else
         {
-            _velocity.y += _stats.Gravity.Value * delta;
+            _velocity.y += Gravity * delta;
         }
 
         // 4. Acceleration Diagnostics
-        float moveSpeed = _stats.MoveSpeed.Value > 0 ? _stats.MoveSpeed.Value : 1f;
+        float moveSpeed = MoveSpeed > 0 ? MoveSpeed : 1f;
         Vector3 targetVelocity = movementInput * moveSpeed;
 
-        float acceleration = 20f;
-        float deceleration = 200f;
-        float rate = movementInput == Vector3.zero ? deceleration : acceleration;
+        //float acceleration = 20f;
+        //float deceleration = 200f;
+        //float rate = movementInput == Vector3.zero ? deceleration : acceleration;
 
-        _currentMoveVelocity = Vector3.MoveTowards(_currentMoveVelocity, targetVelocity, rate * delta);
-
+        //_currentMoveVelocity = Vector3.MoveTowards(_currentMoveVelocity, targetVelocity, rate * delta);
+        _currentMoveVelocity = targetVelocity;
         // 5. Final Motion Compilation
         Vector3 finalMotion = (_currentMoveVelocity + new Vector3(0, _velocity.y, 0)) * delta;
 
@@ -202,7 +224,7 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
     {
         float currentVelocity = _currentMoveVelocity.magnitude;
         _animator.SetFloat("Speed", currentVelocity);
-        _animator.SetFloat("AnimSpeed", currentVelocity > 0.1f ? currentVelocity / _stats.MoveSpeed.Value : 1f);
+        _animator.SetFloat("AnimSpeed", currentVelocity > 0.1f ? currentVelocity / MoveSpeed : 1f);
 
         Vector3 movementInput = new Vector3(_bufferedInput.x, 0, _bufferedInput.y).normalized;
         Vector3 localMovement = transform.InverseTransformDirection(movementInput);

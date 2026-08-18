@@ -4,10 +4,11 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Items/Item Database")]
 public class ItemDatabase : ScriptableObject
 {
+    [SerializeField] private GameObject itemPrefab;
     [SerializeField] private List<Rarity> rarities = new();
 
     public List<ItemDefinition> Items = new();
-
+    public GameObject ItemPrefab => itemPrefab;
     public List<Rarity> Rarities => rarities;
 
     private static ItemDatabase _instance;

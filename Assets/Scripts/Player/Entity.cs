@@ -6,9 +6,12 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
 {
     protected IAnimationHandler animationHandler;
     protected IStatContainer stats;
-    protected DegenComponent degen;
+    protected DegenComponent _degen;
     private MitigationLayer mitigationLayer;
     private Coroutine _stunRoutine;
+    private IHealth _healthHandler;
+    private IAilmentHandler _ailmentHandler;
+
     public int HostileLayer => TeamLayer == LayerMask.NameToLayer("Player")
     ? LayerMask.NameToLayer("Enemy")
     : LayerMask.NameToLayer("Player");
@@ -26,14 +29,23 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
 
     public virtual Vector3 CursorPosition { get; protected set; }
 
+    public event Action<IEntity> Died;
+
     protected virtual void Awake()
     {
         mitigationLayer = GetComponent<MitigationLayer>();
-        Debug.Assert(mitigationLayer != null, $"{name} missing MitigationLayer");
         stats = GetComponent<IStatContainer>();
+        _healthHandler = GetComponent<IHealth>();
+        _ailmentHandler = GetComponent<IAilmentHandler>();
+        _degen = GetComponent<DegenComponent>();
+        Debug.Assert(mitigationLayer != null, $"{name} missing MitigationLayer");
         Debug.Assert(stats != null, $"{name} missing stats");
+        Debug.Assert(_ailmentHandler != null, $"{name} missing ailment handler");
+        Debug.Assert(_degen != null, $"{name} missing DegenComponent");
+
+
     }
-    protected virtual void OnEnable()
+    protected virtual void Start()
     {
         GameWorld.Instance.RegisterEntity(this);
         GameWorld.Instance.EntityDied += OnEntityDied;
@@ -67,13 +79,16 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
             _stunRoutine = null;
         }
         OnDeath(killer);
-        animationHandler.SetAnimationState(CharacterAnimationState.Dead);
+        Died?.Invoke(this);
+        animationHandler?.SetAnimationState(CharacterAnimationState.Dead);
         GameWorld.Instance.NotifyDeath(this, killer);
     }
 
-    public void TakeDamage(DamageInfo info)
+    public virtual void TakeDamage(DamageInfo info)
     {
-        mitigationLayer.TakeDamage(info);
+        var mitigatedDamage = mitigationLayer.CalculateMitigation(info);
+        _ailmentHandler.ApplyAilments(info, mitigatedDamage);
+        _healthHandler.AdjustHealth(-mitigatedDamage, info.Source);
     }
 
     public virtual void ApplyStun(float duration)
@@ -81,7 +96,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
         if (IsDead) return;
         if (_stunRoutine != null) StopCoroutine(_stunRoutine);
         OnStunBegin();
-        animationHandler.SetAnimationState(CharacterAnimationState.Stun);
+        animationHandler?.SetAnimationState(CharacterAnimationState.Stun);
 
         _stunRoutine =  StartCoroutine(StunRoutine(duration));
     }
@@ -93,7 +108,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
         if (IsDead)
             yield break;
 
-        animationHandler.SetAnimationState(CharacterAnimationState.Locomotion);
+        animationHandler?.SetAnimationState(CharacterAnimationState.Locomotion);
         OnStunEnd();
     }
 
@@ -103,6 +118,12 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
 
     public void ApplyDegen(DegenInfo degenInfo)
     {
-        degen.Apply(degenInfo);
+        degenInfo.Damage = mitigationLayer.CalculateMitigation(degenInfo.Damage);
+        _degen.Apply(degenInfo);
+    }
+
+    public void RemoveDegen(Guid id)
+    {
+        _degen.RemoveDegen(id);
     }
 }

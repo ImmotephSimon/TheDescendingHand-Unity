@@ -13,7 +13,7 @@ public class CardHandController : MonoBehaviour
 
         CardView view = cardObject.GetComponentInChildren<CardView>();
         ClientBridge.Instance.CardRegistry.TryGet(cardDefinitionId, out CardDefinition def);
-        view.Initialize(def, cardObject.transform);
+        view.InitializePhysicalCard(def, cardObject.transform, $"{index + 1}");
 
         cards[index] = cardObject;
 

@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Unity.AI.Assistant.Agents;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.Rendering.Universal;
-using static UnityEngine.GraphicsBuffer;
 
 public class AttackAction : EnemyActionBase
 {
@@ -37,7 +32,7 @@ public class AttackAction : EnemyActionBase
 
     public override float GetPriority()
     {
-        return 100;
+        return _attack.GetPriority();
     }
 
     public override void StartAction()
@@ -74,8 +69,7 @@ public class AttackAction : EnemyActionBase
 
     private void FinishAttack()
     {
-        
-
+        _attack.OnAnimationFinish();
         StopAction();
     }
 
@@ -95,7 +89,6 @@ public class AttackAction : EnemyActionBase
         {
             _canBeUpdated = false;
             _isAttacking = true;
-            animationHandler.SetAnimationState(CharacterAnimationState.Attack);
             animationHandler.PlayAnimation(
                 _attack.AttackAnimation,
                 FinishAttack

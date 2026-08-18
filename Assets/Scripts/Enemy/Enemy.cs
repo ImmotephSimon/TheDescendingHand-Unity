@@ -7,11 +7,13 @@ using UnityEngine;
 [RequireComponent(typeof(Perception))]
 public class Enemy : Entity, IExperienceSource
 {
+    [SerializeField] private bool debug = false;
     [SerializeField] private ExperienceTable experienceTable;
     [SerializeField] private BalanceCurves balanceCurves;
 
     [SerializeField] private EnemyDefinition definition;
     [SerializeField] private Transform visualRoot;
+    [SerializeField] private GameObject healthBarPrefab;
 
     private float patrolRadius = 10f;
 
@@ -20,13 +22,12 @@ public class Enemy : Entity, IExperienceSource
     private Rarity rarity;
     private int baseExperience = 1;
     private int _level = 1;
-    private EnemyHealthBar _healthBar;
+    private IHealthBar _healthBar;
     public int ExperienceReward => experienceTable.ScaleByRarity(baseExperience, rarity);
-    public event Action<Enemy> Died;
 
     public override Vector3 CursorPosition => perception.Target.position;
 
-#if UNITY_EDITOR
+
     private void OnValidate()
     {
         if (experienceTable == null)
@@ -35,25 +36,7 @@ public class Enemy : Entity, IExperienceSource
         if (balanceCurves == null)
             Debug.LogWarning($"{name}: Missing BalanceCurves");
 
-        if (Application.isPlaying || definition == null || definition.ModelPrefab == null || visualRoot == null) return;
-
-        // Ignore raw prefab assets in the project folder
-        if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(this)) return;
-
-        UnityEditor.EditorApplication.delayCall += UpdateVisualPreview;
     }
-    private void UpdateVisualPreview()
-    {
-        if (this == null || visualRoot == null || definition == null || definition.ModelPrefab == null) return;
-
-        for (int i = visualRoot.childCount - 1; i >= 0; i--)
-        {
-            DestroyImmediate(visualRoot.GetChild(i).gameObject);
-        }
-
-        Instantiate(definition.ModelPrefab, visualRoot);
-    }
-#endif
 
     protected override void Awake()
     {
@@ -61,13 +44,8 @@ public class Enemy : Entity, IExperienceSource
 
         brain = GetComponent<EnemyBrain>();
         perception = GetComponent<Perception>();
-    }
-    private void Start()
-    {
-        _healthBar = GetComponentInChildren<EnemyHealthBar>();
-        _healthBar.Bind(GetComponent<IHealth>());
 
-        GetComponent<DropsComponent>().DropAtLocation();
+        if (debug) Initialize(definition, 1);
     }
 
     public void Initialize(EnemyDefinition definition, int enemyLevel)
@@ -86,10 +64,31 @@ public class Enemy : Entity, IExperienceSource
         brain = GetComponent<EnemyBrain>();
         perception = GetComponent<Perception>();
         animationHandler = GetComponentInChildren<IAnimationHandler>();
-        stats = GetComponent<IStatContainer>();
+        Debug.Assert(animationHandler != null, $"Failed to find animation handler.");
 
         RegisterActions();
         ApplyBaseStats();
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        if (definition.EnemyType == EnemyType.Unique)
+        {
+            ClientBridge.Instance.OnPlayerReady += BindBossHealthBar;
+        }
+        else
+        {
+            GameObject barObj = Instantiate(healthBarPrefab, transform);
+            _healthBar = barObj.GetComponent<EnemyHealthBar>();
+            _healthBar.Bind(GetComponent<IHealth>());
+        }
+    }
+
+    private void BindBossHealthBar(IEntity entity)
+    {
+        ClientBridge.Instance.OnPlayerReady -= BindBossHealthBar;
+        _healthBar = ClientBridge.Instance.PlayerHUD.BindBossHealthBar(this);
     }
 
     private void AttachAttacks(List<EnemyAttackDefinition> attackDefinitions)
@@ -136,10 +135,10 @@ public class Enemy : Entity, IExperienceSource
 
         foreach (var col in GetComponentsInChildren<Collider>())
             col.enabled = false;
-        Destroy(_healthBar.gameObject);
-        GetComponent<DropsComponent>().DropAtLocation();
+        if (_healthBar is Component healthBarComponent) 
+            Destroy(healthBarComponent.gameObject);
 
-        Died?.Invoke(this);
+        GetComponent<DropsComponent>().DropFromEnemy();
     }
 
     protected override void OnEntityDied(IEntity victim, IEntity killer)
@@ -154,7 +153,7 @@ public class Enemy : Entity, IExperienceSource
     {
         base.OnEntityRevived(entity);
 
-        if (entity.HostileLayer != TeamLayer)
+        if (entity.HostileLayer == TeamLayer)
         {
             Debug.Log($"Enable AI on {entity} revival");
             perception.SetTargetValidity(entity.Transform, true);

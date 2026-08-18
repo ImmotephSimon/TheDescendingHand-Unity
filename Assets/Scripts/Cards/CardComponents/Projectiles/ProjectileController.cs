@@ -18,6 +18,7 @@ public class ProjectileController : NetworkBehaviour
     private readonly float maxProjectileDistanceSqr = 1800f;
 
     public event Action<HitInfo> OnHit;
+    public event Action OnDespawn;
 
     private void Awake()
     {
@@ -49,15 +50,23 @@ public class ProjectileController : NetworkBehaviour
 
         if (_owner != null && Vector3.SqrMagnitude(transform.position - _owner.Transform.position) >= maxProjectileDistanceSqr)
         {
-            Despawn();
+            End();
             return;
         }
+
+        _velocity += Physics.gravity * _info.Direction.Gravity * Time.deltaTime;
 
         Vector3 movement = _velocity * Time.deltaTime;
 
         CheckCollision(transform.position, movement);
 
         transform.position += movement;
+    }
+
+    private void End()
+    {
+        OnDespawn?.Invoke();
+        Despawn();
     }
 
     private void CheckCollision(Vector3 start, Vector3 movement)
@@ -68,8 +77,16 @@ public class ProjectileController : NetworkBehaviour
         if (!Physics.SphereCast(start, _collider.radius, movement.normalized, out RaycastHit hit, distance, DynamicHitMask))
             return;
 
-        if (TryHit(hit.collider))
+
+        if (TryHit(hit.collider, out IEntity target))
         {
+            if (_info.Pierce > 0)
+            {
+                _info.Pierce--;
+                Debug.Log($"Piercing {target.Transform.name}");
+                return;
+            }
+
             if (TryChain(hit.point)) return;
             RpcOnTerminalHit();
         }
@@ -85,12 +102,12 @@ public class ProjectileController : NetworkBehaviour
             }
         }
 
-        Despawn();
+        End();
     }
 
-    private bool TryHit(Collider collider)
+    private bool TryHit(Collider collider, out IEntity target)
     {
-        if (!collider.TryGetComponent<IEntity>(out var target)
+        if (!collider.TryGetComponent<IEntity>(out target)
             || target == _owner
             || target == _lastHitEntity
             || target.IsDead)

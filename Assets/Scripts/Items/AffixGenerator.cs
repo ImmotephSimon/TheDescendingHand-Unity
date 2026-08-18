@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public static class AffixGenerator
 {
-    public static List<AffixInstance> Generate(ItemDefinition item, Rarity rarity, System.Random seed)
+    public static List<AffixInstance> Generate(ItemDefinition item, Rarity rarity, System.Random seed, int misfortune = 1)
     {
         var results = new List<AffixInstance>();
 
@@ -13,7 +14,7 @@ public static class AffixGenerator
 
         foreach (var def in selectedDefinitions)
         {
-            var instance = CreateAffixInstanceWithRolledValue(def, seed);
+            var instance = CreateAffixInstanceWithRolledValue(def, seed, misfortune);
 
             if (RollsPositiveForMutationChance(seed))
             {
@@ -78,10 +79,20 @@ public static class AffixGenerator
         return results;
     }
 
-    private static AffixInstance CreateAffixInstanceWithRolledValue(AffixDefinition def, System.Random rng)
+    private static AffixInstance CreateAffixInstanceWithRolledValue(
+        AffixDefinition def,
+        System.Random rng,
+        int misfortune)
     {
-        float rolledValue = (float)rng.NextDouble();
-        return new AffixInstance { Definition = def, Roll = rolledValue };
+        float effectiveRolls = 1f + misfortune;
+        float u = (float)rng.NextDouble();
+        float tier = 1f - Mathf.Pow(1f - u, 1f / effectiveRolls);
+
+        return new AffixInstance
+        {
+            Definition = def,
+            Tier = tier
+        };
     }
 
     private static bool RollsPositiveForMutationChance(System.Random rng)

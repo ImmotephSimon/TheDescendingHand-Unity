@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using static UnityEditor.Progress;
 
 public class PlayerInventory : BaseInventory, ITargetable
 {
@@ -23,11 +22,17 @@ public class PlayerInventory : BaseInventory, ITargetable
         Loadout.OnItemUnequipped += item => TryAdd(item);
         Loadout.CanUnequipToDestination = CanAdd;
     }
-
+    
     public override void SlotRightClicked(int row, int column, PointerEventData eventData)
     {
-        if (!TryGet(row, column, out ItemInstance item)) return;
+        if (!TryGet(row, column, out IInventoryItem inventoryItem))
+            return;
 
+        if (inventoryItem is not ItemInstance item)
+        {
+            Debug.LogWarning($"Can't equip {inventoryItem}");
+            return;
+        }
         if (!item.BaseType.Components.Any(x => x is EquipComponentDefinition))
         {
             Debug.Log($"Item cannot be equipped.");
@@ -58,9 +63,9 @@ public class PlayerInventory : BaseInventory, ITargetable
         bool isCtrlPressed = Keyboard.current != null && Keyboard.current.leftCtrlKey.isPressed;
         if (isCtrlPressed)
         {
-            if (TryGet(row, column, out ItemInstance dropItem) && TryRemove(dropItem))
+            if (TryGet(row, column, out IInventoryItem slotItem))
             {
-                // Handle world drop here
+                DropInWorld(slotItem);
             }
             return;
         }
@@ -68,9 +73,10 @@ public class PlayerInventory : BaseInventory, ITargetable
         // Cursor holds an item: place or swap
         if (cursor.HasItem)
         {
-            ItemInstance held = cursor.HeldItem;
+            IInventoryItem held = cursor.HeldItem;
+            
 
-            if (TryGet(row, column, out ItemInstance slotItem))
+            if (TryGet(row, column, out IInventoryItem slotItem))
             {
                 // Swap slot item with cursor item
                 if (TryRemove(slotItem))
@@ -95,10 +101,18 @@ public class PlayerInventory : BaseInventory, ITargetable
         }
 
         // Cursor is empty: pick up slot item
-        if (TryGet(row, column, out ItemInstance itemToPick) && TryRemove(itemToPick))
+        if (TryGet(row, column, out IInventoryItem itemToPick))
         {
+            CursorItemController.Instance.OnDropRequested -= DropInWorld;
+            CursorItemController.Instance.OnDropRequested += DropInWorld;
             cursor.Hold(itemToPick);
         }
+    }
+
+    private void DropInWorld(IInventoryItem instance)
+    {
+        ClientBridge.Instance.PlayerNetwork.RequestDrop(instance.Id.ToString());
+        CursorItemController.Instance.CursorItem.Clear();
     }
 
     public TagContainer GetTargetingRequirements()
@@ -114,5 +128,11 @@ public class PlayerInventory : BaseInventory, ITargetable
     public void StartTargeting(ItemInstance orbInstance, TagContainer requirements, Action<ItemInstance> onTargetSelected)
     {
         throw new NotImplementedException();
+    }
+
+    private void OnDestroy()
+    {
+        if (CursorItemController.Instance != null)
+            CursorItemController.Instance.OnDropRequested -= DropInWorld;
     }
 }

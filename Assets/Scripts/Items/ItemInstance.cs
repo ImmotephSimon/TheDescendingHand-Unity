@@ -1,19 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class ItemInstance
+public class ItemInstance : IInventoryItem
 {
+    public Guid Id { get; } = Guid.NewGuid();
     public ItemDefinition BaseType { get; }
     public Rarity Rarity { get; }
-    public List<AffixInstance> Affixes { get; }
-    public Dictionary<AffixInstance, ModifierHandle> ActiveModifiers { get; } = new();
+    public List<AffixInstance> Explicits { get; }
+    public Dictionary<AffixInstance, ModifierHandle> ActiveExplicits { get; } = new();
+    public List<ModifierHandle> ActiveImplicits { get; } = new();
+
     public List<ItemUseComponent> Components { get; } = new();
 
-    public ItemInstance(ItemDefinition baseType, Rarity rarity, List<AffixInstance> affixes)
+
+    public Vector2Int Size => BaseType.InventorySize;
+
+    public Sprite Icon => BaseType.Appearance.Icon;
+
+    public ItemInstance(ItemDefinition baseType, Rarity rarity, List<AffixInstance> explicits)
     {
         BaseType = baseType;
         Rarity = rarity;
-        Affixes = affixes ?? new List<AffixInstance>();
+        Explicits = explicits ?? new List<AffixInstance>();
 
         foreach (var def in BaseType.Components)
         {
@@ -21,25 +30,36 @@ public class ItemInstance
         }
     }
 
-    public void ApplyAffixes(IEntity owner)
+    public void ApplyModifiers(IEntity owner)
     {
-        for (int i = 0; i < Affixes.Count; i++)
+        foreach (var affix in BaseType.Implicits)
         {
-            var affix = Affixes[i];
-            if (ActiveModifiers.ContainsKey(affix)) continue;
+            var handle = owner.Stats.AddModifier(affix);
+            ActiveImplicits.Add(handle);
+        }
 
+
+        foreach (var affix in Explicits)
+        {
             var handle = owner.Stats.AddModifier(affix.ToStatModifier());
-            ActiveModifiers.Add(affix, handle);
+            ActiveExplicits.Add(affix, handle);
         }
     }
 
-    public void ClearAffixes(IEntity owner)
+    public void ClearModifiers(IEntity owner)
     {
-        foreach (var handle in ActiveModifiers.Values)
+        foreach (var handle in ActiveImplicits)
+        {
+            owner.Stats.RemoveModifier(handle);
+        }
+        ActiveImplicits.Clear();
+
+
+        foreach (var handle in ActiveExplicits.Values)
         {
             owner.Stats.RemoveModifier(handle);
         }
 
-        ActiveModifiers.Clear();
+        ActiveExplicits.Clear();
     }
 }

@@ -10,8 +10,8 @@ public class AffixDefinition : ScriptableObject
     public float BaseValue;
     public GameTag Modifier;
     public MathOp MathOp;
-    [SerializeReference, SerializeReferenceDropdown]
-    public Restriction Restriction;
+    [SerializeField]
+    public TagRequirement TagRequirement;
 
     public AffixSlot Slot { get; set; }
 

@@ -9,6 +9,9 @@ public class ProjectileComponent : CardComponent
     private readonly Action<GameObject> _onSpawnProjectile;
     private const float MultiProjectileAngle = 15f;
 
+    public event Action<HitInfo> OnProjectileHit;
+    public event Action<ProjectileController> OnSpawned;
+
     public ProjectileComponent(
         ProjectileInfo info,
         Action<GameObject> spawnNetworkObject)
@@ -16,7 +19,6 @@ public class ProjectileComponent : CardComponent
     {
         _info = info;
         _onSpawnProjectile = spawnNetworkObject;
-
         Debug.Assert(!info.IsEmpty, $"[{nameof(ProjectileComponent)}] Construction failed: Prefab is unassigned in ProjectileInfo.");
     }
 
@@ -57,10 +59,15 @@ public class ProjectileComponent : CardComponent
             rotation);
 
         var controller = projectile.GetComponentInChildren<ProjectileController>();
-        controller.OnHit += Card.OnHit;
+        controller.OnHit += hit =>
+        {
+            OnProjectileHit?.Invoke(hit);
+            Card.OnHit(hit);
+        };
         controller.Initialize(_info.Clone(), Owner);
 
         _onSpawnProjectile?.Invoke(projectile);
+        OnSpawned?.Invoke(controller);
     }
 
 }

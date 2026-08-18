@@ -13,13 +13,13 @@ public class EquipUseComponent : ItemUseComponent, IUsable
 
     public void Equip(ItemInstance instance, IEntity user)
     {
-        instance.ApplyAffixes(user);
+        instance.ApplyModifiers(user);
         ClientBridge.Instance.EquipmentVisuals.SetEquipment(Definition.EquipmentType, instance.BaseType);
     }
 
     public void Unequip(ItemInstance instance, IEntity user)
     {
-        instance.ClearAffixes(user);
+        instance.ClearModifiers(user);
         ClientBridge.Instance.EquipmentVisuals.ClearEquipment(Definition.EquipmentType);
     }
 

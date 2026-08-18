@@ -7,7 +7,7 @@ public class DelayedComponent : CardComponent
     private float _timer;
     private bool _active;
     private bool _paused;
-
+    public override bool IsTicking => true;
     public event Action OnCompleted;
 
     public DelayedComponent(float delay)

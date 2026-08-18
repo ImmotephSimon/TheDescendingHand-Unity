@@ -12,10 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfcbead597cfa364493009300c53f682, type: 3}
   m_Name: ImplicitMitiPhys
   m_EditorClassIdentifier: 
-  id: 
+  id: 05b64c21-baaf-4561-a839-4b9d66f7ac3f
   DisplayName: ImplicitMitiPhys
-  BaseValue: 5
+  BaseValue: 100
   Modifier:
     TagId: Mod.Defense.Mitigation
   MathOp: 0
-  Restriction: {fileID: 0}
+  TagRequirement:
+    MatchAll: 0
+    Tags:
+      Tags:
+      - TagId: Restriction.Physical

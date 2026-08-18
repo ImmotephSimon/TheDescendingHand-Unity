@@ -1,16 +1,13 @@
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
 public class ModifierPoolAssigner : EditorWindow
 {
-    [MenuItem("Tools/Populate Modifier Pool from JSON")]
-    public static void Populate()
+    [MenuItem("Tools/Sync Modifier Pool from Folder")]
+    public static void SyncFromFolder()
     {
-        string jsonPath = EditorUtility.OpenFilePanel("Select Pool JSON", "", "json");
-        if (string.IsNullOrEmpty(jsonPath)) return;
-
-        // Select target ModifierPool asset in Project Window
         var pool = Selection.activeObject as ModifierPool;
         if (pool == null)
         {
@@ -18,48 +15,51 @@ public class ModifierPoolAssigner : EditorWindow
             return;
         }
 
-        string wrappedJson = $"{{\"items\":{File.ReadAllText(jsonPath)}}}";
-        var rawData = JsonUtility.FromJson<Wrapper>(wrappedJson);
+        string poolPath = AssetDatabase.GetAssetPath(pool);
+        string parentDir = Path.GetDirectoryName(poolPath);
 
-        Undo.RecordObject(pool, "Populate Modifier Pool");
-        pool.Entries.Clear();
+        string folderPath = EditorUtility.OpenFolderPanel("Select Definitions Folder", parentDir, "");
+        if (string.IsNullOrEmpty(folderPath)) return;
 
-        foreach (var raw in rawData.items)
+        if (!folderPath.StartsWith(Application.dataPath))
         {
-            // Find AffixDefinition SO by matching name
-            string[] guids = AssetDatabase.FindAssets($"{raw.Definition} t:AffixDefinition");
-            if (guids.Length == 0)
-            {
-                Debug.LogWarning($"Could not find AffixDefinition named: {raw.Definition}");
-                continue;
-            }
+            Debug.LogError("Selected folder must be inside the project's Assets folder.");
+            return;
+        }
+        string relativePath = "Assets" + folderPath.Substring(Application.dataPath.Length);
 
-            string assetPath = AssetDatabase.GUIDToAssetPath(guids[0]);
-            var def = AssetDatabase.LoadAssetAtPath<AffixDefinition>(assetPath);
+        // Gather all valid AffixDefinitions in target directory
+        string[] guids = AssetDatabase.FindAssets("t:AffixDefinition", new string[] { relativePath });
+        var folderDefs = guids
+            .Select(guid => AssetDatabase.LoadAssetAtPath<AffixDefinition>(AssetDatabase.GUIDToAssetPath(guid)))
+            .Where(def => def != null)
+            .ToHashSet();
+
+        Undo.RecordObject(pool, "Sync Modifier Pool");
+
+        // 1. Prune missing/deleted assets
+        pool.Entries.RemoveAll(entry => entry.Definition == null || !folderDefs.Contains(entry.Definition));
+
+        // 2. Find currently tracked definitions to avoid resetting existing entries
+        var existingDefs = pool.Entries.Select(e => e.Definition).ToHashSet();
+
+        // 3. Append missing definitions with default values
+        foreach (var def in folderDefs)
+        {
+            if (existingDefs.Contains(def)) continue;
 
             pool.Entries.Add(new ModifierPoolEntry
             {
                 Definition = def,
-                Weight = raw.Weight,
-                Slot = raw.Slot,
+                Weight = 1f,
+                Slot = def.Slot,
                 Modifier = def.Modifier,
-                Restriction = def.Restriction
+                TagRequirement = def.TagRequirement
             });
         }
 
         EditorUtility.SetDirty(pool);
         AssetDatabase.SaveAssets();
-        Debug.Log($"Populated {pool.Entries.Count} entries into {pool.name}");
+        Debug.Log($"Synced {pool.name}: {pool.Entries.Count} total entries.");
     }
-
-    [System.Serializable]
-    private struct RawPoolJson
-    {
-        public string Definition;
-        public float Weight;
-        public AffixSlot Slot;
-    }
-
-    [System.Serializable]
-    private class Wrapper { public RawPoolJson[] items; }
 }

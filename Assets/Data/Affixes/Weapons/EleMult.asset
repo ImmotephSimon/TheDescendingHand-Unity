@@ -14,8 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 8d99b13e-c2bb-4906-93c5-f3ec1b7c40d8
   DisplayName: EleMult
-  BaseValue: 1.1
+  BaseValue: 2
   Modifier:
-    TagId: Mod.Implicit
+    TagId: Mod.Offense.Damage
   MathOp: 2
-  Restriction: {fileID: 11400000, guid: 407a7b4decaa0d345a8aafd1c2e90a92, type: 2}
+  TagRequirement:
+    MatchAll: 0
+    Tags:
+      Tags:
+      - TagId: Restriction.Element.Fire
+      - TagId: Restriction.Element.Cold
+      - TagId: Restriction.Element.Lightning

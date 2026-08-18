@@ -1,3 +1,4 @@
+using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ public class ItemDrop : WorldDrop
 
     private static readonly System.Random Seed = new System.Random();
     private ItemDefinition _definition;
-    private ItemInstance _instance;
+    public ItemInstance Instance { get; set; }
 
     public ItemDefinition Definition => _definition;
 
@@ -16,22 +17,22 @@ public class ItemDrop : WorldDrop
         _definitionId.OnChange += OnDefinitionIdChanged;
     }
 
-    public override void Initialize(ItemDefinition definition, Rarity rarity)
+    public void Initialize(ItemDefinition definition, Rarity rarity)
     {
-        base.Initialize(definition, rarity);
-
-        _instance = new ItemInstance(
+        int misfortune = Mathf.Clamp(20 - DropLevel / 10, 1, 999);
+        Instance = new ItemInstance(
             definition,
             rarity,
-            AffixGenerator.Generate(definition, rarity, Seed)
+            AffixGenerator.Generate(definition, rarity, Seed, misfortune)
         );
 
         _definitionId.Value = definition.ID;
+        ApplyRarityVisualsRpc(rarity.DisplayColor, rarity.LightIntensity, rarity.LightRange);
     }
 
     private void OnDefinitionIdChanged(string prev, string next, bool asServer)
     {
-        if (string.IsNullOrEmpty(next)) return;
+        if (asServer || (string.IsNullOrEmpty(next))) return;
 
         if (ItemDatabase.Instance.TryGet(next, out var def))
         {
@@ -41,12 +42,34 @@ public class ItemDrop : WorldDrop
                 Debug.LogError($"Item '{def.ID}' has no WorldModel assigned.");
                 return;
             }
-            Instantiate(def.Appearance.WorldModel, transform);
+            var spawnedMesh = Instantiate(def.Appearance.WorldModel, transform);
+
+            uint layer0 = 1u << 0;
+            uint layer1 = 1u << 1;
+            foreach (var renderer in spawnedMesh.GetComponentsInChildren<Renderer>())
+            {
+                renderer.renderingLayerMask = layer0 | layer1;
+            }
+        }
+    }
+
+    [ObserversRpc]
+    private void ApplyRarityVisualsRpc(Color color, float intensity, float range)
+    {
+        uint layer1 = 1u << 1;
+
+        var light = GetComponentInChildren<Light>();
+        if (light != null)
+        {
+            light.color = color;
+            light.intensity = intensity;
+            light.range = range;
+            light.renderingLayerMask = (int)layer1;
         }
     }
 
     protected override bool TryPickup(Player player)
     {
-        return player.GetComponent<IInventory>().TryAdd(_instance);
+        return player.GetComponent<IInventory>().TryAdd(Instance);
     }
 }

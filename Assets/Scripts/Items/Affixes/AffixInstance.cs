@@ -1,20 +1,52 @@
 ﻿using System;
+using UnityEngine;
 
 public class AffixInstance
 {
     public AffixDefinition Definition;
-    public float Roll = 1f;
+    public float Tier = 1f;
+    public float Value
+    {
+        get
+        {
+            if (Definition == null || Definition.BaseValue == 0f) return 0f;
+
+            float scaled = Definition.BaseValue * Tier;
+
+            if (Definition.MathOp == MathOp.Added)
+            {
+                int sign = Math.Sign(Definition.BaseValue);
+                return sign * Mathf.Max(1, Mathf.RoundToInt(Mathf.Abs(scaled)));
+            }
+
+            if (Definition.MathOp == MathOp.Multiplicative)
+            {
+                if (Definition.BaseValue > 1f) return Mathf.Max(1.01f, scaled);
+                if (Definition.BaseValue < 1f) return Mathf.Min(0.99f, scaled);
+                return scaled;
+            }
+
+            // Additive (%) whole number or float scale
+            float minMagnitude = Mathf.Abs(Definition.BaseValue) >= 1f ? 1f : 0.01f;
+            return Math.Sign(Definition.BaseValue) * Mathf.Max(minMagnitude, Mathf.Abs(scaled));
+        }
+    }
 
     public StatModifier ToStatModifier()
     {
-        var requiredTags = Definition.Restriction is TagRestriction tagRestriction
-                ? tagRestriction.Tags
-                : TagContainer.Empty;
 
         return new StatModifier(
             Definition.Modifier,
             Definition.MathOp,
-            Definition.BaseValue * Roll,
-            requiredTags);
+            Value,
+            Definition.TagRequirement);
+    }
+
+    public string GetDisplayText()
+    {
+        if (!string.IsNullOrWhiteSpace(Definition.DisplayName))
+            return $"{Definition.DisplayName}: {Value}";
+
+        return ToStatModifier().ToString();
     }
 }

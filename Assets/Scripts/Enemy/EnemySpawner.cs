@@ -6,8 +6,8 @@ using UnityEngine.AI;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] public GameObject enemyPrefab;
-    [SerializeField] private EnemyDefinition enemyDefinition;
+    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] public EnemyDefinition enemyDefinition;
 
     [SerializeField] private bool spawnOnEnter = true;
     [SerializeField] private int spawnCount = 3;

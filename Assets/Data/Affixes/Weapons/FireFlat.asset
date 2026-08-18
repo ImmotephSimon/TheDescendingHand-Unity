@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 5c34b123-ff47-46ed-b360-ab32fc6a7796
   DisplayName: FireFlat
-  BaseValue: 2
+  BaseValue: 40
   Modifier:
-    TagId: Mod.Implicit
+    TagId: Mod.Offense.Damage
   MathOp: 0
-  Restriction: {fileID: 11400000, guid: 519c1345743010546999a4520005845f, type: 2}
+  TagRequirement:
+    MatchAll: 0
+    Tags:
+      Tags:
+      - TagId: Restriction.Element.Fire

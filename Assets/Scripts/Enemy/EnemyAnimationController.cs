@@ -1,50 +1,29 @@
 using System;
 using System.Collections;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 public class EnemyAnimationController : MonoBehaviour, IAnimationHandler
 {
-    [SerializeField] private AnimationClip fastAttack;
-    [SerializeField] private AnimationClip slowAttack;
-    [SerializeField] private AnimationClip chargeAttack;
+    private const float TransitionDuration = 0.1f;
 
-    private const float _transitionDuration = 0.1f;
-    private Animator animator;
-    private CharacterAnimationState currentState;
-    private AnimatorOverrideController _overrideController;
-    private Action attackFinished;
-    private Coroutine _currentHandle;
-
-    private static readonly int SpeedHash = Animator.StringToHash("Speed");
-    private static readonly int LocomotionHash = Animator.StringToHash("EnemyLocomotion");
-    private static readonly int StunHash = Animator.StringToHash("Stunned");
-    private static readonly int DeadHash = Animator.StringToHash("Dead");
-    private static readonly int AttackingHash = Animator.StringToHash("Attacking");
+    private Animator _animator;
+    private CharacterAnimationState _currentState;
+    private Action _attackFinished;
+    private Coroutine _attackCoroutine;
 
     private void Awake()
     {
-        EnsureAnimatorSetup();
+        _animator = GetComponentInChildren<Animator>();
+        _animator.applyRootMotion = false;
+
     }
 
-    private void EnsureAnimatorSetup()
-    {
-        if (animator != null) return;
 
-        animator = GetComponentInChildren<Animator>();
-        if (animator == null) return;
-
-        animator.applyRootMotion = false;
-        _overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
-        animator.runtimeAnimatorController = _overrideController;
-    }
-
-    // --- IAnimationHandler Implementation ---
 
     public void SetSpeed(float speed)
     {
-        EnsureAnimatorSetup();
-        if (animator != null)
-            animator.SetFloat(SpeedHash, speed);
+        _animator.SetFloat("Speed", speed);
     }
 
     public void SetAnimationState(CharacterAnimationState state)
@@ -55,88 +34,76 @@ public class EnemyAnimationController : MonoBehaviour, IAnimationHandler
     public void PlayAnimation(AttackAnimation attackAnimation, Action onFinished)
     {
         StopCurrentAnimation();
+        _currentState = CharacterAnimationState.Unset;
 
-        attackFinished = onFinished;
-
-        if (currentState != CharacterAnimationState.Attack)
-            PlayState(CharacterAnimationState.Attack, _transitionDuration);
-        else
-            animator.Play(AttackingHash, 0, 0f);
-
-        AnimationClip clip = attackAnimation switch
+        var state = attackAnimation switch
         {
-            AttackAnimation.MeleeFast => fastAttack,
-            AttackAnimation.MeleeSlow => slowAttack,
-            AttackAnimation.MeleeCharge => chargeAttack,
-            _ => fastAttack
+            AttackAnimation.MeleeFast => "FastAttack",
+            AttackAnimation.MeleeSlow => "SlowAttack",
+            AttackAnimation.Charge => "ChargeAttack",
+            AttackAnimation.Special => "SpecialAttack",
+            _ => throw new ArgumentOutOfRangeException(nameof(attackAnimation))
         };
 
-        if (clip != null)
-        {
-            _currentHandle = StartCoroutine(WaitForAttackFinished(clip.length, onFinished));
-        }
-        else
-        {
-            onFinished?.Invoke();
-        }
+        _attackFinished = onFinished;
+
+        _animator.CrossFade(state, TransitionDuration);
+        _attackCoroutine = StartCoroutine(FinishAttack(state, onFinished));
     }
 
     public void PlayAnimation(CardCastAnimation animation)
     {
-        // Enemies don't cast card animations, but implement gracefully
         StopCurrentAnimation();
     }
 
     public void StopCurrentAnimation()
     {
-        if (_currentHandle != null)
+        if (_attackCoroutine != null)
         {
-            StopCoroutine(_currentHandle);
-            _currentHandle = null;
+            StopCoroutine(_attackCoroutine);
+            _attackCoroutine = null;
         }
 
-        attackFinished = null;
+        _attackFinished = null;
     }
 
-    // --- State Logic ---
-
-    public void PlayState(CharacterAnimationState state, float transitionDuration = _transitionDuration)
+    public void PlayState(
+        CharacterAnimationState state,
+        float transitionDuration = TransitionDuration)
     {
-        if (currentState == state || state == CharacterAnimationState.Unset)
+        
+
+        if (state == CharacterAnimationState.Unset || _currentState == state)
             return;
 
-        currentState = state;
-        EnsureAnimatorSetup();
+        _currentState = state;
 
-        if (animator == null) return;
 
-        switch (state)
+        var stateName = state switch
         {
-            case CharacterAnimationState.Locomotion:
-                animator.CrossFade(LocomotionHash, transitionDuration);
-                break;
+            CharacterAnimationState.Locomotion => "EnemyLocomotion",
+            CharacterAnimationState.Stun => "Stunned",
+            CharacterAnimationState.Dead => "Dead",
+            _ => throw new ArgumentOutOfRangeException(nameof(state))
+        };
 
-            case CharacterAnimationState.Attack:
-                animator.CrossFade(AttackingHash, transitionDuration);
-                break;
-
-            case CharacterAnimationState.Stun:
-                StopCurrentAnimation();
-                animator.CrossFade(StunHash, transitionDuration);
-                break;
-
-            case CharacterAnimationState.Dead:
-                StopCurrentAnimation();
-                animator.CrossFade(DeadHash, transitionDuration);
-                break;
-        }
+        _animator.CrossFade(stateName, transitionDuration);
     }
 
-    private IEnumerator WaitForAttackFinished(float duration, Action onFinished)
+    private IEnumerator FinishAttack(string state, Action onFinished)
     {
+        yield return new WaitUntil(() =>
+            _animator.GetCurrentAnimatorStateInfo(0).IsName(state));
+
+        var duration = _animator.GetCurrentAnimatorStateInfo(0).length;
+
         yield return new WaitForSeconds(duration);
-        _currentHandle = null;
-        onFinished?.Invoke();
+
+        SetAnimationState(CharacterAnimationState.Locomotion);
+        _attackCoroutine = null;
+        var finished = _attackFinished;
+        _attackFinished = null;
+        finished?.Invoke();
     }
 
     private void OnDestroy()

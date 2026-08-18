@@ -1,4 +1,3 @@
-using Cards.CardComponents;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,6 +22,7 @@ public class DirectDamageComponent : CardComponent
         base.Initialize(card, owner);
         
         _calc = Card.Owner.Transform.GetComponent<ICalculator>();
+        Debug.Assert(_calc != null, $"Failed to find calculator.");
     }
 
 

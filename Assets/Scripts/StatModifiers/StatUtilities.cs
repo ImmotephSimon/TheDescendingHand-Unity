@@ -1,4 +1,5 @@
 using System;
+using Unity.AppUI.UI;
 using UnityEngine;
 
 public enum MathOp
@@ -24,9 +25,9 @@ public struct StatModifier
     public GameTag Stat;
     public MathOp Op;
     public float Value;
-    public TagContainer RequiredTags;
+    public TagRequirement RequiredTags;
 
-    public StatModifier(GameTag stat, MathOp type, float value, TagContainer requiredTags)
+    public StatModifier(GameTag stat, MathOp type, float value, TagRequirement requiredTags)
     {
         Stat = stat;
         Op = type;
@@ -35,26 +36,41 @@ public struct StatModifier
     }
 
     public StatModifier(GameTag stat, MathOp type, float value)
-        : this(stat, type, value, TagContainer.Empty) { }
+        : this(stat, type, value, TagRequirement.Empty) { }
 
 
     public override string ToString()
     {
-        bool isPercent = Op == MathOp.Additive || Op == MathOp.Multiplicative;
-        float displayValue = isPercent ? Value * 100f : Value;
-
-        int roundedValue = Mathf.RoundToInt(displayValue);
-        int absValue = Mathf.Abs(roundedValue);
-
         string statName = Stat != null ? Stat.ToString() : "Unknown";
-        string tagPrefix = (RequiredTags != null && !RequiredTags.IsEmpty) ? $"{RequiredTags} " : "";
+        string reqStr = RequiredTags.IsElemental
+            ? "Elemental"
+            : !RequiredTags.IsEmpty
+                ? RequiredTags.ToString()
+                : "";
 
-        return Op switch
+        string requirement = !string.IsNullOrEmpty(reqStr) ? $"{reqStr} " : "";
+
+        if (Op == MathOp.Added)
         {
-            MathOp.Added => $"{tagPrefix}{statName}: {(roundedValue >= 0 ? "+" : "-")}{absValue}",
-            MathOp.Additive => $"{tagPrefix}{(roundedValue >= 0 ? "Increased" : "Decreased")} {statName}: {absValue}%",
-            MathOp.Multiplicative => $"{tagPrefix}{(roundedValue >= 0 ? "More" : "Less")} {statName}: {absValue}%",
-            _ => $"{tagPrefix}{statName}: {roundedValue}"
-        };
+            int roundVal = Mathf.RoundToInt(Value);
+            return $"{requirement}{statName}: {(roundVal >= 0 ? "+" : "-")}{Mathf.Abs(roundVal)}";
+        }
+
+        if (Op == MathOp.Additive)
+        {
+            int roundVal = Mathf.RoundToInt(Value * 100f);
+            string prefix = roundVal >= 0 ? "Increased " : "Decreased ";
+            return $"{prefix}{requirement}{statName}: {Mathf.Abs(roundVal)}%";
+        }
+
+        if (Op == MathOp.Multiplicative)
+        {
+            float percentChange = (Value - 1f) * 100f;
+            int roundVal = Mathf.RoundToInt(percentChange);
+            string prefix = roundVal >= 0 ? "More " : "Less ";
+            return $"{prefix}{requirement}{statName}: {Mathf.Abs(roundVal)}%";
+        }
+
+        return $"{requirement}{statName}: {Mathf.RoundToInt(Value)}";
     }
 }

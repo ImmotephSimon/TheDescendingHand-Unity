@@ -1,11 +1,11 @@
-using FishNet;
-using FishNet.Object;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : Entity
+public class Player : Entity, IPlayerCollection
 {
+    [SerializeField] private StatModifierData startingStats;
     [SerializeField] private LayerMask interactLayer;
     [SerializeField] private float interactRange = 2f;
 
@@ -23,26 +23,18 @@ public class Player : Entity
         playerMovement = GetComponent<PlayerMovementController>();
         animationHandler = GetComponentInChildren<IAnimationHandler>();
         _cardController = GetComponentInChildren<CardController>();
-        if (animationHandler == null) Debug.LogError($"{name} missing IAnimationHandler", this);
+        Debug.Assert(animationHandler != null, $"{name} missing IAnimationHandler");
+        Debug.Assert(_cardController != null, $"{name} missing CardController");
 
-        stats.AddModifier(new StatModifier (
-            GameTags.ModStatMana,
-            MathOp.Added,
-            20)
-        );
-        stats.AddModifier(new StatModifier(
-            GameTags.ModOffenseDamage,
-            MathOp.Added,
-            3,
-            new TagContainer(GameTags.RestrictionPhysical))
-        );
+        startingStats.ApplyTo(stats);
     }
 
     public void InitializeLocalPlayer()
     {
-        ClientBridge.Instance.HUD.Bind(this);
+        ClientBridge.Instance.PlayerHUD.Bind(this);
         ClientBridge.Instance.GlobePositioner.Initialize(this);
     }
+
 
     protected override void OnDeath(IEntity killer)
     {
@@ -96,5 +88,17 @@ public class Player : Entity
         }
 
         return null;
+    }
+
+
+
+    private void OnDestroy()
+    {
+        startingStats.RemoveFrom(stats);
+    }
+
+    public void AddGold(int amount)
+    {
+        // TODO
     }
 }

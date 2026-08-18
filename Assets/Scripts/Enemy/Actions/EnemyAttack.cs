@@ -3,24 +3,27 @@ using UnityEngine;
 
 public abstract class EnemyAttack : MonoBehaviour, IEnemyAttack
 {
-    private AttackAnimation attackAnimation;
-    private float range;
-    private float cooldownDuration;
+    protected AttackAnimation attackAnimation;
+    protected float range;
+    protected float cooldownDuration;
+    protected float priority;
 
     public event Action<IEntity> OnHit;
-    public float Range => range;
-    public float CooldownDuration => cooldownDuration;
-    public AttackAnimation AttackAnimation => attackAnimation;
-    public float Effectiveness => 1f;
+    public virtual float Range => range;
+    public virtual float CooldownDuration => cooldownDuration;
+    public virtual AttackAnimation AttackAnimation => attackAnimation;
+    public virtual float Effectiveness => 1f;
 
     protected AttackHitbox AttackHitbox => attackHitbox;
     private AttackHitbox attackHitbox;
+    
 
     public virtual void Initialize(EnemyAttackDefinition def)
     {
         range = def.range;
         cooldownDuration = def.cooldown;
         attackAnimation = def.animation;
+        priority = def.priority;
 
         attackHitbox = GetComponentInChildren<AttackHitbox>();
         if (attackHitbox != null)
@@ -28,6 +31,8 @@ public abstract class EnemyAttack : MonoBehaviour, IEnemyAttack
             attackHitbox.OnHit += HandleHit;
         }
     }
+
+    public float GetPriority() => priority;
 
     private void HandleHit(IEntity entity) => OnHit?.Invoke(entity);
 
@@ -47,5 +52,9 @@ public abstract class EnemyAttack : MonoBehaviour, IEnemyAttack
     public virtual void Stop()
     {
         attackHitbox?.Disable();
+    }
+
+    public virtual void OnAnimationFinish()
+    {
     }
 }

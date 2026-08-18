@@ -9,7 +9,9 @@ public interface IEnemyAttack
     float CooldownDuration { get; }
     AttackAnimation AttackAnimation { get; }
 
+    float GetPriority();
     bool CanHit(Transform target);
     void Execute(Transform target);
     void Stop();
+    void OnAnimationFinish();
 }

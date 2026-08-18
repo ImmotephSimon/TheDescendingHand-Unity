@@ -2,5 +2,7 @@
 {
     MeleeFast,
     MeleeSlow,
-    MeleeCharge
+    Charge,
+    Channel,
+    Special
 }

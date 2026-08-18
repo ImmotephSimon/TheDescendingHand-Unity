@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 2208a74e-7cef-415e-9ee6-87a44d21aa44
   DisplayName: Miti5
-  BaseValue: 3
+  BaseValue: 60
   Modifier:
     TagId: Mod.Defense.Mitigation
   MathOp: 0
-  Restriction: {fileID: 11400000, guid: 1188d5d82842d334fb06d942df8b95ec, type: 2}
+  TagRequirement:
+    MatchAll: 0
+    Tags:
+      Tags:
+      - TagId: Restriction.Chaos

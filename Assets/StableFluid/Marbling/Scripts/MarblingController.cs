@@ -23,7 +23,6 @@ namespace StableFluids.Marbling {
         {
             _material = new Material(_shader);
             _material.SetFloat("_Aspect", (float)_forceField.width / _forceField.height);
-            Debug.Log((float)_forceField.width / _forceField.height);
             Graphics.Blit(Texture2D.blackTexture, _colorInjection);
             Graphics.Blit(Texture2D.blackTexture, _forceField);
         }

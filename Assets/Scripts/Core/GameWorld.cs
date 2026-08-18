@@ -1,8 +1,8 @@
-using FishNet.Object;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class GameWorld : NetworkBehaviour
+public class GameWorld : MonoBehaviour
 {
     public static GameWorld Instance { get; private set; }
 
@@ -10,64 +10,41 @@ public class GameWorld : NetworkBehaviour
 
     public event Action<IEntity> EntityRevived;
     public event Action<IEntity, IEntity> EntityDied;
-    // victim, killer
+
+    public ServerScheduler Scheduler { get; private set; }
 
     private void Awake()
     {
         Instance = this;
+        Scheduler = gameObject.AddComponent<ServerScheduler>();
     }
 
-    public override void OnStartServer()
-    {
-        base.OnStartServer();
-
-        Instance = this;
-    }
-
-    public override void OnStopServer()
+    private void OnDestroy()
     {
         if (Instance == this)
             Instance = null;
-
-        base.OnStopServer();
     }
 
     public void RegisterEntity(IEntity entity)
     {
-        if (!IsServerStarted)
-            return;
-
         if (!entities.Contains(entity))
             entities.Add(entity);
     }
 
     public void UnregisterEntity(IEntity entity)
     {
-        if (!IsServerStarted)
-            return;
-
         entities.Remove(entity);
     }
 
     public void NotifyDeath(IEntity victim, IEntity killer)
     {
-        if (!IsServerStarted)
-            return;
-
         EntityDied?.Invoke(victim, killer);
     }
 
     public void NotifyRevive(IEntity entity)
     {
-        if (!IsServerStarted)
-            return;
-
         EntityRevived?.Invoke(entity);
     }
 
-
-    public IReadOnlyList<IEntity> GetEntities()
-    {
-        return entities;
-    }
+    public IReadOnlyList<IEntity> GetEntities() => entities;
 }

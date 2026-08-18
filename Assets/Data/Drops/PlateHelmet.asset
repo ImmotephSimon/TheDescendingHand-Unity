@@ -28,9 +28,10 @@ MonoBehaviour:
     Op: 0
     Value: 5
     RequiredTags:
+      MatchAll: 0
       Tags:
-      - TagId: Restriction.Physical
-    Source: 0
+        Tags:
+        - TagId: Restriction.Physical
   Components:
   - rid: 7617656363769921681
   references:

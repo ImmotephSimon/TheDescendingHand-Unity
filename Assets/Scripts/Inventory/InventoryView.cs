@@ -90,11 +90,11 @@ public class InventoryView : MonoBehaviour
 
     private void HandleSlotHovered(InventorySlotView slot)
     {
-        if (!inventory.TryGet(slot.Row, slot.Column, out ItemInstance item)) return;
+        if (!inventory.TryGet(slot.Row, slot.Column, out IInventoryItem item)) return;
 
         if (item != null)
         {
-            TooltipController.Instance.ShowItem(item);
+            TooltipController.Instance.Show(item);
         }
     }
 
@@ -118,7 +118,7 @@ public class InventoryView : MonoBehaviour
         // Render multi-tile items
         foreach (var entry in inventory.GetPlacedItems())
         {
-            ItemInstance item = entry.Key;
+            IInventoryItem item = entry.Key;
             Vector2Int origin = entry.Value;
 
             ItemIconView iconInstance = Instantiate(itemIconPrefab, parent);
@@ -126,7 +126,7 @@ public class InventoryView : MonoBehaviour
 
             Vector2 position = GetLocalPosition(origin.x, origin.y);
 
-            Vector2Int inventorySize = item.BaseType.InventorySize;
+            Vector2Int inventorySize = item.Size;
 
             Vector2 size = new Vector2(
                 inventorySize.x * cellSize.x + (inventorySize.x - 1) * spacing.x,
@@ -134,7 +134,7 @@ public class InventoryView : MonoBehaviour
             );
 
             iconInstance.Render(
-                item.BaseType.Appearance.Icon,
+                item.Icon,
                 position,
                 size
             );
@@ -148,10 +148,18 @@ public class InventoryView : MonoBehaviour
         return new Vector2(x, y);
     }
 
-    
+
 
     internal void ToggleVisibility()
     {
-        panelRoot.SetActive(!panelRoot.activeSelf);
+        if (panelRoot.activeSelf)
+        {
+            panelRoot.SetActive(false);
+            TooltipController.Instance.Hide();
+        }
+        else
+        {
+            panelRoot.SetActive(true);
+        }
     }
 }

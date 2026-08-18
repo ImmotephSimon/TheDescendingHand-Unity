@@ -19,7 +19,7 @@ MonoBehaviour:
   - rid: 7617656375266771147
   CanHaveUniqueMods: 0
   DisplayColor: {r: 1, g: 0.90650845, b: 0, a: 1}
-  LightIntensity: 0.3
+  LightIntensity: 0.5
   LightRange: 2
   references:
     version: 2

@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: a0c3ab5e-4dd4-422e-963e-1dcd5edc4697
   DisplayName: ManaCost
-  BaseValue: -0.005
+  BaseValue: -0.01
   Modifier:
     TagId: Mod.Utility.Cost
   MathOp: 1
-  Restriction: {fileID: 11400000, guid: f65649628d8d208479142bcafc163e63, type: 2}
+  TagRequirement:
+    MatchAll: 0
+    Tags:
+      Tags:
+      - TagId: Mod.Stat.Mana

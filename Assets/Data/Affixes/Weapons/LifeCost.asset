@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: ac4dcc32-6bc3-49e9-99b5-35666ee9004c
   DisplayName: LifeCost
-  BaseValue: -0.015
+  BaseValue: -0.3
   Modifier:
     TagId: Mod.Utility.Cost
   MathOp: 1
-  Restriction: {fileID: 11400000, guid: 81240497893870b4db22a37713b3588f, type: 2}
+  TagRequirement:
+    MatchAll: 0
+    Tags:
+      Tags:
+      - TagId: Mod.Stat.Health

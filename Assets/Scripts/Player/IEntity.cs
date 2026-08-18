@@ -6,6 +6,8 @@ public interface IEntity
     bool IsDead { get;  }
     Transform Transform { get; }
 
+    event Action<IEntity> Died;
+
     IStatContainer Stats { get; }
 
     /// <summary>
@@ -19,6 +21,5 @@ public interface IEntity
     abstract int AttackLayer { get; }
 
     Vector3 CursorPosition { get; }
-
     void Die(IEntity killer);
 }

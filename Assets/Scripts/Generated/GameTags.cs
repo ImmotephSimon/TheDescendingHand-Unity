@@ -19,6 +19,8 @@ public static class GameTags
     public static readonly GameTag ModOffenseCastSpeed = new("Mod.Offense.CastSpeed");
     public static readonly GameTag ModOffenseCritical = new("Mod.Offense.Critical");
     public static readonly GameTag ModOffenseDamage = new("Mod.Offense.Damage");
+    public static readonly GameTag ModOffenseDamageMin = new("Mod.Offense.Damage.Min");
+    public static readonly GameTag ModOffenseDamageMax = new("Mod.Offense.Damage.Max");
     public static readonly GameTag ModOffenseDamagePerMana = new("Mod.Offense.DamagePerMana");
     public static readonly GameTag ModStatArmour = new("Mod.Stat.Armour");
     public static readonly GameTag ModStatEvasion = new("Mod.Stat.Evasion");

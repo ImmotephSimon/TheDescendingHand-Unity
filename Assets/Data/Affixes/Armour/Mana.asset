@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfcbead597cfa364493009300c53f682, type: 3}
   m_Name: Mana
   m_EditorClassIdentifier: 
-  id: 
+  id: a213bc12-f3e4-48e7-ab9e-5e1c61093ae2
   DisplayName: Mana
-  BaseValue: 2
+  BaseValue: 40
   Modifier:
     TagId: Mod.Stat.Mana
   MathOp: 0
-  Restriction: {fileID: 0}
+  TagRequirement:
+    MatchAll: 0
+    Tags:
+      Tags: []

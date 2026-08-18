@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: ad48fab7-9ac0-481f-94ed-a794a90c35ad
   DisplayName: ColdFlat
-  BaseValue: 2
+  BaseValue: 40
   Modifier:
-    TagId: Mod.Implicit
+    TagId: Mod.Offense.Damage
   MathOp: 0
-  Restriction: {fileID: 11400000, guid: faded6a3bbba72e42a8413232d9ce768, type: 2}
+  TagRequirement:
+    MatchAll: 0
+    Tags:
+      Tags:
+      - TagId: Restriction.Element.Cold

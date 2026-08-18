@@ -1,0 +1,132 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b42bee6b99756a428009c4389e46573, type: 3}
+  m_Name: ArmourMods
+  m_EditorClassIdentifier: 
+  Entries:
+  - Definition: {fileID: 11400000, guid: 9ce8f43ea33442645a871ba00ce9489a, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: 
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: b45a967ccbe309647a98b98a71cb01ad, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: Mod.Stat.Mana
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: b242c82b4a46aa748a109c7f6d283fe3, type: 2}
+    Weight: 0.5
+    Slot: 0
+    Modifier:
+      TagId: Mod.Implicit
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: 57b598a3c35c2b04e8a5e073bc1aef12, type: 2}
+    Weight: 0.5
+    Slot: 0
+    Modifier:
+      TagId: Mod.Defense.Mitigation
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: e70a6bf68f914e54cb75e3d700928a3b, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: Mod.Defense.Mitigation
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: 76bdd0cb95ac0974db14acda10ebf68e, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: Mod.Defense.Mitigation
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: d074a43032d13d94a867b13e168d4d41, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: Mod.Defense.Mitigation
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: 4847fd55b44ce374f85b7d84faf6709a, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: Mod.Defense.Mitigation
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: 9b6114b8e87afa946ac772fc780c3c22, type: 2}
+    Weight: 0.2
+    Slot: 0
+    Modifier:
+      TagId: Mod.Defense.Glancing
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: 305964ffdcd3e704791fae3fe5ae40a3, type: 2}
+    Weight: 20
+    Slot: 0
+    Modifier:
+      TagId: Mod.Utility.Cost
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: a479e9f9068be254a9f6da71575871f0, type: 2}
+    Weight: 20
+    Slot: 0
+    Modifier:
+      TagId: Mod.Utility.Cost
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: 098cfd33ebc094a4f8fe7a9277d990e1, type: 2}
+    Weight: 0.2
+    Slot: 0
+    Modifier:
+      TagId: Mod.Utility.Duration
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Definition: {fileID: 11400000, guid: 4445353011cfe104bbddf5ebe358a430, type: 2}
+    Weight: 0.5
+    Slot: 0
+    Modifier:
+      TagId: Mod.Defense.Mitigation
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []

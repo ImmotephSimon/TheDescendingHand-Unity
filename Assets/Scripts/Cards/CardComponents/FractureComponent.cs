@@ -7,7 +7,7 @@ public class FractureComponent : CardComponent
     private Rigidbody _rootRb;
     private Collider[] _debrisColliders;
     private Rigidbody[] _debrisRbs;
-    private CollisionNotifier _notifier;
+    private PhysicsCollisionNotifier _notifier;
     private readonly int _debrisLayer = LayerMask.NameToLayer("Debris");
 
     public void Attach(GameObject breakable)
@@ -39,17 +39,17 @@ public class FractureComponent : CardComponent
         // Self-contained hook into collision detection
         if (!_breakable.TryGetComponent(out _notifier))
         {
-            _notifier = _breakable.AddComponent<CollisionNotifier>();
+            _notifier = _breakable.AddComponent<PhysicsCollisionNotifier>();
         }
 
-        _notifier.OnImpact += HandleImpact;
+        _notifier.OnCollision += HandleImpact;
     }
 
     private void HandleImpact(Vector3 impactPoint)
     {
         if (_notifier != null)
         {
-            _notifier.OnImpact -= HandleImpact; // Fire once
+            _notifier.OnCollision -= HandleImpact; // Fire once
         }
         Break(impactPoint);
     }
@@ -97,7 +97,7 @@ public class FractureComponent : CardComponent
     {
         if (_notifier != null)
         {
-            _notifier.OnImpact -= HandleImpact;
+            _notifier.OnCollision -= HandleImpact;
             _notifier = null;
         }
     }

@@ -17,12 +17,12 @@ TagManager:
   - Player
   - Enemy
   - Projectile
-  - Interact
+  - Pickup
   - Door
   - EnemyAttack
   - PlayerAttack
   - Debris
-  - 
+  - itemDrop
   - 
   - 
   - 

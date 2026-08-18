@@ -11,7 +11,7 @@ public class ModifierPoolEntry
     public float Weight = 100f;
     public AffixSlot Slot;
     public GameTag Modifier;
-    public Restriction Restriction;
+    public TagRequirement TagRequirement;
 
     public ModifierPoolEntry()
     {

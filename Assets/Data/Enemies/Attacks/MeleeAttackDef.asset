@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: MeleeAttackDef
   m_EditorClassIdentifier: 
   range: 1.5
-  cooldown: 1
+  cooldown: 0
   animation: 0
+  priority: 100

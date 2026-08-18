@@ -1,31 +1,22 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MitigationLayer : MonoBehaviour
 {
     private IHealth _healthHandler;
-    private IAilmentHandler _ailmentHandler;
-    private IStatContainer _statsHandler; // Assuming stats live on entity
+    private IStatContainer _stats; // Assuming stats live on entity
 
     private void Awake()
     {
         _healthHandler = GetComponent<IHealth>();
-        _ailmentHandler = GetComponent<IAilmentHandler>();
-        _statsHandler = GetComponent<IStatContainer>();
+        _stats = GetComponent<IStatContainer>();
 
-        if (_healthHandler == null) Debug.LogError("Missing health handler");
-        if (_ailmentHandler == null) Debug.LogError("Missing ailment handler");
+        Debug.Assert(_healthHandler != null, $"Missing health handler");
+        Debug.Assert(_stats != null, $"Missing stats");
     }
 
-    public void TakeDamage(DamageInfo info)
-    {
-        float mitigatedDamage = CalculateMitigation(info);
 
-        // Pass calculated final damage or update info if it's a class/ref
-        _ailmentHandler.ApplyAilments(info, mitigatedDamage);
-        _healthHandler.AdjustHealth(-mitigatedDamage, info.Source);
-    }
-
-    private float CalculateMitigation(DamageInfo info)
+    public float CalculateMitigation(DamageInfo info)
     {
         if (info.DamageMap == null) return 0f;
 
@@ -34,8 +25,8 @@ public class MitigationLayer : MonoBehaviour
 
         foreach (var (damageType, rawAmount) in info.DamageMap)
         {
-            float mitigationRating = _statsHandler != null
-                ? _statsHandler.GetStat(GameTags.ModDefenseMitigation, new TagContainer(damageType))
+            float mitigationRating = _stats != null
+                ? _stats.GetStat(GameTags.ModDefenseMitigation, new TagContainer(damageType))
                 : 0f;
 
             // Rating == MaxLife yields 0.5 (50% damage taken)
@@ -46,4 +37,33 @@ public class MitigationLayer : MonoBehaviour
 
         return totalDamage;
     }
+
+    public Dictionary<GameTag, float> CalculateMitigation(Dictionary<GameTag, float> damageMap)
+    {
+        var mitigated = new Dictionary<GameTag, float>(damageMap.Count);
+        float maxLife = _healthHandler.MaxHealth;
+
+        foreach (var (type, rawAmount) in damageMap)
+        {
+            float mitigation = _stats != null
+                ? _stats.GetStat(GameTags.ModDefenseMitigation, new TagContainer(type))
+                : 0f;
+
+            mitigated[type] = rawAmount * (maxLife / (maxLife + Mathf.Max(0f, mitigation)));
+        }
+
+        return mitigated;
+    }
+
+    public float CalculateSingleMitigation(float rawAmount, GameTag damageType)
+    {
+        float maxLife = _healthHandler.MaxHealth;
+        float mitigationRating = _stats != null
+            ? _stats.GetStat(GameTags.ModDefenseMitigation, new TagContainer(damageType))
+            : 0f;
+
+        float damageMultiplier = maxLife / (maxLife + Mathf.Max(0f, mitigationRating));
+        return rawAmount * damageMultiplier;
+    }
+
 }

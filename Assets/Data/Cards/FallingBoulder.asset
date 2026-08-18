@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14e5cc313ca53064fb2d70276a096fc1, type: 3}
+  m_Name: FallingBoulder
+  m_EditorClassIdentifier: 
+  id: 8f7def75-53f7-4a3f-a38a-d9b69d493398
+  castTime: 1
+  spawnAtCursor: 1
+  visuals:
+    Name: Falling Boulder
+    Description: Debris
+    Art: {fileID: 0}
+    CastAnimation: 0
+    Impact: {fileID: 0}
+  DeckOverrides:
+    addedDraws: 0
+    addedDiscards: 0
+  boulderPrefab: {fileID: 8151445253895366970, guid: 3fc25fa3acefd11468c1ce7215a5e965, type: 3}
+  effectiveness: 1
+  damageConversion: {fileID: 11400000, guid: 676097f7fdd799d4fb364694a46373ec, type: 2}
+  radius: 3
+  spawnOffset: {x: 0, y: 10, z: 0}

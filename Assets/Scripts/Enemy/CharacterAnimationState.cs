@@ -2,7 +2,6 @@
 {
     Unset,
     Locomotion,
-    Attack,
     Stun,
     Dead
 }

@@ -59,6 +59,19 @@ public class TagContainer
         return false;
     }
 
+    public bool HasAny(TagContainer required)
+    {
+        if (required == null || required.IsEmpty) return true;
+
+        for (int i = 0; i < required.Tags.Count; i++)
+        {
+            if (HasTag(required.Tags[i]))
+                return true;
+        }
+
+        return false;
+    }
+
     public bool HasAll(TagContainer required)
     {
         if (required == null || required.IsEmpty) return true;

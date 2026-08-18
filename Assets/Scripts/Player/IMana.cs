@@ -5,5 +5,5 @@ public interface IMana
     float CurrentMana { get; }
     float MaxMana { get; }
 
-    event Action<float, float> OnManaChanged;
+    event Action<float, float, bool> OnManaChanged; // current, max, isInstant
 }
