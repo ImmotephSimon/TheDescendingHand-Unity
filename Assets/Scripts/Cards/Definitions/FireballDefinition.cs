@@ -5,7 +5,7 @@ public class FireballDefinition : CardDefinition
 {
     [SerializeField] private ProjectileInfo projectileInfo;
     [SerializeField] private float effectiveness;
-    [SerializeField] private TagRestriction damageConversion;
+    [SerializeField] private GameTag damageConversion;
     [SerializeField] private float duration;
     [SerializeField] private float radius;
 

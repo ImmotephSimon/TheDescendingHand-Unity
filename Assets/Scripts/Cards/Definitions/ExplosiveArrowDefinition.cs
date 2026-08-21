@@ -5,7 +5,7 @@ public class ExplosiveArrowDefinition : CardDefinition
 {
     [SerializeField] private ProjectileInfo projectileInfo;
     [SerializeField] private float effectiveness;
-    [SerializeField] private TagRestriction damageConversion;
+    [SerializeField] private GameTag damageConversion;
     [SerializeField] private float detonationDelay;
     [SerializeField] private float channelTickInterval;
     [SerializeField] private float maxChannelDuration;

@@ -112,13 +112,13 @@ public class CardManager : ICardContainer, ICardPiles
         if (index >= 0 && index < _hand.Length && _hand[index] != null)
         {
             card = _hand[index];
-            DiscardCardInHand(index);
             return true;
         }
 
         card = null;
         return false;
     }
+
 
     private void ShuffleDrawPile()
     {

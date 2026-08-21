@@ -20,7 +20,8 @@ MonoBehaviour:
     RequiredTags:
       MatchAll: 0
       Tags:
-        Tags: []
+        Tags:
+        - TagId: Restriction.Physical
   - Stat:
       TagId: Mod.Stat.Mana
     Op: 0
@@ -32,7 +33,7 @@ MonoBehaviour:
   - Stat:
       TagId: Mod.Stat.Movement
     Op: 1
-    Value: 3.06
+    Value: 0
     RequiredTags:
       MatchAll: 0
       Tags:

@@ -8,7 +8,6 @@ public class PlayerInputController : MonoBehaviour
     private Vector2 _rawInput;
     private LayerMask _floorLayer;
     private GameInput _gameInput;
-    private ClientBridge _clientBridge;
 
     private void Awake()
     {
@@ -29,11 +28,18 @@ public class PlayerInputController : MonoBehaviour
         _gameInput.Player.Card4.canceled += ctx => OnReleaseCard(3);
         _gameInput.Player.Card5.canceled += ctx => OnReleaseCard(4);
 
+        
         _gameInput.Player.LeftClick.performed += OnLeftClick;
         _gameInput.Player.Interact.performed += OnLoot;
         _gameInput.Player.Inventory.performed += OnOpenInventory;
-        _clientBridge = GetComponentInParent<ClientBridge>();
-        
+
+        _gameInput.Player.Dodgeroll.performed += DodgeRoll;
+
+    }
+
+    private void DodgeRoll(InputAction.CallbackContext context)
+    {
+        ClientBridge.Instance.Movement.DodgeRoll();
     }
 
     private void Update()
@@ -44,18 +50,19 @@ public class PlayerInputController : MonoBehaviour
     private void OnPlayCard(int index)
     {
         Debug.Log($"Playing index {index}");
-        _clientBridge.AbilitySystem.RequestUseAbility(index);
+        ClientBridge.Instance.AbilitySystem.RequestUseAbility(index);
     }
 
     private void OnReleaseCard(int index)
     {
-        Debug.Log($"[Input] Card{index} CANCELED event fired");
-        _clientBridge.AbilitySystem.RequestCancelAbility(index);
+        ClientBridge.Instance.AbilitySystem.RequestCancelAbility(index);
     }
 
     private void UpdateMovementInput()
     {
-        if (_clientBridge.Movement == null) return;
+        IPlayerMovement movement = ClientBridge.Instance.Movement;
+
+        if (movement == null) return;
 
         _rawInput = _gameInput.Player.Move.ReadValue<Vector2>();
 
@@ -68,11 +75,11 @@ public class PlayerInputController : MonoBehaviour
         }
         else
         {
-            Plane plane = new Plane(Vector3.up, _clientBridge.Movement.Position.y);
+            Plane plane = new Plane(Vector3.up, movement.Position.y);
             if (plane.Raycast(ray, out float distance)) mouseWorldPosition = ray.GetPoint(distance);
         }
 
-        _clientBridge.Movement.SetLocalInput(_rawInput, mouseWorldPosition);
+        movement.SetLocalInput(_rawInput, mouseWorldPosition);
     }
 
     private void OnLeftClick(InputAction.CallbackContext ctx)
@@ -82,12 +89,12 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnLoot(InputAction.CallbackContext ctx)
     {
-        _clientBridge?.Player?.TryInteract();
+        ClientBridge.Instance?.ClientPlayer?.TryInteract();
     }
 
     private void OnOpenInventory(InputAction.CallbackContext context)
     {
-        _clientBridge.PlayerHUD.ToggleInventory();
+        ClientBridge.Instance.PlayerHUD.ToggleInventory();
     }
 
     private void OnDestroy()

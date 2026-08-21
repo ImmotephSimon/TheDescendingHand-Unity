@@ -26,9 +26,11 @@ MonoBehaviour:
     addedDiscards: 0
   rockPrefab: {fileID: 8151445253895366970, guid: 391cef2f5a7abd245b9f51c78235caa7, type: 3}
   effectiveness: 0.4
-  damageConversion: {fileID: 11400000, guid: 676097f7fdd799d4fb364694a46373ec, type: 2}
+  damageConversion:
+    TagId: Restriction.Physical
   radius: 0.7
   spawnOffset: {x: 0, y: 6, z: 0}
   spread: 1.5
   count: 6
   interval: 0.5
+  meshScale: 0.3

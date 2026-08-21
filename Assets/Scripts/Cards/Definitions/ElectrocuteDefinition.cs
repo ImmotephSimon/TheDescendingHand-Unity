@@ -5,7 +5,7 @@ public class ElectrocuteDefinition : CardDefinition
 {
     [SerializeField] private ProjectileInfo projectile;
     [SerializeField] private float effectiveness;
-    [SerializeField] private TagRestriction damageConversion;
+    [SerializeField] private GameTag damageConversion;
 
 
     public override Card Create(CardInitContext context)

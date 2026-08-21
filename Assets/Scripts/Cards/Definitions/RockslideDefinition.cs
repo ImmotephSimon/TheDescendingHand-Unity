@@ -5,7 +5,7 @@ public class RockslideDefinition : CardDefinition
 {
     [SerializeField] private GameObject rockPrefab;
     [SerializeField] private float effectiveness;
-    [SerializeField] private TagRestriction damageConversion;
+    [SerializeField] private GameTag damageConversion;
     [SerializeField] private float radius = 1f;
     [SerializeField] private Vector3 spawnOffset = new(0f, 10f, 0f);
     [SerializeField] private float spread = 1.5f;

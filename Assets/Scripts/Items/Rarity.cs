@@ -1,9 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Items/Rarity")]
 public class Rarity : ScriptableObject
 {
+    [SerializeField, HideInInspector]
+    private string id;
+    public string Id => id;
+
     public float DropWeight;
     public int MaxAffixes;
     public int MinAffixes;
@@ -13,6 +18,14 @@ public class Rarity : ScriptableObject
     public bool CanHaveUniqueMods;
 
     public Color DisplayColor;
-    public float LightIntensity = 0.05f; // Default low for Normal
+    public float LightIntensity = 0.05f; 
     public float LightRange = 0.05f;
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (string.IsNullOrEmpty(id))
+            id = Guid.NewGuid().ToString();
+    }
+#endif
 }

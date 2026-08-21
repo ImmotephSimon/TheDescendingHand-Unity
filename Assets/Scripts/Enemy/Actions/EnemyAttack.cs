@@ -45,13 +45,10 @@ public abstract class EnemyAttack : MonoBehaviour, IEnemyAttack
 
     public virtual void Execute(Transform target)
     {
-        attackHitbox?.Enable();
-        Debug.Log($"Executing attack on {target.name}");
     }
 
     public virtual void Stop()
     {
-        attackHitbox?.Disable();
     }
 
     public virtual void OnAnimationFinish()

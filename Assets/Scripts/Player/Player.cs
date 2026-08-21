@@ -22,18 +22,18 @@ public class Player : Entity, IPlayerCollection
 
         playerMovement = GetComponent<PlayerMovementController>();
         animationHandler = GetComponentInChildren<IAnimationHandler>();
-        _cardController = GetComponentInChildren<CardController>();
+        _cardController = GetComponent<CardController>();
         Debug.Assert(animationHandler != null, $"{name} missing IAnimationHandler");
         Debug.Assert(_cardController != null, $"{name} missing CardController");
 
-        startingStats.ApplyTo(stats);
+        startingStats.ApplyTo(_stats);
     }
 
-    public void InitializeLocalPlayer()
-    {
-        ClientBridge.Instance.PlayerHUD.Bind(this);
-        ClientBridge.Instance.GlobePositioner.Initialize(this);
-    }
+    //public void InitializeLocalPlayer()
+    //{
+    //    ClientBridge.Instance.PlayerHUD.Bind(this);
+    //    ClientBridge.Instance.GlobePositioner.Initialize(this);
+    //}
 
 
     protected override void OnDeath(IEntity killer)
@@ -65,16 +65,8 @@ public class Player : Entity, IPlayerCollection
         }
     }
 
-    public void TryInteract()
-    {
-        IInteractable interact = FindNearbyInteractable();
-
-        if (interact == null)
-            return;
-
-        interact.Interact(this);
-    }
-    private IInteractable FindNearbyInteractable()
+    
+    public IInteractable FindNearbyInteractable()
     {
         Collider[] hits = Physics.OverlapSphere(
             transform.position,
@@ -94,7 +86,7 @@ public class Player : Entity, IPlayerCollection
 
     private void OnDestroy()
     {
-        startingStats.RemoveFrom(stats);
+        startingStats.RemoveFrom(_stats);
     }
 
     public void AddGold(int amount)

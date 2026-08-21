@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4b890523e001c74a9a2bf0d6340e5f7, type: 3}
+  m_Name: DualPlayer
+  m_EditorClassIdentifier: 
+  _prefabs:
+  - Server: {fileID: 5204800278082625481, guid: 5e5cd2d58d397ca4599a6acafe0082bd, type: 3}
+    Client: {fileID: 927076904386195409, guid: 370548d182ab1b14896983486ec10ed4, type: 3}

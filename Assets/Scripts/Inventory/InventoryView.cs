@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,24 +9,29 @@ public class InventoryView : MonoBehaviour
     [SerializeField] private InventorySlotView slotPrefab;
     [SerializeField] private ItemIconView itemIconPrefab;
     [SerializeField] private Transform itemContainer;
-    [SerializeField] private Vector2 cellSize = new Vector2(64f, 64f);
-    private Vector2 spacing = new Vector2(2f, 2f);
+    [SerializeField] private Vector2 cellSize = new(64f, 64f);
 
-    private IInventory inventory;
+    private readonly Vector2 spacing = new(2f, 2f);
+    private readonly List<ItemIconView> spawnedIcons = new();
+
+    private PlayerItemsSync _items;
     private InventorySlotView[,] slots;
-    private readonly List<ItemIconView> spawnedIcons = new List<ItemIconView>();
 
-    public void Bind(Player player)
+    public void Bind(PlayerItemsSync items)
     {
-        if (inventory != null)
-            inventory.OnChanged -= Refresh;
+        if (_items != null)
+            _items.InventoryChanged -= Refresh;
 
-        inventory = player.GetComponent<IInventory>();
-        if (inventory == null)
+        _items = items;
+
+        if (_items == null)
             return;
 
-        inventory.OnChanged += Refresh;
+        _items.InventoryChanged += Refresh;
+    }
 
+    public void Initialize()
+    {
         InitializeGrid();
         Refresh();
         ToggleVisibility();
@@ -35,8 +39,8 @@ public class InventoryView : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (inventory != null)
-            inventory.OnChanged -= Refresh;
+        if (_items != null)
+            _items.InventoryChanged -= Refresh;
     }
 
     private void InitializeGrid()
@@ -50,94 +54,89 @@ public class InventoryView : MonoBehaviour
             }
         }
 
-        int rows = inventory.Rows;
-        int cols = inventory.Columns;
+        int rows = _items.InventoryRows;
+        int columns = _items.InventoryColumns;
 
         if (TryGetComponent<GridLayoutGroup>(out var gridLayout))
         {
             gridLayout.cellSize = cellSize;
             gridLayout.spacing = spacing;
             gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-            gridLayout.constraintCount = cols;
+            gridLayout.constraintCount = columns;
         }
 
-        slots = new InventorySlotView[rows, cols];
+        slots = new InventorySlotView[rows, columns];
 
-        for (int r = 0; r < rows; r++)
+        for (int row = 0; row < rows; row++)
         {
-            for (int c = 0; c < cols; c++)
+            for (int column = 0; column < columns; column++)
             {
                 var slot = Instantiate(slotPrefab, transform);
-                slot.Initialize(r, c);
+                slot.Initialize(row, column);
 
                 slot.OnSlotClicked += HandleSlotClicked;
                 slot.OnSlotRightClicked += HandleSlotRightClicked;
                 slot.OnSlotHovered += HandleSlotHovered;
                 slot.OnSlotUnhovered += HandleSlotUnhovered;
 
-                slots[r, c] = slot;
+                slots[row, column] = slot;
             }
         }
     }
-    private void HandleSlotRightClicked(InventorySlotView slot, PointerEventData eventData)
+
+    private void HandleSlotClicked(
+        InventorySlotView slot,
+        PointerEventData eventData)
     {
-        inventory.SlotRightClicked(slot.Row, slot.Column, eventData);
+        _items.RequestInventorySlotClick(slot.Row, slot.Column);
     }
-    private void HandleSlotClicked(InventorySlotView slot, PointerEventData eventData)
+
+    private void HandleSlotRightClicked(
+        InventorySlotView slot,
+        PointerEventData eventData)
     {
-        inventory.SlotClicked(slot.Row, slot.Column, eventData);
+        _items.RequestInventorySlotRightClick(slot.Row, slot.Column);
     }
 
     private void HandleSlotHovered(InventorySlotView slot)
     {
-        if (!inventory.TryGet(slot.Row, slot.Column, out IInventoryItem item)) return;
-
-        if (item != null)
-        {
+        if (_items.TryGetInventoryItem(slot.Row, slot.Column, out var item))
             TooltipController.Instance.Show(item);
-        }
     }
 
     private void HandleSlotUnhovered(InventorySlotView slot)
     {
         TooltipController.Instance.Hide();
-        inventory.SlotUnhovered(slot.Row, slot.Column);
     }
 
     private void Refresh()
     {
-        // Clear active item UI instances
-        for (int i = spawnedIcons.Count - 1; i >= 0; i--)
-        {
-            Destroy(spawnedIcons[i].gameObject);
-        }
+        foreach (var icon in spawnedIcons)
+            Destroy(icon.gameObject);
+
         spawnedIcons.Clear();
 
-        Transform parent = itemContainer != null ? itemContainer : transform;
+        Transform parent = itemContainer != null
+            ? itemContainer
+            : transform;
 
-        // Render multi-tile items
-        foreach (var entry in inventory.GetPlacedItems())
+        foreach (var entry in _items.GetInventoryItems())
         {
             IInventoryItem item = entry.Key;
             Vector2Int origin = entry.Value;
 
-            ItemIconView iconInstance = Instantiate(itemIconPrefab, parent);
-            spawnedIcons.Add(iconInstance);
+            ItemIconView icon = Instantiate(itemIconPrefab, parent);
+            spawnedIcons.Add(icon);
 
             Vector2 position = GetLocalPosition(origin.x, origin.y);
+            Vector2Int size = item.Size;
 
-            Vector2Int inventorySize = item.Size;
-
-            Vector2 size = new Vector2(
-                inventorySize.x * cellSize.x + (inventorySize.x - 1) * spacing.x,
-                inventorySize.y * cellSize.y + (inventorySize.y - 1) * spacing.y
+            Vector2 pixelSize = new(
+                size.x * cellSize.x + (size.x - 1) * spacing.x,
+                size.y * cellSize.y + (size.y - 1) * spacing.y
             );
 
-            iconInstance.Render(
-                item.Icon,
-                position,
-                size
-            );
+            icon.Render(item.Icon, position, pixelSize);
         }
     }
 
@@ -145,10 +144,9 @@ public class InventoryView : MonoBehaviour
     {
         float x = column * (cellSize.x + spacing.x);
         float y = -row * (cellSize.y + spacing.y);
+
         return new Vector2(x, y);
     }
-
-
 
     internal void ToggleVisibility()
     {

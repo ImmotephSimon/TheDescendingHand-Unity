@@ -5,12 +5,13 @@ using UnityEngine;
 public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
 {
     protected IAnimationHandler animationHandler;
-    protected IStatContainer stats;
+    protected IStatContainer _stats;
     protected DegenComponent _degen;
     private MitigationLayer mitigationLayer;
     private Coroutine _stunRoutine;
     private IHealth _healthHandler;
     private IAilmentHandler _ailmentHandler;
+    private ModifierHandle _stunStatHandle;
 
     public int HostileLayer => TeamLayer == LayerMask.NameToLayer("Player")
     ? LayerMask.NameToLayer("Enemy")
@@ -23,7 +24,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
 
     public Transform Transform => transform;
 
-    public IStatContainer Stats => stats;
+    public IStatContainer Stats => _stats;
 
     protected int TeamLayer => gameObject.layer;
 
@@ -34,12 +35,12 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
     protected virtual void Awake()
     {
         mitigationLayer = GetComponent<MitigationLayer>();
-        stats = GetComponent<IStatContainer>();
+        _stats = GetComponent<IStatContainer>();
         _healthHandler = GetComponent<IHealth>();
         _ailmentHandler = GetComponent<IAilmentHandler>();
         _degen = GetComponent<DegenComponent>();
         Debug.Assert(mitigationLayer != null, $"{name} missing MitigationLayer");
-        Debug.Assert(stats != null, $"{name} missing stats");
+        Debug.Assert(_stats != null, $"{name} missing stats");
         Debug.Assert(_ailmentHandler != null, $"{name} missing ailment handler");
         Debug.Assert(_degen != null, $"{name} missing DegenComponent");
 
@@ -76,6 +77,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
         {
             Debug.Log($"CANCEL STUN {name}");
             StopCoroutine(_stunRoutine);
+            _stats.RemoveModifier(_stunStatHandle);
             _stunRoutine = null;
         }
         OnDeath(killer);
@@ -96,6 +98,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
         if (IsDead) return;
         if (_stunRoutine != null) StopCoroutine(_stunRoutine);
         OnStunBegin();
+        _stunStatHandle = _stats.AddModifier(new StatModifier(GameTags.StatusStun));
         animationHandler?.SetAnimationState(CharacterAnimationState.Stun);
 
         _stunRoutine =  StartCoroutine(StunRoutine(duration));
@@ -109,6 +112,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
             yield break;
 
         animationHandler?.SetAnimationState(CharacterAnimationState.Locomotion);
+        _stats.RemoveModifier(_stunStatHandle);
         OnStunEnd();
     }
 

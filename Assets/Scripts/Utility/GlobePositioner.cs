@@ -28,12 +28,12 @@ public class GlobePositioner : MonoBehaviour
         if (liquids.Length == 0)
             Debug.LogError("ARPGCamera has no LiquidWobble children");
     }
-    public void Initialize(Player player)
+    public void Initialize(PlayerStatsSync state)
     {
         
         foreach (var liquid in liquids)
         {
-            liquid.Initialize(player);
+            liquid.Initialize(state);
         }
     }
 

@@ -23,7 +23,7 @@ public class PlayerInventory : BaseInventory, ITargetable
         Loadout.CanUnequipToDestination = CanAdd;
     }
     
-    public override void SlotRightClicked(int row, int column, PointerEventData eventData)
+    public override void SlotRightClicked(int row, int column)
     {
         if (!TryGet(row, column, out IInventoryItem inventoryItem))
             return;
@@ -50,10 +50,8 @@ public class PlayerInventory : BaseInventory, ITargetable
             return;
         }
     }
-    public override void SlotClicked(int row, int column, PointerEventData eventData)
+    public override void SlotLeftClicked(int row, int column)
     {
-        if (eventData.button != PointerEventData.InputButton.Left) return;
-
         var cursorController = CursorItemController.Instance;
         if (cursorController == null || cursorController.CursorItem == null) return;
 

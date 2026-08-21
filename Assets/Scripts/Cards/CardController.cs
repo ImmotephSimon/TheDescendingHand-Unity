@@ -4,13 +4,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class CardController : NetworkBehaviour, IAbilitySystem
 {
-    public static CardController Instance;
 
     public ICardContainer CardProvider => _cardManager;
     public ICardPiles CardPiles => _cardManager;
@@ -28,7 +28,7 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     private IEntity _owner;
     private CardFactory _factory;
     private CardRegistry _registry;
-    private readonly Dictionary<Card, Coroutine> _pendingCastHandles = new();
+    private (Card Card, int HandIndex, Coroutine Handle)? _pendingCast;
 
     private Action _onActiveCardCompleted;
     private Action _onActiveCardInterrupted;
@@ -51,10 +51,6 @@ public class CardController : NetworkBehaviour, IAbilitySystem
         stats = GetComponentInParent<IStatContainer>();
         Debug.Assert(stats != null, "CardController requires an IStatContainer");
 
-        _cardManager.OnCardAdded += OnCardAdded;
-        _cardManager.OnCardRemoved += OnCardRemoved;
-
-        ClientBridge.Instance.OnPlayerReady += OnLocalPlayerReady;
     }
 
     public void InitializeServer(IEntity owner, CardFactory factory, CardRegistry registry)
@@ -66,13 +62,11 @@ public class CardController : NetworkBehaviour, IAbilitySystem
         Card card = factory.CreateFromDefinition(definition, _owner);
         Card card2 = factory.CreateFromDefinition(definition, _owner);
         _cardManager = new CardManager(new Card[] { card, card2 }, handSize: 5);
+        _cardManager.OnCardAdded += OnCardAdded;
+        _cardManager.OnCardRemoved += OnCardRemoved;
     }
 
-    private void OnLocalPlayerReady(IEntity player)
-    {
-        ClientBridge.Instance.OnPlayerReady -= OnLocalPlayerReady;
-        _cardManager.DrawHand();
-    }
+
 
     private void OnCardRemoved(int index, Card card)
     {
@@ -101,26 +95,25 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     [ObserversRpc]
     private void CardStartedObserversRpc(CardCastAnimation castAnimation)
     {
-        _animationHandler?.PlayAnimation(castAnimation);
+        _animationHandler?.PlayCastAnimation(castAnimation);
     }
 
     [ObserversRpc]
     private void CardInterruptedObserversRpc()
     {
-        _animationHandler?.StopCurrentAnimation();
+        _animationHandler?.StopCastAnimation();
     }
 
     [ServerRpc]
     public void RequestUseAbility(int cardIndex)
     {
-        Debug.Log($"RPC received. IsOwner={IsOwner}, Owner={Owner.ClientId}");
         if (isCasting || _activeCard != null) return;
 
         if (_cardManager.TryGetCardAtIndex(cardIndex, out Card card))
         {
             _activeCardSlotIndex = cardIndex;
             _isInputHeld = true;
-            Server_StartCast(card);
+            Server_StartCast(card, cardIndex);
             Camera.main.GetComponent<CardHandView>();
         }
     }
@@ -139,7 +132,7 @@ public class CardController : NetworkBehaviour, IAbilitySystem
         }
     }
 
-    private void Server_StartCast(Card card)
+    private void Server_StartCast(Card card, int handIndex)
     {
         isCasting = true;
         playerMovement.LockMovement();
@@ -148,7 +141,7 @@ public class CardController : NetworkBehaviour, IAbilitySystem
 
         CardStartedObserversRpc(card.Definition.Visuals.CastAnimation);
         var castHandle = StartCoroutine(Server_CastTimeRoutine(card));
-        _pendingCastHandles[card] = castHandle;
+        _pendingCast = (card, handIndex, castHandle);
     }
 
     private void Server_ExecuteCard(Card card)
@@ -164,8 +157,6 @@ public class CardController : NetworkBehaviour, IAbilitySystem
             channel.OnCompleted += _onActiveCardCompleted;
             channel.OnInterrupted += _onActiveCardInterrupted;
         }
-
-        isCasting = false;
 
         card.ExecuteBegin();
         card.ExecuteCastTimeDone();
@@ -211,19 +202,6 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     }
 
 
-    public void Server_EndCast(Card card)
-    {
-        if (_pendingCastHandles.TryGetValue(card, out var handle))
-        {
-            StopCoroutine(handle);
-            _pendingCastHandles.Remove(card);
-            isCasting = false;
-        }
-
-        card.ExecuteCancelled();
-
-        Server_EndChannel(card);
-    }
     private IEnumerator TickCardsRoutine()
     {
         while (_tickingCards.Count > 0)
@@ -246,7 +224,10 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     private IEnumerator Server_CastTimeRoutine(Card card)
     {
         yield return new WaitForSeconds(stats.GetStat(GameTags.ModOffenseCastSpeed, card.Tags, card.CastTime));
-        _pendingCastHandles.Remove(card);
+        _cardManager.DiscardCardInHand(_pendingCast.Value.HandIndex);
+        _pendingCast = null;
+        isCasting = false;
+
         Server_ExecuteCard(card);
     }
 
@@ -281,6 +262,31 @@ public class CardController : NetworkBehaviour, IAbilitySystem
         }
 
         OnPileReceived?.Invoke(drawPile, cards);
+    }
+
+    public void NotifyClientReadyServerRpc()
+    {
+        _cardManager.DrawHand();
+    }
+
+
+    [ServerRpc]
+    public void RequestCancelCurrentCast()
+    {
+        if (_pendingCast == null)
+            return;
+
+        var pending = _pendingCast.Value;
+
+        StopCoroutine(pending.Handle);
+        pending.Card.ExecuteCancelled();
+
+        _pendingCast = null;
+        isCasting = false;
+        _activeCardSlotIndex = -1;
+        _isInputHeld = false;
+
+        Server_EndCard(pending.Card);
     }
 
 }

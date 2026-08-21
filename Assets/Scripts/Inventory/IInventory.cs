@@ -14,10 +14,8 @@ public interface IInventory
     bool TryAdd(IInventoryItem item);
     bool TryRemove(IInventoryItem item);
 
-    void SlotClicked(int row, int column, PointerEventData eventData);
-    void SlotRightClicked(int row, int column, PointerEventData eventData);
-    void SlotHovered(int row, int column);
-    void SlotUnhovered(int row, int column);
+    void SlotLeftClicked(int row, int column);
+    void SlotRightClicked(int row, int column);
 
     event Action OnChanged;
 }

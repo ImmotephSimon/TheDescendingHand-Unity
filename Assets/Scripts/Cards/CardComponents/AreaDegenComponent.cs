@@ -12,7 +12,7 @@ public class AreaDegenComponent : CardComponent
 
     public AreaDegenComponent(
         float radius,
-        TagRestriction damageConversion,
+        GameTag damageConversion,
         float effectiveness,
         float duration,
         int maxStacks)

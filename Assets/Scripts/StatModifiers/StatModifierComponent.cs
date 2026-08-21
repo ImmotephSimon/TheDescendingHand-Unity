@@ -31,6 +31,18 @@ public class StatModifierComponent : MonoBehaviour, IStatContainer, ICalculator
         }
     }
 
+    public void Listen(GameTag[] stats, Action<float> callback)
+    {
+        foreach (var stat in stats)
+            Listen(stat, callback);
+    }
+
+    public void StopListening(GameTag[] stats, Action<float> callback)
+    {
+        foreach (var stat in stats)
+            StopListening(stat, callback);
+    }
+
     private void NotifyStatChanged(GameTag stat)
     {
         if (stat == null) return;
@@ -86,6 +98,7 @@ public class StatModifierComponent : MonoBehaviour, IStatContainer, ICalculator
 
             switch (modifier.Op)
             {
+                case MathOp.Set: value = modifier.Value; break;
                 case MathOp.Added: value += modifier.Value; break;
                 case MathOp.Additive: additive += modifier.Value; break;
                 case MathOp.Multiplicative: multiplier *= modifier.Value; break;
@@ -105,7 +118,7 @@ public class StatModifierComponent : MonoBehaviour, IStatContainer, ICalculator
         return GetStat(stat, TagContainer.Empty, 0);
     }
 
-    public Dictionary<GameTag, float> CalculateDamage(TagContainer tags, float effectiveness, TagRestriction damageConversion)
+    public Dictionary<GameTag, float> CalculateDamage(TagContainer tags, float effectiveness, GameTag damageConversion)
     {
         Dictionary<GameTag, float> _damage = new();
 

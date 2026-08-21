@@ -31,10 +31,12 @@ MonoBehaviour:
       Sideways: 0
       Upward: 0
       Forward: 1
+      Gravity: 0
     Visual: {fileID: 8553150264899835645, guid: e7e405b0ae2a4b64499b3f5624b62bd0, type: 3}
     Count: 1
     Pierce: 0
     Chains: 2
     Bounces: 0
   effectiveness: 1
-  damageConversion: {fileID: 11400000, guid: 5d7f8bcbc2d29b14bacc644813b18c7e, type: 2}
+  damageConversion:
+    TagId: Restriction.Element.Lightning

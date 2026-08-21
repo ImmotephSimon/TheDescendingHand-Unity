@@ -8,7 +8,7 @@ public class TargetDummy : Entity
     {
         base.Awake();
 
-        stats.AddModifier(
+        _stats.AddModifier(
             new StatModifier(
                 GameTags.ModStatHealth,
                 MathOp.Added,
@@ -43,6 +43,6 @@ public class TargetDummy : Entity
     protected override void OnEntityRevived(IEntity entity)
     {
         IsDead = false;
-        GetComponent<IHealth>().AdjustHealth(stats.GetStat(GameTags.ModStatHealth), this);
+        GetComponent<IHealth>().AdjustHealth(_stats.GetStat(GameTags.ModStatHealth), this);
     }
 }

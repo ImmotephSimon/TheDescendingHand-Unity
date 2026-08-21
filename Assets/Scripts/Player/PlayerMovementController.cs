@@ -4,12 +4,20 @@ using FishNet.Object.Prediction;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using System;
-using Unity.Collections.LowLevel.Unsafe;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
 {
+    [SerializeField] private AnimationCurve _dodgeSpeedCurve = new AnimationCurve(
+        new Keyframe(0f, 0f),    // initial delay
+        new Keyframe(0.15f, 0f), // still stationary
+        new Keyframe(0.5f, 2f), // speed up
+        new Keyframe(0.65f, 1f), // middle
+        new Keyframe(1f, 0f));   // end
     public enum MovementAction : byte
     {
         None,
@@ -21,11 +29,9 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         public Vector2 Input;
         public Vector3 MouseWorldPosition;
         public MovementAction ActionRequested;
-        public bool WantToCancel;
-        public bool CanMove => !movementLocked;
 
-        private bool movementLocked;
         private uint _tick;
+
         public void Dispose() { }
         public uint GetTick() => _tick;
         public void SetTick(uint value) => _tick = value;
@@ -34,58 +40,83 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
     public struct ReconcileData : IReconcileData
     {
         public Vector3 Position;
+        public Quaternion Rotation;
         public Vector3 Velocity;
         public Vector3 CurrentMoveVelocity;
         public MovementAction CurrentAction;
         public float ActionTimer;
+        public float DodgeDuration;
 
         private uint _tick;
+
         public void Dispose() { }
         public uint GetTick() => _tick;
         public void SetTick(uint value) => _tick = value;
 
-        public ReconcileData(Vector3 position, Vector3 velocity, Vector3 currentMoveVelocity, MovementAction currentAction, float actionTimer, uint tick)
+        public ReconcileData(
+            Vector3 position,
+            Quaternion rotation,
+            Vector3 velocity,
+            Vector3 currentMoveVelocity,
+            MovementAction currentAction,
+            float actionTimer,
+            float dodgeDuration,
+            uint tick)
         {
             Position = position;
+            Rotation = rotation;
             Velocity = velocity;
             CurrentMoveVelocity = currentMoveVelocity;
             CurrentAction = currentAction;
             ActionTimer = actionTimer;
+            DodgeDuration = dodgeDuration;
             _tick = tick;
         }
     }
 
-    private MovementLogicProcessor _processor = new MovementLogicProcessor();
+    private const float DodgeTurnSpeed = 180f;
+
     private CharacterController _controller;
+    private PlayerAnimationController _animationHandler;
     private Animator _animator;
+    private Transform _visual;
 
     private Vector3 _velocity;
     private Vector3 _currentMoveVelocity;
     private Vector2 _bufferedInput;
     private Vector3 _bufferedMousePos;
-    private int _movementLocks = 0;
+
+    private MovementAction _currentAction;
+    private float _actionTimer;
+    private float _dodgeDuration;
+
+    private int _movementLocks;
     private IStatContainer _statContainer;
+    private MovementAction _bufferedAction;
+    private readonly SyncVar<float> _networkedMoveSpeed = new(3f);
+
     public Vector3 CursorPosition => _bufferedMousePos;
     public bool CanMove => _movementLocks == 0;
     public Vector3 Position => transform.position;
-    private readonly SyncVar<float> _networkedMoveSpeed = new SyncVar<float>(3f);
     public float Gravity { get; private set; } = -9.81f;
     public float MoveSpeed => _networkedMoveSpeed.Value;
 
     private void Awake()
     {
         _controller = GetComponent<CharacterController>();
-        _animator = GetComponentInChildren<Animator>();
+        _animationHandler = GetComponentInChildren<PlayerAnimationController>();
+        _animator = _animationHandler.Animator;
+        _visual = _animationHandler.transform;
         _statContainer = GetComponent<IStatContainer>();
-        Debug.Assert(_statContainer != null, $"No stat container.");
-        // Ensure the build processes network ticks properly even when alt-tabbed
+
+        Debug.Assert(_statContainer != null, "No stat container.");
+
         Application.runInBackground = true;
-        _animator.Play("Locomotion");
+        _animationHandler.SetAnimationState(CharacterAnimationState.Locomotion);
     }
 
     public void SetLocalInput(Vector2 input, Vector3 mousePos)
     {
-
         _bufferedInput = input;
         _bufferedMousePos = mousePos;
     }
@@ -96,17 +127,22 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         InstanceFinder.TimeManager.OnPostTick += TimeManager_OnPostTick;
 
         if (IsServerStarted)
-        { 
+        {
             _statContainer.Listen(GameTags.ModStatMovement, OnMovementStatChanged);
-            OnMovementStatChanged(_statContainer.GetStat(GameTags.ModStatMovement, TagContainer.Empty, 3f));
+            OnMovementStatChanged(
+                _statContainer.GetStat(
+                    GameTags.ModStatMovement,
+                    TagContainer.Empty,
+                    3f));
         }
     }
 
     private void OnMovementStatChanged(float newValue)
     {
-        // Calculate base 3f with stat modifiers applied
-        float calculated = _statContainer.GetStat(GameTags.ModStatMovement, TagContainer.Empty, 3f);
-        _networkedMoveSpeed.Value = calculated;
+        _networkedMoveSpeed.Value = _statContainer.GetStat(
+            GameTags.ModStatMovement,
+            TagContainer.Empty,
+            3f);
     }
 
     public override void OnStopNetwork()
@@ -119,7 +155,9 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
 
         if (IsServerStarted && _statContainer != null)
         {
-            _statContainer.StopListening(GameTags.ModStatMovement, OnMovementStatChanged);
+            _statContainer.StopListening(
+                GameTags.ModStatMovement,
+                OnMovementStatChanged);
         }
     }
 
@@ -130,9 +168,11 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
             MoveData md = new MoveData
             {
                 Input = _bufferedInput,
-                MouseWorldPosition = _bufferedMousePos
+                MouseWorldPosition = _bufferedMousePos,
+                ActionRequested = _bufferedAction
             };
 
+            //_bufferedAction = MovementAction.None;
             MoveCharacter(md);
         }
         else if (IsServerInitialized)
@@ -140,100 +180,191 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
             MoveCharacter(default);
         }
     }
+
     private void TimeManager_OnPostTick()
     {
         if (IsOwner)
-        {
             CreateReconcile();
-        }
     }
 
     [Replicate]
-    private void MoveCharacter(MoveData md, ReplicateState state = ReplicateState.Invalid, Channel channel = Channel.Unreliable)
+    private void MoveCharacter(
+        MoveData md,
+        ReplicateState state = ReplicateState.Invalid,
+        Channel channel = Channel.Unreliable)
     {
-        if (!CanMove) return;
+        if (!CanMove || IsImmobilized())
+            return;
+
+        _bufferedMousePos = md.MouseWorldPosition;
 
         float delta = (float)TimeManager.TickDelta;
+        Vector3 movementInput = new Vector3(md.Input.x, 0f, md.Input.y).normalized;
 
-        // 1. Rotation Check
-        Vector3 direction = md.MouseWorldPosition - transform.position;
-        direction.y = 0;
-        if (direction.sqrMagnitude > 0.001f) transform.rotation = Quaternion.LookRotation(direction);
+        ApplyGravity(delta);
 
-        // 2. Raw Input Translation
-        Vector3 movementInput = new Vector3(md.Input.x, 0, md.Input.y).normalized;
-
-        // 3. Gravity Check
-        bool grounded = _controller.isGrounded;
-        if (grounded && _velocity.y < 0)
+        if (_currentAction == MovementAction.None &&
+            md.ActionRequested == MovementAction.DodgeRoll)
         {
-            _velocity.y = -2f;
+            StartDodgeRoll();
+
+            if (IsOwner)
+                _bufferedAction = MovementAction.None;
+        }
+
+        if (_currentAction == MovementAction.DodgeRoll)
+        {
+            ProcessDodgeRollAction(movementInput, delta);
         }
         else
         {
-            _velocity.y += Gravity * delta;
+            ProcessLocomotion(movementInput, md.MouseWorldPosition);
         }
 
-        // 4. Acceleration Diagnostics
-        float moveSpeed = MoveSpeed > 0 ? MoveSpeed : 1f;
-        Vector3 targetVelocity = movementInput * moveSpeed;
-
-        //float acceleration = 20f;
-        //float deceleration = 200f;
-        //float rate = movementInput == Vector3.zero ? deceleration : acceleration;
-
-        //_currentMoveVelocity = Vector3.MoveTowards(_currentMoveVelocity, targetVelocity, rate * delta);
-        _currentMoveVelocity = targetVelocity;
-        // 5. Final Motion Compilation
-        Vector3 finalMotion = (_currentMoveVelocity + new Vector3(0, _velocity.y, 0)) * delta;
+        Vector3 finalMotion =
+            (_currentMoveVelocity + new Vector3(0f, _velocity.y, 0f)) * delta;
 
         _controller.Move(finalMotion);
+    }
 
+    private static bool IsImmobilized()
+    {
+        if (ClientBridge.Instance.Stats == null) return false;
+
+        foreach (var tag in GameTags.Immobilizations)
+        {
+            if (ClientBridge.Instance.Stats.Statuses.Contains(tag.TagId))
+                return true;
+        }
+
+        return false;
+    }
+
+    private void ApplyGravity(float delta)
+    {
+        if (_controller.isGrounded && _velocity.y < 0f)
+            _velocity.y = -2f;
+        else
+            _velocity.y += Gravity * delta;
+    }
+
+    private void StartDodgeRoll()
+    {
+        _currentAction = MovementAction.DodgeRoll;
+        _dodgeDuration = _animationHandler.PlayDodgeRoll();
+        _actionTimer = _dodgeDuration;
+    }
+
+    private void ProcessDodgeRollAction(Vector3 movementInput, float delta)
+    {
+        _actionTimer -= delta;
+
+        float progress = 1f - (_actionTimer / _dodgeDuration);
+        float speedMultiplier = _dodgeSpeedCurve.Evaluate(progress);
+
+        Vector3 moveDir = movementInput.sqrMagnitude > 0.001f
+            ? movementInput
+            : transform.forward;
+
+        _currentMoveVelocity = moveDir * (MoveSpeed * speedMultiplier);
+
+        if (movementInput.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(moveDir);
+
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                targetRotation,
+                DodgeTurnSpeed * delta);
+        }
+
+        if (_actionTimer <= 0f)
+        {
+            _currentAction = MovementAction.None;
+            _actionTimer = 0f;
+            _currentMoveVelocity = Vector3.zero;
+        }
+    }
+
+    private void ProcessLocomotion(Vector3 movementInput, Vector3 mouseWorldPosition)
+    {
+        Vector3 direction = mouseWorldPosition - transform.position;
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude > 0.001f)
+            transform.rotation = Quaternion.LookRotation(direction);
+
+        float moveSpeed = MoveSpeed > 0f ? MoveSpeed : 1f;
+        _currentMoveVelocity = movementInput * moveSpeed;
     }
 
     [Reconcile]
-    private void Reconciliation(ReconcileData rd, Channel channel = Channel.Unreliable)
+    private void Reconciliation(
+        ReconcileData rd,
+        Channel channel = Channel.Unreliable)
     {
         transform.position = rd.Position;
+        transform.rotation = rd.Rotation;
         _velocity = rd.Velocity;
         _currentMoveVelocity = rd.CurrentMoveVelocity;
+        _currentAction = rd.CurrentAction;
+        _actionTimer = rd.ActionTimer;
+        _dodgeDuration = rd.DodgeDuration;
     }
 
     public override void CreateReconcile()
     {
-        ReconcileData rd = new ReconcileData(
-            transform.position,
-            _velocity,
-            _currentMoveVelocity,
-            _processor.CurrentAction,
-            _processor.ActionTimer,
-            InstanceFinder.TimeManager.Tick
-        );
-
-        Reconciliation(rd);
+        Reconciliation(
+            new ReconcileData(
+                transform.position,
+                transform.rotation,
+                _velocity,
+                _currentMoveVelocity,
+                _currentAction,
+                _actionTimer,
+                _dodgeDuration,
+                InstanceFinder.TimeManager.Tick));
     }
 
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
-
-        Debug.Log($"{name} IsOwner={IsOwner} IsServer={IsServerInitialized}");
-    }
 
     private void Update()
     {
         float currentVelocity = _currentMoveVelocity.magnitude;
+
         _animator.SetFloat("Speed", currentVelocity);
-        _animator.SetFloat("AnimSpeed", currentVelocity > 0.1f ? currentVelocity / MoveSpeed : 1f);
+        _animator.SetFloat(
+            "AnimSpeed",
+            currentVelocity > 0.1f
+                ? currentVelocity / MoveSpeed
+                : 1f);
 
-        Vector3 movementInput = new Vector3(_bufferedInput.x, 0, _bufferedInput.y).normalized;
-        Vector3 localMovement = transform.InverseTransformDirection(movementInput);
-        _animator.SetFloat("MoveX", localMovement.x, 0.15f, Time.deltaTime);
-        _animator.SetFloat("MoveY", localMovement.z, 0.15f, Time.deltaTime);
+        Vector3 movementInput =
+            new Vector3(_bufferedInput.x, 0f, _bufferedInput.y).normalized;
+
+        if (_currentAction == MovementAction.DodgeRoll)
+        {
+            _animator.SetFloat("MoveX", 0f);
+            _animator.SetFloat("MoveY", 1f);
+            return;
+        }
+
+        _visual.localRotation = Quaternion.identity;
+
+        Vector3 localMovement =
+            transform.InverseTransformDirection(movementInput);
+
+        _animator.SetFloat(
+            "MoveX",
+            localMovement.x,
+            0.15f,
+            Time.deltaTime);
+
+        _animator.SetFloat(
+            "MoveY",
+            localMovement.z,
+            0.15f,
+            Time.deltaTime);
     }
-
-
-    
 
     public void LockMovement()
     {
@@ -243,5 +374,11 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
     public void UnlockMovement()
     {
         _movementLocks--;
+    }
+
+    public void DodgeRoll()
+    {
+        ClientBridge.Instance.AbilitySystem.RequestCancelCurrentCast();
+        _bufferedAction = MovementAction.DodgeRoll;
     }
 }

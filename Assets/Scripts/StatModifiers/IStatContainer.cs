@@ -8,6 +8,8 @@ public interface IStatContainer
     ModifierHandle AddModifier(StatModifier modifier);
     void RemoveModifier(ModifierHandle handle);
     void Listen(GameTag stat, Action<float> listener);
+    void Listen(GameTag[] stats, Action<float> listener);
     void StopListening(GameTag stat, Action<float> listener);
+    void StopListening(GameTag[] stats, Action<float> listener);
 
 }

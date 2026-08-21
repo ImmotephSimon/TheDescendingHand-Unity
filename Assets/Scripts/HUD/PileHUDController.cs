@@ -11,7 +11,7 @@ public class PileHUDController : MonoBehaviour
 
     private TMP_Text drawText;
     private TMP_Text discardText;
-    private CardController cardController;
+    private CardController _cardController;
 
     private enum ActivePile { None, Draw, Discard }
     private ActivePile active = ActivePile.None;
@@ -24,8 +24,8 @@ public class PileHUDController : MonoBehaviour
         if (drawText == null || discardText == null)
             Debug.LogError($"Missing text: drawText: {drawText}, discardText: {discardText}");
 
-        cardController = ClientBridge.Instance.Player.CardController;
-        cardController.OnPileReceived += OnPileReceived;
+        _cardController = ClientBridge.Instance.ClientPlayer.GetComponent<CardController>();
+        _cardController.OnPileReceived += OnPileReceived;
 
         drawButton.onClick.AddListener(OnDrawClicked);
         discardButton.onClick.AddListener(OnDiscardClicked);
@@ -52,7 +52,7 @@ public class PileHUDController : MonoBehaviour
             return;
         }
 
-        cardController.RequestPile(target == ActivePile.Draw);
+        _cardController.RequestPile(target == ActivePile.Draw);
     }
 
     private void OnPileReceived(
@@ -76,7 +76,7 @@ public class PileHUDController : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (cardController != null)
-            cardController.OnPileReceived -= OnPileReceived;
+        if (_cardController != null)
+            _cardController.OnPileReceived -= OnPileReceived;
     }
 }

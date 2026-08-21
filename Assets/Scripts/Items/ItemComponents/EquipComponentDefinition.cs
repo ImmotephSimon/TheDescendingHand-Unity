@@ -1,6 +1,7 @@
+using System;
 using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class EquipComponentDefinition : ItemComponentDefinition
 {
     [SerializeField] private EquipmentType equipmentType;

@@ -18,7 +18,9 @@ public class AttackAction : EnemyActionBase
     {
         _attack = attack;
         _stats = owner.GetComponent<IStatContainer>();
-        if (attack == null) Debug.LogError($"{owner.name}: Missing IAttackAbility");
+        Debug.Assert(_attack != null, $"{owner.name}: Missing IAttackAbility");
+
+        _attack.OnHit += HandleHit;
     }
     
 
@@ -44,7 +46,7 @@ public class AttackAction : EnemyActionBase
         movementHandler.LockRotation(perception.Target);
 
         _canBeInterrupted = false;
-        _attack.OnHit += HandleHit;
+        
 
 
         abilityManager.StartCooldown(_attack);
@@ -52,8 +54,6 @@ public class AttackAction : EnemyActionBase
 
     private void HandleHit(IEntity entity)
     {
-        Debug.Log($"{entity} being hit");
-
         if (entity.Transform.TryGetComponent<IDamageable>(out var target))
         {
             float damage = _stats.GetStat(
@@ -89,7 +89,7 @@ public class AttackAction : EnemyActionBase
         {
             _canBeUpdated = false;
             _isAttacking = true;
-            animationHandler.PlayAnimation(
+            animationHandler.PlayAttackAnimation(
                 _attack.AttackAnimation,
                 FinishAttack
             );
@@ -108,7 +108,6 @@ public class AttackAction : EnemyActionBase
     {
         _isAttacking = false;
         _canBeInterrupted = true;
-        _attack.OnHit -= HandleHit;
         movementHandler.UnlockRotation();
         _canBeUpdated = true;
     }

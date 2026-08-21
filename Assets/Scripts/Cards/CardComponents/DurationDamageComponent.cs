@@ -9,10 +9,10 @@ public class DurationDamageComponent : CardComponent
     private readonly int _maxStacks;
 
     private Dictionary<GameTag, float> _damage;
-    private TagRestriction _damageConversion;
+    private GameTag _damageConversion;
 
     public DurationDamageComponent(
-        TagRestriction damageConversion,
+        GameTag damageConversion,
         float effectiveness,
         float duration,
         int maxStacks)

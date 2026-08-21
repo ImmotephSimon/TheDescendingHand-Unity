@@ -6,7 +6,8 @@ public enum MathOp
 {
     Added,
     Additive,
-    Multiplicative
+    Multiplicative,
+    Set
 }
 
 public readonly struct ModifierHandle
@@ -38,6 +39,12 @@ public struct StatModifier
     public StatModifier(GameTag stat, MathOp type, float value)
         : this(stat, type, value, TagRequirement.Empty) { }
 
+
+    /// <summary>
+    /// Sets a binary state modifier.
+    /// </summary>
+    public StatModifier(GameTag stat)
+    : this(stat, MathOp.Set, 1f, TagRequirement.Empty) { }
 
     public override string ToString()
     {

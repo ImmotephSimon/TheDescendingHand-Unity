@@ -1,3 +1,4 @@
+using FishNet.Object;
 using System;
 using UnityEngine;
 
@@ -9,14 +10,15 @@ public class ClientBridge : MonoBehaviour
     public GlobePositioner GlobePositioner { get; private set; }
     public IAbilitySystem AbilitySystem { get; private set; }
     public IPlayerMovement Movement { get; private set; }
-    public Player Player { get; private set; }
+    public ClientPlayer ClientPlayer { get; private set; }
     public PlayerHUD PlayerHUD { get; private set; }
     public CardHandController CardHandController { get; private set; }
-    public PlayerNetworkComponent PlayerNetwork { get; private set; }
+    public PlayerNetworkActions PlayerNetwork { get; private set; }
     public EquipmentVisuals EquipmentVisuals { get; private set; }
     public CardRegistry CardRegistry => cardRegistry;
+    public PlayerStatsSync Stats { get; private set; }
 
-    public event Action<IEntity> OnPlayerReady;
+    public event Action<ClientPlayer> OnClientPlayerReady;
 
     private void Awake()
     {
@@ -28,17 +30,17 @@ public class ClientBridge : MonoBehaviour
             Debug.LogError("Failed to find GlobePositioner");
     }
 
-    public void RegisterLocalPlayer(Player player)
+    public void RegisterLocalPlayer(ClientPlayer client)
     {
-        Player = player;
+        ClientPlayer = client;
 
-        AbilitySystem = player.GetComponentInChildren<IAbilitySystem>();
-        Movement = player.GetComponent<IPlayerMovement>();
-        PlayerHUD = player.GetComponent<PlayerHUD>();
-        GlobePositioner.Initialize(player);
-        EquipmentVisuals = player.GetComponentInChildren<EquipmentVisuals>();
+        Movement = client.GetComponent<IPlayerMovement>();
+        AbilitySystem = client.GetComponent<IAbilitySystem>();
+        PlayerHUD = client.GetComponent<PlayerHUD>();
+        EquipmentVisuals = client.GetComponentInChildren<EquipmentVisuals>();
         CardHandController = Camera.main.GetComponentInChildren<CardHandController>();
-        PlayerNetwork = player.GetComponent<PlayerNetworkComponent>();
+        PlayerNetwork = client.GetComponent<PlayerNetworkActions>();
+        Stats = client.GetComponent<PlayerStatsSync>();
 
         Debug.Assert(AbilitySystem != null, "Failed to register AbilitySystem");
         Debug.Assert(Movement != null, "Failed to register PlayerMovement");
@@ -47,7 +49,7 @@ public class ClientBridge : MonoBehaviour
         Debug.Assert(CardHandController != null, "Failed to register CardHandController");
         Debug.Assert(PlayerNetwork != null, "Failed to register PlayerNetwork");
 
-        player.InitializeLocalPlayer();
-        OnPlayerReady?.Invoke(player);
+        client.InitializeLocalPlayer();
+        OnClientPlayerReady?.Invoke(client);
     }
 }

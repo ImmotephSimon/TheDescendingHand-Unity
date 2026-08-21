@@ -75,7 +75,7 @@ public class Enemy : Entity, IExperienceSource
         base.Start();
         if (definition.EnemyType == EnemyType.Unique)
         {
-            ClientBridge.Instance.OnPlayerReady += BindBossHealthBar;
+            ClientBridge.Instance.OnClientPlayerReady += BindBossHealthBar;
         }
         else
         {
@@ -85,9 +85,9 @@ public class Enemy : Entity, IExperienceSource
         }
     }
 
-    private void BindBossHealthBar(IEntity entity)
+    private void BindBossHealthBar(ClientPlayer _)
     {
-        ClientBridge.Instance.OnPlayerReady -= BindBossHealthBar;
+        ClientBridge.Instance.OnClientPlayerReady -= BindBossHealthBar;
         _healthBar = ClientBridge.Instance.PlayerHUD.BindBossHealthBar(this);
     }
 
@@ -106,12 +106,12 @@ public class Enemy : Entity, IExperienceSource
 
     private void ApplyBaseStats()
     {
-        stats.AddModifier(
+        _stats.AddModifier(
             new StatModifier(
                 GameTags.ModStatHealth, 
                 MathOp.Added, 
                 20));
-        stats.AddModifier(
+        _stats.AddModifier(
             new StatModifier(
                 GameTags.ModOffenseDamage, 
                 MathOp.Added, 

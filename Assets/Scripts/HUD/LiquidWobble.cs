@@ -115,18 +115,16 @@ public class LiquidWobble : MonoBehaviour
 
 
 
-    public void Initialize(IEntity player)
+    public void Initialize(PlayerStatsSync state)
     {
         switch (type)
         {
             case LiquidGlobeType.Life:
-                var healthHandler = player.Transform.GetComponent<IHealth>();
-                healthHandler.OnHealthChanged += UpdateHealth;
+                state.HealthChanged += UpdateHealth;
                 break;
 
             case LiquidGlobeType.Mana:
-                var manaHandler = player.Transform.GetComponent<IMana>();
-                manaHandler.OnManaChanged += UpdateMana;
+                state.ManaChanged += UpdateMana;
                 break;
         }
     }

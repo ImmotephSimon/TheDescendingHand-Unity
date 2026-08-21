@@ -54,6 +54,12 @@ public class Loadout
 
     public bool Unequip(EquipmentType slot)
     {
+        Debug.Log($"Unequip slot={slot}, id={slot.GetInstanceID()}");
+
+        foreach (var key in equipped.Keys)
+            Debug.Log($"Key={key}, id={key.GetInstanceID()}");
+
+
         if (!equipped.TryGetValue(slot, out ItemInstance item)) return false;
 
         if (!CanUnequipToDestination(item.BaseType.InventorySize))

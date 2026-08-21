@@ -2,5 +2,5 @@
 
 public interface ICalculator
 {
-    Dictionary<GameTag, float> CalculateDamage(TagContainer tags, float effectiveness, TagRestriction damageConversion);
+    Dictionary<GameTag, float> CalculateDamage(TagContainer tags, float effectiveness, GameTag damageConversion);
 }

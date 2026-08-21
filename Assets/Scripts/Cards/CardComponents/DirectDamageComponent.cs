@@ -5,13 +5,13 @@ using UnityEngine;
 public class DirectDamageComponent : CardComponent
 {
     private Dictionary<GameTag, float> _damage = new();
-    private readonly TagRestriction _damageConversion;
+    private readonly GameTag _damageConversion;
     private readonly float _effectiveness;
     private ICalculator _calc;
 
     public override bool IsTicking => false;
 
-    public DirectDamageComponent(float effectiveness, TagRestriction damageConversion)
+    public DirectDamageComponent(float effectiveness, GameTag damageConversion)
     {
         _effectiveness = effectiveness;
         _damageConversion = damageConversion;

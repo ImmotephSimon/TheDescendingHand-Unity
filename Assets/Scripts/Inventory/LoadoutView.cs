@@ -1,51 +1,60 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static PlayerItemsSync;
 
 public class LoadoutView : MonoBehaviour
 {
     [SerializeField] private List<LoadoutSlotView> slots;
     [SerializeField] private Sprite emptySlotSprite;
 
-    private Loadout _loadout;
+    private PlayerItemsSync _items;
 
     private void Awake()
     {
         foreach (var slot in slots)
-        {
             slot.OnSlotRightClicked += HandleSlotRightClicked;
-        }
     }
 
     private void HandleSlotRightClicked(EquipmentType type)
     {
-        if (_loadout.GetEquipped(type) != null)
-        {
-            _loadout.Unequip(type);
-        }
+        _items.RequestUnequip(type.ID);
     }
 
-    public void Bind(Loadout loadout)
+    public void Bind(PlayerItemsSync items)
     {
-        _loadout = loadout;
+        if (_items != null)
+            _items.LoadoutChanged -= RefreshLoadoutView;
 
-        _loadout.OnLoadoutChanged += RefreshLoadoutView;
+        _items = items;
+
+        if (_items == null)
+            return;
+
+        _items.LoadoutChanged += RefreshLoadoutView;
         RefreshLoadoutView();
     }
 
     private void OnDestroy()
     {
-        if (_loadout != null)
-        {
-            _loadout.OnLoadoutChanged -= RefreshLoadoutView;
-        }
+        if (_items != null)
+            _items.LoadoutChanged -= RefreshLoadoutView;
     }
 
-    public void RefreshLoadoutView()
+    private void RefreshLoadoutView()
     {
         foreach (var slot in slots)
         {
-            ItemInstance item = _loadout.GetEquipped(slot.SlotType);
+            var dto = _items.EquippedItems
+                .FirstOrDefault(x => x.EquipmentTypeId == slot.SlotType.ID);
+
+            if (dto.Equals(default(EquippedItemDto)))
+            {
+                slot.UpdateSlot(null, emptySlotSprite);
+                continue;
+            }
+
+            var item = _items.ReconstructItem(dto);
             slot.UpdateSlot(item, emptySlotSprite);
         }
     }
@@ -53,8 +62,6 @@ public class LoadoutView : MonoBehaviour
     private void ClearView()
     {
         foreach (var slot in slots)
-        {
             slot.UpdateSlot(null, emptySlotSprite);
-        }
     }
 }

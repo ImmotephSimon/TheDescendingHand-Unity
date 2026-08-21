@@ -60,4 +60,17 @@ public static class GameTags
     public static readonly GameTag TypeProjectile = new("Type.Projectile");
 
     public static readonly GameTag[] DamageTypes = new GameTag[] { RestrictionElementFire, RestrictionElementCold, RestrictionElementLightning, RestrictionPhysical, RestrictionChaos };
+    public static readonly GameTag[] Immobilizations =
+    {
+        StatusStun,
+        StatusFreeze
+    };
+    public static readonly GameTag[] Statuses =
+{
+    StatusBurn,
+        StatusElectrified,
+        StatusFreeze,
+        StatusPoison,
+        StatusStun
+};
 }

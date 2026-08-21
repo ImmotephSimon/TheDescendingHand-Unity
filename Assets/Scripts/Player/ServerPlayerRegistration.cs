@@ -1,0 +1,40 @@
+using FishNet;
+using FishNet.Object;
+using System.Xml.Linq;
+using UnityEngine;
+
+public class ServerPlayerRegistration : NetworkBehaviour
+{
+    [SerializeField] private CardRegistry cardRegistry;
+
+    private Player player;
+
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+
+        var networkManager = InstanceFinder.NetworkManager;
+
+        player = GetComponent<Player>();
+
+        if (GameWorld.Instance == null)
+            throw new System.NullReferenceException("GameWorld missing.");
+
+        GameWorld.Instance.RegisterEntity(player);
+
+        var cardController = GetComponent<CardController>();
+        if (cardController == null)
+            throw new System.NullReferenceException(
+                $"[{name}] Missing CardController.");
+
+        var networkActions = GetComponent<PlayerNetworkActions>();
+
+        CardFactory cardFactory =
+            networkActions.CreateCardFactory(cardRegistry);
+
+        cardController.InitializeServer(
+            player,
+            cardFactory,
+            cardRegistry);
+    }
+}

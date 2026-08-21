@@ -11,14 +11,18 @@ public class EnemyAnimationController : MonoBehaviour, IAnimationHandler
     private CharacterAnimationState _currentState;
     private Action _attackFinished;
     private Coroutine _attackCoroutine;
+    private AttackHitbox _hitbox;
 
     private void Awake()
     {
         _animator = GetComponentInChildren<Animator>();
         _animator.applyRootMotion = false;
+        _hitbox = GetComponentInChildren<AttackHitbox>();
 
     }
 
+    public void HitboxEnable() => _hitbox?.Enable();
+    public void HitboxDisable() => _hitbox?.Disable();
 
 
     public void SetSpeed(float speed)
@@ -31,7 +35,7 @@ public class EnemyAnimationController : MonoBehaviour, IAnimationHandler
         PlayState(state);
     }
 
-    public void PlayAnimation(AttackAnimation attackAnimation, Action onFinished)
+    public void PlayAttackAnimation(AttackAnimation attackAnimation, Action onFinished)
     {
         StopCurrentAnimation();
         _currentState = CharacterAnimationState.Unset;
@@ -51,7 +55,7 @@ public class EnemyAnimationController : MonoBehaviour, IAnimationHandler
         _attackCoroutine = StartCoroutine(FinishAttack(state, onFinished));
     }
 
-    public void PlayAnimation(CardCastAnimation animation)
+    public void PlayCastAnimation(CardCastAnimation animation)
     {
         StopCurrentAnimation();
     }
@@ -63,7 +67,7 @@ public class EnemyAnimationController : MonoBehaviour, IAnimationHandler
             StopCoroutine(_attackCoroutine);
             _attackCoroutine = null;
         }
-
+        _hitbox?.Disable();
         _attackFinished = null;
     }
 
@@ -109,5 +113,10 @@ public class EnemyAnimationController : MonoBehaviour, IAnimationHandler
     private void OnDestroy()
     {
         StopCurrentAnimation();
+    }
+
+    public void StopCastAnimation()
+    {
+        throw new NotImplementedException();
     }
 }

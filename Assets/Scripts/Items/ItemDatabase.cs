@@ -32,14 +32,17 @@ public class ItemDatabase : ScriptableObject
 
     private void Initialize()
     {
-        if (_lookup != null) return;
+        if (_lookup != null)
+            return;
 
         _lookup = new Dictionary<string, ItemDefinition>();
+
         foreach (var item in Items)
         {
             if (item != null && !string.IsNullOrEmpty(item.ID))
                 _lookup[item.ID] = item;
         }
+
     }
 
     public bool TryGet(string id, out ItemDefinition definition)
