@@ -8,9 +8,12 @@ public class Player : Entity, IPlayerCollection
     [SerializeField] private StatModifierData startingStats;
     [SerializeField] private LayerMask interactLayer;
     [SerializeField] private float interactRange = 2f;
+    [SerializeField] private TriggerDetector enemyDetector;
 
     private PlayerMovementController playerMovement;
     private CardController _cardController;
+    private ModifierHandle _sprintHandle;
+
     public CardController CardController => _cardController;
     public float InteractRange => interactRange;
 
@@ -26,15 +29,25 @@ public class Player : Entity, IPlayerCollection
         Debug.Assert(animationHandler != null, $"{name} missing IAnimationHandler");
         Debug.Assert(_cardController != null, $"{name} missing CardController");
 
+        enemyDetector.OnEntered += _ => ToggleSprint(false);
+        enemyDetector.OnExited += _ => ToggleSprint(enemyDetector.Count == 0);
+        ToggleSprint(true);
+
         startingStats.ApplyTo(_stats);
     }
 
-    //public void InitializeLocalPlayer()
-    //{
-    //    ClientBridge.Instance.PlayerHUD.Bind(this);
-    //    ClientBridge.Instance.GlobePositioner.Initialize(this);
-    //}
-
+    private void ToggleSprint(bool isEnabled)
+    {
+        if (isEnabled)
+            _sprintHandle = _stats.AddModifier(
+                new StatModifier(GameTags.ModStatMovement, MathOp.Multiplicative, 1.8f));
+        else
+            if (_sprintHandle.IsValid)
+            { 
+                _stats.RemoveModifier(_sprintHandle);
+                GetComponent<PlayerNetworkActions>().ShowSpeechBubble("What was that?");
+            }
+    }
 
     protected override void OnDeath(IEntity killer)
     {

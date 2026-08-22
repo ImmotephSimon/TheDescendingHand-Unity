@@ -1,4 +1,6 @@
-﻿using TMPro;
+﻿using System;
+using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class HUD : MonoBehaviour
@@ -6,8 +8,7 @@ public class HUD : MonoBehaviour
     [SerializeField] private ExperienceBar experienceBar;
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private TMP_Text manaText;
-    [SerializeField] private RectTransform hudRoot;
-    public RectTransform HUDRoot => hudRoot;
+    [SerializeField] private GameObject speechBubble;
 
     private const float DisplayDuration = 0.2f;
 
@@ -20,6 +21,7 @@ public class HUD : MonoBehaviour
     private float _targetMana;
     private float _maxMana;
     private float _manaTimer;
+    private Coroutine _speechCoroutine;
 
     public void Bind(LevelComponent comp)
     {
@@ -111,4 +113,28 @@ public class HUD : MonoBehaviour
         manaText.SetText(
             $"{Mathf.RoundToInt(_displayedMana)} / {Mathf.RoundToInt(_maxMana)}");
     }
+
+    public void ShowSpeechBubble(string text, float duration)
+    {
+        var speechText = speechBubble.GetComponentInChildren<TMP_Text>();
+        speechText.SetText(text);
+        speechBubble.SetActive(true);
+
+        if (_speechCoroutine != null)
+            StopCoroutine(_speechCoroutine);
+
+        if (duration == -1f) duration = CalculateSpeechDuration(text);
+        _speechCoroutine = StartCoroutine(HideSpeechBubble(duration));
+    }
+
+    private IEnumerator HideSpeechBubble(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        speechBubble.SetActive(false);
+
+        _speechCoroutine = null;
+    }
+
+    private float CalculateSpeechDuration(string text) =>
+    Mathf.Clamp(text.Length * 0.06f, 1.5f, 4f);
 }

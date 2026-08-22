@@ -12,6 +12,9 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
 {
+    [SerializeField] private float _acceleration = 30f;
+    [SerializeField] private float _deceleration = 40f;
+
     [SerializeField] private AnimationCurve _dodgeSpeedCurve = new AnimationCurve(
         new Keyframe(0f, 0f),    // initial delay
         new Keyframe(0.15f, 0f), // still stationary
@@ -93,7 +96,8 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
     private int _movementLocks;
     private IStatContainer _statContainer;
     private MovementAction _bufferedAction;
-    private readonly SyncVar<float> _networkedMoveSpeed = new(3f);
+    const float AnimationReferenceSpeed = 4f;
+    private readonly SyncVar<float> _networkedMoveSpeed = new(2.5f);
 
     public Vector3 CursorPosition => _bufferedMousePos;
     public bool CanMove => _movementLocks == 0;
@@ -130,19 +134,13 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         {
             _statContainer.Listen(GameTags.ModStatMovement, OnMovementStatChanged);
             OnMovementStatChanged(
-                _statContainer.GetStat(
-                    GameTags.ModStatMovement,
-                    TagContainer.Empty,
-                    3f));
+                _statContainer.GetStat(GameTags.ModStatMovement));
         }
     }
 
     private void OnMovementStatChanged(float newValue)
     {
-        _networkedMoveSpeed.Value = _statContainer.GetStat(
-            GameTags.ModStatMovement,
-            TagContainer.Empty,
-            3f);
+        _networkedMoveSpeed.Value = newValue;
     }
 
     public override void OnStopNetwork()
@@ -295,7 +293,16 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
             transform.rotation = Quaternion.LookRotation(direction);
 
         float moveSpeed = MoveSpeed > 0f ? MoveSpeed : 1f;
-        _currentMoveVelocity = movementInput * moveSpeed;
+        Vector3 targetVelocity = movementInput * moveSpeed;
+
+        float rate = movementInput.sqrMagnitude > 0.001f
+            ? _acceleration
+            : _deceleration;
+
+        _currentMoveVelocity = Vector3.MoveTowards(
+            _currentMoveVelocity,
+            targetVelocity,
+            rate * (float)TimeManager.TickDelta);
     }
 
     [Reconcile]
@@ -335,7 +342,7 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         _animator.SetFloat(
             "AnimSpeed",
             currentVelocity > 0.1f
-                ? currentVelocity / MoveSpeed
+                ? currentVelocity / AnimationReferenceSpeed
                 : 1f);
 
         Vector3 movementInput =
@@ -347,6 +354,17 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
             _animator.SetFloat("MoveY", 1f);
             return;
         }
+
+        //Vector3 aimDirection = _bufferedMousePos - transform.position;
+        //aimDirection.y = 0f;
+
+        //if (aimDirection.sqrMagnitude > 0.001f)
+        //{
+        //    Vector3 localAim = transform.InverseTransformDirection(aimDirection.normalized);
+
+        //    _animator.SetFloat("AimX", localAim.x, 0.15f, Time.deltaTime);
+        //    _animator.SetFloat("AimY", localAim.z, 0.15f, Time.deltaTime);
+        //}
 
         _visual.localRotation = Quaternion.identity;
 

@@ -14,7 +14,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 927076904386195409, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: WasActiveDuringEdit
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 927076904386195409, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: _initializedTimestamp
+      value: -8584142004645919030
       objectReference: {fileID: 0}
     - target: {fileID: 927076904386195409, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: <PrefabId>k__BackingField
@@ -47,6 +51,18 @@ PrefabInstance:
     - target: {fileID: 927076904386195409, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: SerializedTransformProperties.Position.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2353634765356765508, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7133544487953197772, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 7133544487953197772, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: m_IncludeLayers.m_Bits
+      value: 512
       objectReference: {fileID: 0}
     - target: {fileID: 7297797789258313868, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -156,6 +172,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 67584
   interactRange: 2
+  enemyDetector: {fileID: 8565650696046689826}
 --- !u!114 &-806286591428101174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,7 +251,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _componentIndexCache: 5
-  _addedNetworkObject: {fileID: 927076904386195409, guid: f28531c6686e04e4e975c262856ea26a, type: 3}
+  _addedNetworkObject: {fileID: 5204800278082625481}
   _networkObjectCache: {fileID: 5204800278082625481}
 --- !u!114 &-8415644373969226660
 MonoBehaviour:
@@ -249,7 +266,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _componentIndexCache: 6
-  _addedNetworkObject: {fileID: 927076904386195409, guid: f28531c6686e04e4e975c262856ea26a, type: 3}
+  _addedNetworkObject: {fileID: 5204800278082625481}
   _networkObjectCache: {fileID: 5204800278082625481}
   cardRegistry: {fileID: 11400000, guid: dbc5fdb1cbf049e43a5b28ed6e176ee2, type: 2}
 --- !u!114 &8371837318812353100
@@ -285,5 +302,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f75c9dc4ea6096439c9e538840af355, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8565650696046689826 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3619139427342798394, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+  m_PrefabInstance: {fileID: 4964807159369986072}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 557c7f6be75f0444ab7bd791c08b8270, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

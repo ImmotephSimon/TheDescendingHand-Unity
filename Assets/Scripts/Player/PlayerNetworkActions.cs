@@ -1,12 +1,33 @@
-﻿using FishNet.Object;
+﻿using FishNet.Connection;
+using FishNet.Object;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerNetworkActions : NetworkBehaviour
 {
-    private void SpawnNetworkObject(GameObject go)
+    private const int MaxSpawnedObjects = 50;
+    private readonly Queue<NetworkObject> _spawnedObjects = new();
+
+
+    private void SpawnNetworkObjectCapped(GameObject go)
     {
         ServerManager.Spawn(go);
+
+        if (!go.TryGetComponent(out NetworkObject nob))
+            return;
+
+        _spawnedObjects.Enqueue(nob);
+
+        while (_spawnedObjects.Count > MaxSpawnedObjects)
+        {
+            var oldest = _spawnedObjects.Dequeue();
+
+            if (oldest != null && oldest.IsSpawned)
+            { 
+                ServerManager.Despawn(oldest);
+            }
+        }
     }
 
     private void SpawnClientVfx(
@@ -35,7 +56,7 @@ public class PlayerNetworkActions : NetworkBehaviour
     {
         return new CardFactory(
             registry,
-            SpawnNetworkObject,
+            SpawnNetworkObjectCapped,
             SpawnClientVfx);
     }
 
@@ -82,5 +103,16 @@ public class PlayerNetworkActions : NetworkBehaviour
             return;
 
         interactable.Interact(player);
+    }
+
+    internal void ShowSpeechBubble(string text, float duration = -1f)
+    {
+        ShowSpeechBubbleTargetRpc(Owner, text, duration);
+    }
+
+    [TargetRpc]
+    private void ShowSpeechBubbleTargetRpc(NetworkConnection connection, string text, float duration)
+    {
+        ClientBridge.Instance.PlayerHUD.HUD.ShowSpeechBubble(text, duration);
     }
 }

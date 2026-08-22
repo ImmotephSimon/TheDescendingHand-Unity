@@ -7,22 +7,22 @@ public class Stairs : MonoBehaviour
     private State currentState = State.Idle;
 
     [SerializeField] private Transform dungeonAnchor;
-    [SerializeField] private StairsTrigger walkDownTrigger;
-    [SerializeField] private StairsTrigger walkUpTrigger;
+    [SerializeField] private TriggerDetector walkDownTrigger;
+    [SerializeField] private TriggerDetector walkUpTrigger;
     [SerializeField] private List<GameObject> walls = new();
 
     private void OnEnable()
     {
         if (walkDownTrigger != null)
         {
-            walkDownTrigger.OnPlayerEnter += OnTopEnter;
-            walkDownTrigger.OnPlayerExit += OnTopExit;
+            walkDownTrigger.OnEntered += OnTopEnter;
+            walkDownTrigger.OnExited += OnTopExit;
         }
 
         if (walkUpTrigger != null)
         {
-            walkUpTrigger.OnPlayerEnter += OnBottomEnter;
-            walkUpTrigger.OnPlayerExit += OnBottomExit;
+            walkUpTrigger.OnEntered += OnBottomEnter;
+            walkUpTrigger.OnExited += OnBottomExit;
         }
     }
 
@@ -30,18 +30,18 @@ public class Stairs : MonoBehaviour
     {
         if (walkDownTrigger != null)
         {
-            walkDownTrigger.OnPlayerEnter -= OnTopEnter;
-            walkDownTrigger.OnPlayerExit -= OnTopExit;
+            walkDownTrigger.OnEntered -= OnTopEnter;
+            walkDownTrigger.OnExited -= OnTopExit;
         }
 
         if (walkUpTrigger != null)
         {
-            walkUpTrigger.OnPlayerEnter -= OnBottomEnter;
-            walkUpTrigger.OnPlayerExit -= OnBottomExit;
+            walkUpTrigger.OnEntered -= OnBottomEnter;
+            walkUpTrigger.OnExited -= OnBottomExit;
         }
     }
 
-    private void OnTopEnter()
+    private void OnTopEnter(IEntity other)
     {
         if (currentState != State.Idle) return;
 
@@ -50,7 +50,7 @@ public class Stairs : MonoBehaviour
         DungeonManager.Instance.EnterDungeon(dungeonAnchor);
     }
 
-    private void OnBottomExit()
+    private void OnBottomExit(IEntity other)
     {
         if (currentState == State.TraversingDown)
         {
@@ -59,7 +59,7 @@ public class Stairs : MonoBehaviour
         }
     }
 
-    private void OnBottomEnter()
+    private void OnBottomEnter(IEntity other)
     {
         if (currentState != State.Idle) return;
 
@@ -68,7 +68,7 @@ public class Stairs : MonoBehaviour
         DungeonManager.Instance.LeaveDungeon();
     }
 
-    private void OnTopExit()
+    private void OnTopExit(IEntity other)
     {
         if (currentState == State.TraversingUp)
         {

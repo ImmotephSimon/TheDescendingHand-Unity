@@ -77,6 +77,7 @@ public class StatModifierComponent : MonoBehaviour, IStatContainer, ICalculator
         }
 
         modifiers.Remove(handle.Id);
+        handle.Invalidate();
         NotifyStatChanged(modifier.Stat);
     }
 

@@ -76,7 +76,7 @@ public class LevelComponent : MonoBehaviour
 
     private void ApplyLevelStats()
     {
-        if (_modifierHandle.IsValid)
+        if (_modifierHandle?.IsValid == true)
             stats.RemoveModifier(_modifierHandle);
 
         _modifierHandle = stats.AddModifier(

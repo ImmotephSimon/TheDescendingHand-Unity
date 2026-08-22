@@ -116,7 +116,6 @@ public class DungeonDecorator : MonoBehaviour
             float distance = direction.x != 0
                 ? Mathf.Abs(door.transform.position.z - wallPosition.z)
                 : Mathf.Abs(door.transform.position.x - wallPosition.x);
-            Debug.Log($"Door {door.transform.position}, Wall {wallPosition}");
             if (distance <= door.Width / 2f)
                 return true;
         }

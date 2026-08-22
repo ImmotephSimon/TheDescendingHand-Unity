@@ -10,16 +10,22 @@ public enum MathOp
     Set
 }
 
-public readonly struct ModifierHandle
+public sealed class ModifierHandle
 {
-    public readonly int Id;
-    public bool IsValid => Id != 0;
+    public int Id { get; private set; }
+    public bool IsValid => Id != -1;
+
     public ModifierHandle(int id)
     {
         Id = id;
     }
-}
 
+    public void Invalidate()
+    {
+        Id = -1;
+    }
+
+}
 [Serializable]
 public struct StatModifier
 {
