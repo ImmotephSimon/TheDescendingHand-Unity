@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0b84949ac503a244915b061c29d6d6b, type: 3}
   m_Name: Normal
   m_EditorClassIdentifier: 
+  id: 5178c4c0-0c62-48b3-a4b2-fba60649de3e
+  Tier: 0
   DropWeight: 1200
   MaxAffixes: 0
   MinAffixes: 0
   AllowedDrops:
-  - rid: 7617656375266771144
+  - rid: 7617656781503463831
   - rid: 7617656375266771145
   CanHaveUniqueMods: 0
   DisplayColor: {r: 1, g: 1, b: 1, a: 1}
@@ -25,12 +27,12 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 7617656375266771144
-      type: {class: ItemLootDefinition, ns: , asm: Assembly-CSharp}
-      data:
-        Prefab: {fileID: 8306120704131742554, guid: 6c79d7ddd1e323c4da84468ac13b9cda, type: 3}
     - rid: 7617656375266771145
       type: {class: GlobeLootDefinition, ns: , asm: Assembly-CSharp}
       data:
         Prefab: {fileID: 7183417159558042707, guid: 31dd94af68c313246a4f460be748cae2, type: 3}
         HealPercentage: 0.2
+    - rid: 7617656781503463831
+      type: {class: GoldLootDefinition, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 8306120704131742554, guid: 6c79d7ddd1e323c4da84468ac13b9cda, type: 3}

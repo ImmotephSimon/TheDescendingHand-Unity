@@ -8,7 +8,6 @@ public abstract class CardComponent
     protected Card Card { get; private set; }
     protected IEntity Owner { get; private set; }
     public virtual bool IsTicking => false;
-    public virtual void OnHit(HitInfo info) { }
     public IEnumerable<GameTag> GetTags() => _tags;
     private readonly GameTag[] _tags;
 
@@ -17,10 +16,6 @@ public abstract class CardComponent
         _tags = tags ?? Array.Empty<GameTag>();
     }
 
-    public void ExecuteBegin()
-    {
-        OnBegin();
-    }
 
     public void Activate()
     {
@@ -32,7 +27,6 @@ public abstract class CardComponent
         Card = card;
         Owner = owner;
     }
-    protected virtual void OnBegin() { }
     protected virtual void OnActivate() { }
     protected virtual void OnCancel() { }
     public virtual void Tick(float deltaTime) { }

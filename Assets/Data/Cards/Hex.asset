@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b32f82ba0ab3374bb288258070cfd43, type: 3}
+  m_Name: Hex
+  m_EditorClassIdentifier: 
+  id: 54e3456a-cc7f-4f51-8078-96146076f287
+  castTime: 1
+  spawnAtCursor: 1
+  visuals:
+    Name: Curse
+    Description: ???
+    Art: {fileID: 2800000, guid: 7e0e9e6e965a9d04ab82b46f5f7fcda8, type: 3}
+    CastAnimation: 0
+    Impact: {fileID: 660952664026147940, guid: c4ef8773d78968641a566da97d2ab368, type: 3}
+  DeckOverrides:
+    addedDraws: 0
+    addedDiscards: 0
+  radius: 4
+  delay: 3
+  curseDuration: 5
+  curseTag:
+    TagId: 

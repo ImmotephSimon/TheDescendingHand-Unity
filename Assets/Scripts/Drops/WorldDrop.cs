@@ -35,4 +35,6 @@ public abstract class WorldDrop : NetworkBehaviour, IInteractable
     {
         return false;
     }
+
+
 }

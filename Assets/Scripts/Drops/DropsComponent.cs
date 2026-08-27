@@ -3,49 +3,93 @@ using UnityEngine;
 
 public class DropsComponent : MonoBehaviour
 {
-
-    public void DropFromChest()
+    public void DropFromChest(Vector3 position, Vector3 forward)
     {
-        Drop(Vector3.up * 1.5f + transform.forward * 0.5f, Vector3.zero);
+        Rarity rarity = ItemDatabase.Instance.RollRandomRarity(
+            new System.Random(), minimumTier: 1);
+
+        LootDefinition definition =
+            rarity.AllowedDrops[Random.Range(0, rarity.AllowedDrops.Count)];
+
+        Vector3 spawnPosition =
+            GetFloorPosition(position) +
+            Vector3.up * definition.DropHeight;
+
+        Vector3 force =
+            Vector3.up * definition.UpForce +
+            forward * definition.ForwardForce;
+
+        Drop(definition, rarity, spawnPosition, force);
     }
 
-    public void DropFromEnemy()
+    public void DropFromEnemy(Vector3 position)
     {
+        Rarity rarity = ItemDatabase.Instance.RollRandomRarity(
+            new System.Random());
+
+        LootDefinition definition =
+            rarity.AllowedDrops[Random.Range(0, rarity.AllowedDrops.Count)];
+
         Vector2 dir = Random.insideUnitCircle.normalized;
-        Vector3 force = new Vector3(dir.x, 1f, dir.y) * Random.Range(1f, 3f);
-        Vector3 torque = Random.insideUnitSphere * 10f;
+        Vector3 force =
+            new Vector3(dir.x, 1f, dir.y) *
+            (definition.UpForce + Random.Range(-1f, 1f));
 
-        Drop(force, torque);
+        Vector3 spawnPosition = GetFloorPosition(position);
+
+        Drop(definition, rarity, spawnPosition, force);
     }
 
-    private void Drop(Vector3 force, Vector3 torque)
+    private Vector3 GetFloorPosition(Vector3 position)
     {
-        if (ItemDatabase.Instance == null) return;
+        int floorLayer = LayerMask.NameToLayer("Floor");
 
-        var rarity = GetRarity();
-        if (rarity?.AllowedDrops == null || rarity.AllowedDrops.Count == 0) return;
+        if (Physics.Raycast(
+                position,
+                Vector3.down,
+                out RaycastHit hit,
+                Mathf.Infinity,
+                1 << floorLayer))
+        {
+            Debug.Log(
+                $"Drop trace: source={position}, floor={hit.point}, distance={hit.distance}");
 
-        LootDefinition definition = rarity.AllowedDrops[Random.Range(0, rarity.AllowedDrops.Count)];
+            return hit.point;
+        }
 
-        var obj = Instantiate(definition.Prefab, transform.position, Quaternion.identity);
+        Debug.LogError($"Could not find floor below drop position {position}.");
+        return position;
+    }
+
+    private void Drop(
+        LootDefinition definition,
+        Rarity rarity,
+        Vector3 position,
+        Vector3 force)
+    {
+        var obj = Instantiate(
+            definition.Prefab,
+            position,
+            Quaternion.identity);
 
         WorldDrop drop = obj.GetComponent<WorldDrop>();
-        
+
         if (obj.TryGetComponent<Rigidbody>(out var rb))
         {
             rb.AddForce(force, ForceMode.Impulse);
-            if (torque != Vector3.zero) rb.AddTorque(torque, ForceMode.Impulse);
+
+            if (definition.Torque != 0f)
+            {
+                rb.AddTorque(
+                    Random.insideUnitSphere * definition.Torque,
+                    ForceMode.Impulse);
+            }
         }
 
         InstanceFinder.ServerManager.Spawn(obj);
         definition.Initialize(drop, rarity);
 
+        Debug.Log(
+            $"Dropping {definition.Prefab.name} ({rarity.name})");
     }
-
-    private static Rarity GetRarity()
-    {
-        return ItemDatabase.Instance.RollRandomRarity(new System.Random());
-    }
-
-
 }

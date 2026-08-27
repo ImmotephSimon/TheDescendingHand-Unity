@@ -36,7 +36,7 @@ public class ChannelingComponent : CardComponent
         _minDuration = minDuration;
     }
 
-    protected override void OnBegin()
+    protected override void OnActivate()
     {
         _elapsedTime = 0f;
         _tickTimer = 0f;
@@ -44,8 +44,6 @@ public class ChannelingComponent : CardComponent
         _isChanneling = true;
 
     }
-
-    protected override void OnActivate() { }
 
 
     public void SetInputHeld(bool held)

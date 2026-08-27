@@ -1,5 +1,4 @@
 using System;
-using Unity.AppUI.UI;
 using UnityEngine;
 
 public enum MathOp
@@ -13,19 +12,24 @@ public enum MathOp
 public sealed class ModifierHandle
 {
     public int Id { get; private set; }
-    public bool IsValid => Id != -1;
+    public GameTag Stat { get; private set; }
 
-    public ModifierHandle(int id)
+    public static readonly ModifierHandle Invalid = new(-1, null);
+    public bool IsValid => Id != Invalid.Id;
+
+    public ModifierHandle(int id, GameTag stat)
     {
         Id = id;
+        Stat = stat;
     }
 
-    public void Invalidate()
+    internal void Invalidate()
     {
-        Id = -1;
+        Id = Invalid.Id;
+        Stat = Invalid.Stat;
     }
-
 }
+
 [Serializable]
 public struct StatModifier
 {

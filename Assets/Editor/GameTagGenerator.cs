@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class GameTagGenerator
 {
-    private const string TagFile = "Assets/Data/Tags.txt";
+    private const string TagFile = "Assets/Data/Tags/Tags.txt";
     private const string OutputFile = "Assets/Scripts/Generated/GameTags.cs";
 
     [MenuItem("Tools/Generate GameTags")]
@@ -21,6 +21,7 @@ public static class GameTagGenerator
         var restrictionIdentifiers = new List<string>();
         var immobilizationIdentifiers = new List<string>();
         var statusIdentifiers = new List<string>();
+        var curseIdentifiers = new List<string>();
 
         using (var writer = new StreamWriter(OutputFile))
         {
@@ -44,6 +45,11 @@ public static class GameTagGenerator
                 if (parts[0] == "Status")
                     statusIdentifiers.Add(propertyName);
 
+                if (parts[0] == "Status" && parts[1] == "Hex")
+                {
+                    curseIdentifiers.Add(propertyName);
+                }
+
                 writer.WriteLine($"    public static readonly GameTag {propertyName} = new(\"{line}\");");
             }
 
@@ -53,15 +59,10 @@ public static class GameTagGenerator
                 string elements = string.Join(", ", restrictionIdentifiers);
                 writer.WriteLine($"    public static readonly GameTag[] DamageTypes = new GameTag[] {{ {elements} }};");
             }
-            writer.WriteLine(@"    public static readonly GameTag[] Immobilizations =
-    {
-        StatusStun,
-        StatusFreeze
-    };");
-            writer.WriteLine($@"    public static readonly GameTag[] Statuses =
-{{
-    {string.Join(",\n        ", statusIdentifiers)}
-}};");
+            writer.WriteLine($"    public static readonly GameTag[] Immobilizations = {{ StatusStun, StatusFreeze }};");
+            writer.WriteLine($"    public static readonly GameTag[] Statuses = {{ {string.Join(", ", statusIdentifiers)} }};");
+            writer.WriteLine($"    public static readonly GameTag[] Hexes = new GameTag[] {{ {string.Join(", ", curseIdentifiers)} }};");
+
             writer.WriteLine("}");
         }
 

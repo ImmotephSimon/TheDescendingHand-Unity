@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Miti2
   m_EditorClassIdentifier: 
   id: b4d2099a-d8ee-4be5-87ea-0a5ea45ab228
-  DisplayName: Miti2
+  DisplayName: 
   BaseValue: 60
   Modifier:
     TagId: Mod.Defense.Mitigation

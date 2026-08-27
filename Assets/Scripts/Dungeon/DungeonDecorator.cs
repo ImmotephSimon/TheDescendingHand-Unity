@@ -67,7 +67,7 @@ public class DungeonDecorator : MonoBehaviour
             roomA.transform
         );
 
-        DoorController controller = obj.GetComponentInChildren<DoorController>();
+        HingeController controller = obj.GetComponentInChildren<HingeController>();
 
         roomA.RegisterDoor(controller);
         roomB.RegisterDoor(controller);

@@ -20,7 +20,7 @@ public class VFXView : MonoBehaviour
 
         if (instance.TryGetComponent<IVfx>(out var vfx))
         {
-            vfx.Initialize(target.position, target);
+            vfx.Initialize(new VfxSpawnParams(target.position, Quaternion.identity), target);
         }
 
         if (!_activeVisuals.TryGetValue(target, out var list))

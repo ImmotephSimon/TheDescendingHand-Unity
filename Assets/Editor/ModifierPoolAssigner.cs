@@ -48,14 +48,7 @@ public class ModifierPoolAssigner : EditorWindow
         {
             if (existingDefs.Contains(def)) continue;
 
-            pool.Entries.Add(new ModifierPoolEntry
-            {
-                Definition = def,
-                Weight = 1f,
-                Slot = def.Slot,
-                Modifier = def.Modifier,
-                TagRequirement = def.TagRequirement
-            });
+            pool.Entries.Add(new ModifierPoolEntry(def, 1f));
         }
 
         EditorUtility.SetDirty(pool);

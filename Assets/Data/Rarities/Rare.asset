@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0b84949ac503a244915b061c29d6d6b, type: 3}
   m_Name: Rare
   m_EditorClassIdentifier: 
+  id: e227bd7c-9441-47e1-964d-abeb9233c08d
+  Tier: 3
   DropWeight: 25
   MaxAffixes: 6
   MinAffixes: 6

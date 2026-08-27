@@ -26,7 +26,7 @@ public class MeshSpawnComponent : CardComponent
         _scale = scale;
     }
 
-    protected override void OnBegin()
+    protected override void OnActivate()
     {
         Vector3 position = Card.TargetLocation + _offset;
 

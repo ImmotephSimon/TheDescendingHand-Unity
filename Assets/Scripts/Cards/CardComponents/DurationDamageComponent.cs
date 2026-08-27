@@ -29,9 +29,11 @@ public class DurationDamageComponent : CardComponent
 
         _calc = Owner.Transform.GetComponent<ICalculator>();
         Debug.Assert(_calc != null, $"Failed to find calculator.");
+
+        Card.OnHit += HandleHit;
     }
 
-    public override void OnHit(HitInfo info)
+    public void HandleHit(HitInfo info)
     {
         if (info.Target is IDamageable damageable)
         {

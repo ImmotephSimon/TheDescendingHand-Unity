@@ -41,7 +41,7 @@ public class TagLookup : AssetPostprocessor
 
     private static void Load()
     {
-        TextAsset file = AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Data/Tags.txt");
+        TextAsset file = AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Data/Tags/Tags.txt");
 
         if (file == null)
         {

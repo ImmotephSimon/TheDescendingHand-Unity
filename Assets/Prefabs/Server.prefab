@@ -14,7 +14,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 927076904386195409, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: WasActiveDuringEdit
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 927076904386195409, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: _initializedTimestamp
@@ -52,6 +52,10 @@ PrefabInstance:
       propertyPath: SerializedTransformProperties.Position.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2244051218531089864, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: standardCastAnimation
+      value: 
+      objectReference: {fileID: -203655887218126122, guid: f156420ba87d87346a2663cd6220127e, type: 3}
     - target: {fileID: 2353634765356765508, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -167,6 +171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fc60441f19260841b768455006c045d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tagReactions: {fileID: 11400000, guid: ba710eb1ec65e5d40a83933b0e7e3215, type: 2}
   startingStats: {fileID: 11400000, guid: 792be049a2769e8429260f0e4e9c3d47, type: 2}
   interactLayer:
     serializedVersion: 2
@@ -235,9 +240,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cc5c41bfab6a3941be444116b85eb06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poiseMultiplier: 2
-  stunThreshold: 0.2
-  stunImmunityDuration: 2
 --- !u!114 &8069416378585107981
 MonoBehaviour:
   m_ObjectHideFlags: 0

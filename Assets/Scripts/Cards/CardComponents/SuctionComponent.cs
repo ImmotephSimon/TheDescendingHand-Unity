@@ -52,7 +52,4 @@ public class SuctionComponent : CardComponent
         }
     }
 
-    protected override void OnBegin()
-    {
-    }
 }

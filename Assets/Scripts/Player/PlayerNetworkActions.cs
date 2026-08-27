@@ -3,12 +3,14 @@ using FishNet.Object;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerNetworkActions : NetworkBehaviour
 {
     private const int MaxSpawnedObjects = 50;
     private readonly Queue<NetworkObject> _spawnedObjects = new();
 
+    private readonly Dictionary<Guid, GameObject> _activeClientVfx = new();
 
     private void SpawnNetworkObjectCapped(GameObject go)
     {
@@ -30,26 +32,44 @@ public class PlayerNetworkActions : NetworkBehaviour
         }
     }
 
-    private void SpawnClientVfx(
-        CardDefinition cardDefinition,
-        Vector3 position,
-        Quaternion rotation)
+    private void SpawnClientVfx(CardDefinition cardDefinition, VfxSpawnParams vfxSpawnParams)
     {
         SpawnClientVfxObserversRpc(
             cardDefinition.Id,
-            position,
-            rotation);
+            vfxSpawnParams);
     }
 
     [ObserversRpc]
-    private void SpawnClientVfxObserversRpc(
-        string vfxId,
-        Vector3 position,
-        Quaternion rotation)
+    private void SpawnClientVfxObserversRpc(string vfxId, VfxSpawnParams vfxParams)
     {
-        if (ClientBridge.Instance.CardRegistry.TryGet(vfxId, out CardDefinition def))
-            Instantiate(def.Visuals.Impact, position, rotation);
+        if (!ClientBridge.Instance.CardRegistry.TryGet(vfxId, out CardDefinition def))
+            return;
+
+        if (def.Visuals.Impact == null)
+            return;
+
+        GameObject instance = Instantiate(def.Visuals.Impact, vfxParams.Position, vfxParams.Rotation);
+        instance.transform.localScale = vfxParams.Scale;
+        var vfx = instance.GetComponentInChildren<IVfx>();
+        vfx?.Initialize(vfxParams);
+        _activeClientVfx[vfxParams.InstanceId] = instance;
     }
+
+    public void StopClientVfx(Guid instanceId)
+    {
+        StopClientVfxObserversRpc(instanceId);
+    }
+
+    [ObserversRpc]
+    private void StopClientVfxObserversRpc(Guid instanceId)
+    {
+        if (!_activeClientVfx.Remove(instanceId, out GameObject instance))
+            return;
+
+        var vfx = instance.GetComponentInChildren<IVfx>();
+        vfx?.Stop();
+    }
+
 
     [Server]
     public CardFactory CreateCardFactory(CardRegistry registry)

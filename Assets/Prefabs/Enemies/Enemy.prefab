@@ -214,6 +214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8627b2740a9af704c930fa191563d3bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tagReactions: {fileID: 11400000, guid: ba710eb1ec65e5d40a83933b0e7e3215, type: 2}
   debug: 0
   experienceTable: {fileID: 11400000, guid: b96a20431e4f10343957eb6ab4b73976, type: 2}
   balanceCurves: {fileID: 11400000, guid: ad106a06f6b24ee4d91ae928098460cb, type: 2}
@@ -373,9 +374,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cc5c41bfab6a3941be444116b85eb06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poiseMultiplier: 2
-  stunThreshold: 0.2
-  stunImmunityDuration: 2
 --- !u!114 &3927039314597949403
 MonoBehaviour:
   m_ObjectHideFlags: 0

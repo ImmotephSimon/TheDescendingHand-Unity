@@ -8,6 +8,8 @@ public class CardRegistry : ScriptableObject
 
     private Dictionary<string, CardDefinition> _lookup;
 
+    public List<CardDefinition> Cards => cards;
+
     private void OnEnable()
     {
         _lookup = null;

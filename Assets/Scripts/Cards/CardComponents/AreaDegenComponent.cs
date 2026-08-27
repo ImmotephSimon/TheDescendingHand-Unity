@@ -45,7 +45,7 @@ public class AreaDegenComponent : CardComponent
 
     public void TrackTransform(Transform transform)
     {
-        _overlap.TrackTransform(transform);
+        _overlap.ToggleTick(transform);
     }
 
     private void OnEntered(IEntity target)

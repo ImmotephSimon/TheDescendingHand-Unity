@@ -26,6 +26,8 @@ public class ItemDrop : WorldDrop
             AffixGenerator.Generate(definition, rarity, Seed, misfortune)
         );
 
+
+
         _definitionId.Value = definition.ID;
         ApplyRarityVisualsRpc(rarity.DisplayColor, rarity.LightIntensity, rarity.LightRange);
     }
@@ -37,6 +39,17 @@ public class ItemDrop : WorldDrop
         if (ItemDatabase.Instance.TryGet(next, out var def))
         {
             _definition = def;
+
+            var collider = GetComponent<BoxCollider>();
+
+            if (collider != null)
+            {
+                collider.size = 0.3f * new Vector3(
+                    def.InventorySize.x,
+                    def.InventorySize.y,
+                    0.5f);
+            }
+
             if (def.Appearance?.WorldModel == null)
             {
                 Debug.LogError($"Item '{def.ID}' has no WorldModel assigned.");

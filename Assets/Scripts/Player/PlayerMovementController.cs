@@ -12,8 +12,8 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
 {
-    [SerializeField] private float _acceleration = 30f;
-    [SerializeField] private float _deceleration = 40f;
+    private readonly float _accelerationMultiplier = 12f;
+    private readonly float _decelerationMultiplier = 16f;
 
     [SerializeField] private AnimationCurve _dodgeSpeedCurve = new AnimationCurve(
         new Keyframe(0f, 0f),    // initial delay
@@ -292,12 +292,12 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         if (direction.sqrMagnitude > 0.001f)
             transform.rotation = Quaternion.LookRotation(direction);
 
-        float moveSpeed = MoveSpeed > 0f ? MoveSpeed : 1f;
+        float moveSpeed = MoveSpeed;
         Vector3 targetVelocity = movementInput * moveSpeed;
 
         float rate = movementInput.sqrMagnitude > 0.001f
-            ? _acceleration
-            : _deceleration;
+             ? MoveSpeed * _accelerationMultiplier
+             : MoveSpeed * _decelerationMultiplier;
 
         _currentMoveVelocity = Vector3.MoveTowards(
             _currentMoveVelocity,
@@ -340,10 +340,10 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
 
         _animator.SetFloat("Speed", currentVelocity);
         _animator.SetFloat(
-            "AnimSpeed",
+            "AnimSpeed", Mathf.Min(2f, 
             currentVelocity > 0.1f
                 ? currentVelocity / AnimationReferenceSpeed
-                : 1f);
+                : 1f));
 
         Vector3 movementInput =
             new Vector3(_bufferedInput.x, 0f, _bufferedInput.y).normalized;
@@ -382,16 +382,6 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
             localMovement.z,
             0.15f,
             Time.deltaTime);
-    }
-
-    public void LockMovement()
-    {
-        _movementLocks++;
-    }
-
-    public void UnlockMovement()
-    {
-        _movementLocks--;
     }
 
     public void DodgeRoll()

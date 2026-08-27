@@ -51,34 +51,45 @@ public class ItemDatabase : ScriptableObject
         return _lookup.TryGetValue(id, out definition);
     }
 
-    public Rarity RollRandomRarity(System.Random rng)
+    public Rarity RollRandomRarity(System.Random rng, int minimumTier = 0)
     {
-        if (rarities == null || rarities.Count == 0) return null;
-
         float totalWeight = 0f;
+
         foreach (var rarity in rarities)
-            totalWeight += rarity.DropWeight;
-
-        if (totalWeight <= 0f) return rarities[0];
-
-        double roll = rng.NextDouble() * totalWeight;
-        float currentWeight = 0f;
-
-        for (int i = 0; i < rarities.Count; i++)
         {
-            currentWeight += rarities[i].DropWeight;
-            if (roll < currentWeight)
-                return rarities[i];
+            if (rarity.Tier < minimumTier)
+                continue;
+
+            totalWeight += rarity.DropWeight;
         }
 
-        return rarities[0];
+        if (totalWeight <= 0f)
+            return null;
+
+        double roll = rng.NextDouble() * totalWeight;
+
+        foreach (var rarity in rarities)
+        {
+            if (rarity.Tier < minimumTier)
+                continue;
+
+            roll -= rarity.DropWeight;
+
+            if (roll < 0)
+                return rarity;
+        }
+
+        return null;
     }
 
     public ItemDefinition RollRandomItem()
     {
         if (Items == null || Items.Count == 0)
+        {
+            Debug.LogError($"No items set.");
             return null;
+        }
 
-        return Items[Random.Range(0, Items.Count)];
+        return Items[UnityEngine.Random.Range(0, Items.Count)];
     }
 }

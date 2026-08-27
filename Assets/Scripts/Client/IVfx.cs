@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-internal interface IVfx
+public interface IVfx
 {
-    void Initialize(Vector3 start, Transform target);
+    void Initialize(VfxSpawnParams spawnParams, Transform target = null);
     void Stop();
     void UpdateTarget(Transform target);
 }

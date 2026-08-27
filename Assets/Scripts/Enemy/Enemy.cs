@@ -63,8 +63,8 @@ public class Enemy : Entity, IExperienceSource
 
         brain = GetComponent<EnemyBrain>();
         perception = GetComponent<Perception>();
-        animationHandler = GetComponentInChildren<IAnimationHandler>();
-        Debug.Assert(animationHandler != null, $"Failed to find animation handler.");
+        _animationHandler = GetComponentInChildren<IAnimationHandler>();
+        Debug.Assert(_animationHandler != null, $"Failed to find animation handler.");
 
         RegisterActions();
         ApplyBaseStats();
@@ -116,6 +116,18 @@ public class Enemy : Entity, IExperienceSource
                 GameTags.ModOffenseDamage, 
                 MathOp.Added, 
                 balanceCurves.ExpectedPlayerLife.Evaluate(_level) * 0.1f));
+        _stats.AddModifier(
+            new StatModifier(
+                GameTags.ModStatStunThreshold,
+                MathOp.Added,
+                0.2f));
+        _stats.AddModifier(
+            new StatModifier(
+                GameTags.ModStatStunDuration,
+                MathOp.Added,
+                1f));
+
+
     }
 
     private void RegisterActions()
@@ -138,7 +150,7 @@ public class Enemy : Entity, IExperienceSource
         if (_healthBar is Component healthBarComponent) 
             Destroy(healthBarComponent.gameObject);
 
-        GetComponent<DropsComponent>().DropFromEnemy();
+        GetComponent<DropsComponent>().DropFromEnemy(transform.position);
     }
 
     protected override void OnEntityDied(IEntity victim, IEntity killer)

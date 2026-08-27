@@ -38,10 +38,10 @@ public class ExplosiveArrowDefinition : CardDefinition
         {
             foreach (var hit in hits)
             {
-                damage.ForceDamage(hit, scalar);
+                damage.TriggerDamage(hit, scalar);
 
                 // Only spawns vfx on hit
-                context.ClientSpawn(this, hit.Position, Quaternion.identity);
+                context.ClientSpawn(this, new VfxSpawnParams(hit.Position));
             }
         };
         delay.OnCompleted += () =>

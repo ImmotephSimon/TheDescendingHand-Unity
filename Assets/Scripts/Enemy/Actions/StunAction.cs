@@ -18,7 +18,7 @@ public class StunAction : EnemyActionBase
 
     public override void StartAction()
     {
-        animationHandler.SetAnimationState(CharacterAnimationState.Stun);
+        animationHandler.SetAnimationState(CharacterAnimationState.Immobilized);
 
         movementHandler.StopMovement();
     }

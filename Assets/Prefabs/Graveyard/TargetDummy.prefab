@@ -65,6 +65,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8379d053848aa854496c24092eaa2446, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tagReactions: {fileID: 11400000, guid: ba710eb1ec65e5d40a83933b0e7e3215, type: 2}
 --- !u!136 &3033754892606743890
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -100,9 +101,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cc5c41bfab6a3941be444116b85eb06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poiseMultiplier: 2
-  stunThreshold: 0.2
-  stunImmunityDuration: 2
 --- !u!114 &4949218571663488370
 MonoBehaviour:
   m_ObjectHideFlags: 0

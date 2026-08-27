@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LifeCost
   m_EditorClassIdentifier: 
   id: 964d78b8-9e44-4826-ac91-5417cae5be1f
-  DisplayName: LifeCost
+  DisplayName: 
   BaseValue: -0.3
   Modifier:
     TagId: Mod.Utility.Cost

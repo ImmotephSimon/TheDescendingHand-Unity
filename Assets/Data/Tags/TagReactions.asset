@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e11cb3627423b4043aaf52f82f4d0f28, type: 3}
+  m_Name: TagReactions
+  m_EditorClassIdentifier: 
+  Reactions:
+  - Tag:
+      TagId: Status.Hex.Frailty
+    Reaction: {fileID: 11400000, guid: 60824d7b59d4dd24ead446ca278e98fa, type: 2}

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 public class EnemyAnimationController : MonoBehaviour, IAnimationHandler
@@ -55,10 +54,6 @@ public class EnemyAnimationController : MonoBehaviour, IAnimationHandler
         _attackCoroutine = StartCoroutine(FinishAttack(state, onFinished));
     }
 
-    public void PlayCastAnimation(CardCastAnimation animation)
-    {
-        StopCurrentAnimation();
-    }
 
     public void StopCurrentAnimation()
     {
@@ -86,7 +81,7 @@ public class EnemyAnimationController : MonoBehaviour, IAnimationHandler
         var stateName = state switch
         {
             CharacterAnimationState.Locomotion => "EnemyLocomotion",
-            CharacterAnimationState.Stun => "Stunned",
+            CharacterAnimationState.Immobilized => "Stunned",
             CharacterAnimationState.Dead => "Dead",
             _ => throw new ArgumentOutOfRangeException(nameof(state))
         };
@@ -115,8 +110,8 @@ public class EnemyAnimationController : MonoBehaviour, IAnimationHandler
         StopCurrentAnimation();
     }
 
-    public void StopCastAnimation()
+    public Action PlayAnimation(AnimationClip clip, float duration)
     {
-        throw new NotImplementedException();
+        return null;
     }
 }

@@ -130,3 +130,12 @@ MonoBehaviour:
       MatchAll: 0
       Tags:
         Tags: []
+  - Definition: {fileID: 11400000, guid: 826ba5c3b31a8fa4e9da8ea2dc95ec73, type: 2}
+    Weight: 1
+    Slot: 0
+    Modifier:
+      TagId: Mod.Stat.Stun.Duration
+    TagRequirement:
+      MatchAll: 0
+      Tags:
+        Tags: []

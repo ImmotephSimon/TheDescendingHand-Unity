@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: IncImplicit
   m_EditorClassIdentifier: 
   id: 15668c15-f6c5-4343-b21d-edf3203badc6
-  DisplayName: IncImplicit
+  DisplayName: 
   BaseValue: 0.1
   Modifier:
     TagId: Mod.Implicit

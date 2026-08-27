@@ -43,7 +43,6 @@ public class SequenceComponent : CardComponent
 
         _currentStep++;
 
-        _step.ExecuteBegin();
         _step.Activate();
 
         if (_currentStep < _steps)

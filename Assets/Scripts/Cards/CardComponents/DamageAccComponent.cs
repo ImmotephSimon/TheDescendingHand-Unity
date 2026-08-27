@@ -11,9 +11,11 @@ public class DamageAccComponent : CardComponent
     public DamageAccComponent(float storedPct)
     {
         _storedPct = storedPct;
+
+        Card.OnHit += HandleHit;
     }
 
-    public override void OnHit(HitInfo info)
+    public void HandleHit(HitInfo info)
     {
         _accumulatedHits.Add(info);
     }
@@ -28,6 +30,5 @@ public class DamageAccComponent : CardComponent
         _accumulatedHits.Clear();
     }
 
-    protected override void OnBegin() => _accumulatedHits.Clear();
-    protected override void OnActivate() { }
+    protected override void OnActivate() => _accumulatedHits.Clear();
 }

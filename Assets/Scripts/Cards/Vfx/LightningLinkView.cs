@@ -29,12 +29,12 @@ public class ChainLightningView : MonoBehaviour, IVfx
     private Transform target;
     private float shrinkTimer;
 
-    public void Initialize(Vector3 start, Transform target)
+    public void Initialize(VfxSpawnParams spawnParams, Transform target = null)
     {
-        originalStart = start;
-        this.start = start;
+        originalStart = spawnParams.Position;
+        start = spawnParams.Position;
         this.target = target;
-        end = target.position;
+        end = target != null ? target.position : spawnParams.Position;
         previousEnd = end;
         visualEffect.SetVector3("Pos1", start);
         visualEffect.SetVector3("Pos4", end);
@@ -135,4 +135,6 @@ public class ChainLightningView : MonoBehaviour, IVfx
 
         state = LightningState.Shrink;
     }
+
+
 }

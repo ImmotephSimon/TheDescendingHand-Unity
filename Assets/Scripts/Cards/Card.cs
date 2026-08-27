@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Card : IHitReceiver
+public class Card
 {
     public IEntity Owner => _owner;
     public Guid Id { get; }
@@ -23,6 +23,8 @@ public class Card : IHitReceiver
 
     private readonly IEntity _owner;
     private readonly List<CardComponent> _components = new();
+    public event Action OnActivated;
+    public Action<HitInfo> OnHit; // Components bind in Initialize().
 
     public Card(Guid id, CardDefinition definition, IEntity owner)
     {
@@ -52,11 +54,6 @@ public class Card : IHitReceiver
         return null; 
     }
 
-    public void OnHit(HitInfo info)
-    {
-        foreach (var component in _components)
-            component.OnHit(info);
-    }
 
     public void Tick(float deltaTime)
     {
@@ -67,14 +64,9 @@ public class Card : IHitReceiver
         }
     }
 
-    public void ExecuteBegin()
-    {
-        foreach (var comp in _components)
-            comp.ExecuteBegin();
-    }
-
     public void ExecuteCastTimeDone()
     {
+        OnActivated?.Invoke();
         foreach (var comp in _components)
             comp.Activate();
     }

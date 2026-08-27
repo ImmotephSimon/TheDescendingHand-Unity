@@ -10,8 +10,8 @@ public class Room : MonoBehaviour
 
     private DoorSocket[] doorSockets;
     private DoorSocket entranceDoor;
-    private readonly List<DoorController> _doors = new();
-    public List<DoorController> Doors => _doors;
+    private readonly List<HingeController> _doors = new();
+    public List<HingeController> Doors => _doors;
     public Vector3 RoomExtent => bounds.size;
     
     public event Action Entered;
@@ -92,22 +92,22 @@ public class Room : MonoBehaviour
             return;
 
         entered = true;
-        foreach (DoorController door in _doors)
+        foreach (HingeController door in _doors)
         {
-            door.PlayerEntered -= OnDoorEntered;
+            door.PlayerInteracted -= OnDoorEntered;
         }
         Entered?.Invoke();
     }
 
     
 
-    public void RegisterDoor(DoorController door)
+    public void RegisterDoor(HingeController door)
     {
         if (door == null)
             return;
 
         _doors.Add(door);
-        door.PlayerEntered += OnDoorEntered;
+        door.PlayerInteracted += OnDoorEntered;
     }
     public Vector2Int GetRoomGridPosition()
     {

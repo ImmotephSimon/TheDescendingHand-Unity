@@ -25,12 +25,14 @@ public static class GameTags
     public static readonly GameTag ModStatArmour = new("Mod.Stat.Armour");
     public static readonly GameTag ModStatEvasion = new("Mod.Stat.Evasion");
     public static readonly GameTag ModStatInstinct = new("Mod.Stat.Instinct");
-    public static readonly GameTag ModStatLevel = new("Mod.Stat.Level");
     public static readonly GameTag ModStatHealth = new("Mod.Stat.Health");
     public static readonly GameTag ModStatMana = new("Mod.Stat.Mana");
+    public static readonly GameTag ModStatStunThreshold = new("Mod.Stat.Stun.Threshold");
+    public static readonly GameTag ModStatStunDuration = new("Mod.Stat.Stun.Duration");
     public static readonly GameTag ModStatMovement = new("Mod.Stat.Movement");
     public static readonly GameTag ModStatStrength = new("Mod.Stat.Strength");
     public static readonly GameTag ModStatWillpower = new("Mod.Stat.Willpower");
+    public static readonly GameTag ModStatLevel = new("Mod.Stat.Level");
     public static readonly GameTag ModUtilityArea = new("Mod.Utility.Area");
     public static readonly GameTag ModUtilityCardBias = new("Mod.Utility.CardBias");
     public static readonly GameTag ModUtilityCost = new("Mod.Utility.Cost");
@@ -50,6 +52,8 @@ public static class GameTags
     public static readonly GameTag StatusFreeze = new("Status.Freeze");
     public static readonly GameTag StatusPoison = new("Status.Poison");
     public static readonly GameTag StatusStun = new("Status.Stun");
+    public static readonly GameTag StatusHexFrailty = new("Status.Hex.Frailty");
+    public static readonly GameTag StatusHexWeakness = new("Status.Hex.Weakness");
     public static readonly GameTag TraitConductive = new("Trait.Conductive");
     public static readonly GameTag TypeArea = new("Type.Area");
     public static readonly GameTag TypeBuff = new("Type.Buff");
@@ -60,17 +64,7 @@ public static class GameTags
     public static readonly GameTag TypeProjectile = new("Type.Projectile");
 
     public static readonly GameTag[] DamageTypes = new GameTag[] { RestrictionElementFire, RestrictionElementCold, RestrictionElementLightning, RestrictionPhysical, RestrictionChaos };
-    public static readonly GameTag[] Immobilizations =
-    {
-        StatusStun,
-        StatusFreeze
-    };
-    public static readonly GameTag[] Statuses =
-{
-    StatusBurn,
-        StatusElectrified,
-        StatusFreeze,
-        StatusPoison,
-        StatusStun
-};
+    public static readonly GameTag[] Immobilizations = { StatusStun, StatusFreeze };
+    public static readonly GameTag[] Statuses = { StatusBurn, StatusElectrified, StatusFreeze, StatusPoison, StatusStun, StatusHexFrailty, StatusHexWeakness };
+    public static readonly GameTag[] Hexes = new GameTag[] { StatusHexFrailty, StatusHexWeakness };
 }

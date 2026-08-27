@@ -137,6 +137,7 @@ MonoBehaviour:
   spawnOnEnter: 1
   spawnCount: 2
   fixedSpawnPoint: {fileID: 0}
+  spawnArea: {fileID: 3994433117519989883}
 --- !u!1 &8555116503587442074
 GameObject:
   m_ObjectHideFlags: 0

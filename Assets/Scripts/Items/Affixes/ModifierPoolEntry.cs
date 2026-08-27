@@ -9,14 +9,10 @@ public class ModifierPoolEntry
 {
     public AffixDefinition Definition;
     public float Weight = 100f;
-    public AffixSlot Slot;
-    public GameTag Modifier;
-    public TagRequirement TagRequirement;
 
-    public ModifierPoolEntry()
+    public ModifierPoolEntry(AffixDefinition definition, float weight = 100f)
     {
-        Weight = 100f;
-        Slot = AffixSlot.Prefix;
-        Modifier = GameTag.Empty;
+        Definition = definition;
+        Weight = weight;
     }
 }

@@ -6,13 +6,13 @@ public class CardFactory
 {
     private readonly CardRegistry _registry;
     private readonly Action<GameObject> _serverNetworkSpawn;
-    private readonly Action<CardDefinition, Vector3, Quaternion> _clientNetworkSpawn;
+    private readonly Action<CardDefinition, VfxSpawnParams> _clientNetworkSpawn;
     
 
     public CardFactory(
         CardRegistry registry,
         Action<GameObject> serverNetworkSpawn,
-        Action<CardDefinition, Vector3, Quaternion> clientNetworkSpawn)
+        Action<CardDefinition, VfxSpawnParams> clientNetworkSpawn)
     {
         _registry = registry;
         _serverNetworkSpawn = serverNetworkSpawn;

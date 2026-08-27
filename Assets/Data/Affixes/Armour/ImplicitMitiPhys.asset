@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ImplicitMitiPhys
   m_EditorClassIdentifier: 
   id: 05b64c21-baaf-4561-a839-4b9d66f7ac3f
-  DisplayName: ImplicitMitiPhys
+  DisplayName: 
   BaseValue: 100
   Modifier:
     TagId: Mod.Defense.Mitigation

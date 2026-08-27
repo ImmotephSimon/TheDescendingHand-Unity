@@ -16,7 +16,7 @@ public class PlayerStatsSync : NetworkBehaviour
     private IHealth _healthHandler;
     private IMana _manaHandler;
     private readonly HashSet<string> _replicatedStatuses = new();
-
+    public event Action<GameTag, bool> StatusChanged;
     public event Action<float, float, bool> HealthChanged;
     public event Action<float, float, bool> ManaChanged;
     public HashSet<string> Statuses => _replicatedStatuses;
@@ -32,13 +32,15 @@ public class PlayerStatsSync : NetworkBehaviour
         _healthHandler.OnHealthChanged += OnHealthChanged;
         _manaHandler.OnManaChanged += OnManaChanged;
         _stats = GetComponent<IStatContainer>();
-        _stats.Listen(GameTags.StatusStun, OnStatusChanged);
+        foreach (var tag in GameTags.Statuses)
+        {
+            _stats.Listen(tag, _ => OnStatusChanged(tag));
+        }
     }
 
-    private void Bind(GameTag stat, Action<float> setter)
+    private void OnStatusChanged(GameTag tag)
     {
-        _stats.Listen(stat, value => setter(value));
-        setter(_stats.GetStat(stat));
+        SyncStatusObserversRpc(tag, _stats.GetStat(tag));
     }
 
     private void OnHealthChanged(float current, float max, bool isInstant)
@@ -75,25 +77,17 @@ public class PlayerStatsSync : NetworkBehaviour
         ManaChanged?.Invoke(current, max, isInstant);
     }
 
-    private void OnStatusChanged(float _)
-    {
-        foreach (var tag in GameTags.Statuses)
-        {
-            SyncStatusObserversRpc(tag, _stats.GetStat(tag));
-        }
-    }
 
     [ObserversRpc]
     private void SyncStatusObserversRpc(GameTag status, float value)
     {
-        if (value > 0f)
-        {
+        bool isActive = value > 0f;
+        if (isActive)
             _replicatedStatuses.Add(status.TagId);
-        }
-        else if (_replicatedStatuses.TryGetValue(status.TagId, out var handle))
-        {
+        else
             _replicatedStatuses.Remove(status.TagId);
-        }
+
+        StatusChanged?.Invoke(status, isActive);
     }
 
 }

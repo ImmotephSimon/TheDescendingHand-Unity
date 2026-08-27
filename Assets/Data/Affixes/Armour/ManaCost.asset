@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ManaCost
   m_EditorClassIdentifier: 
   id: a0c3ab5e-4dd4-422e-963e-1dcd5edc4697
-  DisplayName: ManaCost
+  DisplayName: 
   BaseValue: -0.01
   Modifier:
     TagId: Mod.Utility.Cost

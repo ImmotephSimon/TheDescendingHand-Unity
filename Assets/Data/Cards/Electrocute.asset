@@ -24,9 +24,9 @@ MonoBehaviour:
   DeckOverrides:
     addedDraws: 0
     addedDiscards: 0
-  projectile:
+  projectileInfo:
     Prefab: {fileID: 755919957440293959, guid: 09d0ab38ffa41c24fb5537cb07e4f326, type: 3}
-    Speed: 12
+    Speed: 15
     Direction:
       Sideways: 0
       Upward: 0

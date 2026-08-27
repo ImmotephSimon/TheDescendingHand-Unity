@@ -29,18 +29,41 @@ public abstract class CardDefinition : ScriptableObject
 #endif
 }
 
+public struct VfxSpawnParams
+{
+    public Guid InstanceId;
+    public Vector3 Position;
+    public Quaternion Rotation;
+    public Vector3 Scale;
+    public float Duration;
+
+    public VfxSpawnParams(Vector3 position, float duration = 0f)
+        : this(position, Quaternion.identity, duration)
+    {
+    }
+
+    public VfxSpawnParams(Vector3 position, Quaternion rotation, float duration = 0f)
+    {
+        InstanceId = Guid.NewGuid();
+        Position = position;
+        Rotation = rotation;
+        Scale = Vector3.one;
+        Duration = duration;
+    }
+}
+
 public readonly struct CardInitContext
 {
     public readonly Guid InstanceId;
     public readonly IEntity Owner;
     public readonly Action<GameObject> ServerSpawn;
-    public readonly Action<CardDefinition, Vector3, Quaternion> ClientSpawn;
+    public readonly Action<CardDefinition, VfxSpawnParams> ClientSpawn;
 
     public CardInitContext(
         Guid instanceId,
         IEntity owner,
         Action<GameObject> serverNetworkSpawn,
-        Action<CardDefinition, Vector3, Quaternion> clientNetworkSpawn)
+        Action<CardDefinition, VfxSpawnParams> clientNetworkSpawn)
     {
         InstanceId = instanceId;
         Owner = owner;

@@ -46,7 +46,6 @@ public class EnemyCardAttack : EnemyAttack
     public override void OnAnimationFinish()
     {
         _card.ExecuteCastTimeDone();
-        _card.ExecuteBegin();
     }
 
     private void Update()

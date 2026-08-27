@@ -3,10 +3,8 @@ using UnityEngine;
 public class BossLocation : MonoBehaviour
 {
     [SerializeField] private FloorOpening floorOpening;
-    [SerializeField] private EnemyDefinition bossDefinition;
     [SerializeField] private Transform bossTransform;
-    
-    private Enemy _boss;
+    [SerializeField] private Transform stairsAnchor;
     private EnemySpawner spawner;
 
     private void Start()
@@ -18,17 +16,13 @@ public class BossLocation : MonoBehaviour
             return;
         }
 
-        spawner.enemyDefinition = bossDefinition;
-        spawner.fixedSpawnPoint = bossTransform;
         spawner.OnSpawned += HandleEnemySpawned;
     }
 
     private void HandleEnemySpawned(Enemy enemy)
     {
         spawner.OnSpawned -= HandleEnemySpawned;
-        if (_boss != null) return;
 
-        _boss = enemy;
         enemy.Died += OnEnemyDied;
     }
 
@@ -37,25 +31,16 @@ public class BossLocation : MonoBehaviour
         if (floorOpening == null)
             Debug.LogError($"{name}: FloorOpening is not assigned on {GetType().Name}!", this);
 
-        if (bossDefinition == null)
-            Debug.LogError($"{name}: Boss prefab is not assigned on {GetType().Name}!", this);
-
         if (bossTransform == null)
             Debug.LogError($"{name}: Boss transform is not assigned on {GetType().Name}!", this);
     }
 
-
-    private void OnDisable()
-    {
-        if (_boss != null)
-            _boss.Died -= OnEnemyDied;
-    }
 
 
     private void OnEnemyDied(IEntity enemy)
     {
         enemy.Died -= OnEnemyDied;
         floorOpening.OpenFloor();
-        DungeonManager.Instance.OnDungeonCompleted(this);
+        DungeonManager.Instance.OnDungeonCompleted(stairsAnchor);
     }
 }

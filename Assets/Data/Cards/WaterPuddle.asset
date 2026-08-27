@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84cdc03f97566e14f83697153feefd6d, type: 3}
+  m_Name: WaterPuddle
+  m_EditorClassIdentifier: 
+  id: 94bc2bad-a989-4d49-8b2c-004dee33db49
+  castTime: 1
+  spawnAtCursor: 0
+  visuals:
+    Name: Water Puddle
+    Description: 
+    Art: {fileID: 2800000, guid: ed365c034b707e64fb4e2681b91b8f6e, type: 3}
+    CastAnimation: 0
+    Impact: {fileID: 4422894025167180682, guid: 2667054c4967f2940b00d415a7edb12a, type: 3}
+  DeckOverrides:
+    addedDraws: 0
+    addedDiscards: 0
+  radius: 3
+  effectiveness: 0
+  damageConversion:
+    TagId: Restriction.Element.Lightning

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: great_sword
   DisplayName: Great Sword
-  InventorySize: {x: 2, y: 2}
+  InventorySize: {x: 1, y: 3}
   Appearance:
     WorldModel: {fileID: 919132149155446097, guid: 00d7a23769fc07944a1a5477badd2caf, type: 3}
     Icon: {fileID: 21300000, guid: 7889127a7bdf7984f89d9e85cb7d35e6, type: 3}
@@ -28,22 +28,25 @@ MonoBehaviour:
     Op: 0
     Value: 3
     RequiredTags:
-      Tags: []
-    Source: 0
+      MatchAll: 0
+      Tags:
+        Tags: []
   - Stat:
       TagId: Mod.Offense.Critical
     Op: 0
     Value: 10
     RequiredTags:
-      Tags: []
-    Source: 0
+      MatchAll: 0
+      Tags:
+        Tags: []
   - Stat:
       TagId: Mod.Offense.CastSpeed
     Op: 2
     Value: 0.9
     RequiredTags:
-      Tags: []
-    Source: 0
+      MatchAll: 0
+      Tags:
+        Tags: []
   Components:
   - rid: 7617656363769921682
   references:

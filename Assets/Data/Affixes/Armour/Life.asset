@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Life
   m_EditorClassIdentifier: 
   id: e91a2b90-31ec-4da5-b118-c8eccd4a11c1
-  DisplayName: Life
+  DisplayName: 
   BaseValue: 0.2
   Modifier:
     TagId: Mod.Stat.Health

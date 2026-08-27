@@ -11,6 +11,8 @@ using UnityEngine.UIElements;
 
 public class CardController : NetworkBehaviour, IAbilitySystem
 {
+    [SerializeField] private AnimationClip standardCastAnimation;
+
 
     public ICardContainer CardProvider => _cardManager;
     public ICardPiles CardPiles => _cardManager;
@@ -23,9 +25,10 @@ public class CardController : NetworkBehaviour, IAbilitySystem
 
     private PlayerMovementController playerMovement;
     private bool isCasting = false;
+    private ModifierHandle _movementLockHandle;
     private IStatContainer stats;
     private CardManager _cardManager;
-    private IEntity _owner;
+    private IEntity _owner; 
     private CardFactory _factory;
     private CardRegistry _registry;
     private (Card Card, int HandIndex, Coroutine Handle)? _pendingCast;
@@ -58,10 +61,15 @@ public class CardController : NetworkBehaviour, IAbilitySystem
         _owner = owner;
         _factory = factory;
         _registry = registry;
-        CardDefinition definition = _registry.GetRandomCard();
-        Card card = factory.CreateFromDefinition(definition, _owner);
-        Card card2 = factory.CreateFromDefinition(definition, _owner);
-        _cardManager = new CardManager(new Card[] { card, card2 }, handSize: 5);
+        //CardDefinition definition = _registry.GetRandomCard();
+        List<Card> cards = new();
+        foreach (CardDefinition def in _registry.Cards)
+        {
+            cards.Add(factory.CreateFromDefinition(def, _owner));
+        }
+        
+        
+        _cardManager = new CardManager(cards, handSize: 5);
         _cardManager.OnCardAdded += OnCardAdded;
         _cardManager.OnCardRemoved += OnCardRemoved;
     }
@@ -95,13 +103,26 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     [ObserversRpc]
     private void CardStartedObserversRpc(CardCastAnimation castAnimation)
     {
-        _animationHandler?.PlayCastAnimation(castAnimation);
+        AnimationClip clipToPlay = castAnimation switch
+        {
+            CardCastAnimation.Special => null,
+            _ => standardCastAnimation
+        };
+
+        if (clipToPlay != null)
+        {
+            _animationHandler?.PlayAnimation(clipToPlay, duration: clipToPlay.length);
+        }
+        else
+        {
+            Debug.LogError($"[CardStartedObserversRpc] No animation clip handled for {castAnimation}.");
+        }
     }
 
     [ObserversRpc]
     private void CardInterruptedObserversRpc()
     {
-        _animationHandler?.StopCastAnimation();
+        _animationHandler?.StopCurrentAnimation();
     }
 
     [ServerRpc]
@@ -135,7 +156,7 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     private void Server_StartCast(Card card, int handIndex)
     {
         isCasting = true;
-        playerMovement.LockMovement();
+        _movementLockHandle = stats.AddModifier(new StatModifier(GameTags.ModStatMovement, MathOp.Multiplicative, 0));
 
         card.SetTargetLocation(card.SpawnAtCursor ? _owner.CursorPosition : _owner.Transform.position);
 
@@ -158,7 +179,6 @@ public class CardController : NetworkBehaviour, IAbilitySystem
             channel.OnInterrupted += _onActiveCardInterrupted;
         }
 
-        card.ExecuteBegin();
         card.ExecuteCastTimeDone();
 
         if (!_tickingCards.Contains(card))
@@ -197,7 +217,7 @@ public class CardController : NetworkBehaviour, IAbilitySystem
 
     private void Server_EndCard(Card card)
     {
-        playerMovement.UnlockMovement();
+        _owner.Stats.RemoveModifier(_movementLockHandle);
         CardInterruptedObserversRpc();
     }
 
@@ -264,10 +284,12 @@ public class CardController : NetworkBehaviour, IAbilitySystem
         OnPileReceived?.Invoke(drawPile, cards);
     }
 
+    [ServerRpc]
     public void NotifyClientReadyServerRpc()
     {
         _cardManager.DrawHand();
     }
+
 
 
     [ServerRpc]

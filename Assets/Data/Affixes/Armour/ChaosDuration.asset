@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ChaosDuration
   m_EditorClassIdentifier: 
   id: c1b24f79-44dd-4607-b291-6feffd183e75
-  DisplayName: ChaosDuration
+  DisplayName: 
   BaseValue: 0.4
   Modifier:
     TagId: Mod.Utility.Duration

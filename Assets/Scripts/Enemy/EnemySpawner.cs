@@ -66,7 +66,7 @@ public class EnemySpawner : MonoBehaviour
         return Vector3.zero;
     }
 
-    public void Spawn(GameObject prefab, Vector3 point)
+    public void Spawn(Vector3 point)
     {
         if (!InstanceFinder.IsServerStarted)
             return;
@@ -103,7 +103,7 @@ public class EnemySpawner : MonoBehaviour
             Vector3 point = GetRandomFloorPoint();
 
             if (point != Vector3.zero)
-                Spawn(enemyPrefab, point);
+                Spawn(point);
         }
     }
 }

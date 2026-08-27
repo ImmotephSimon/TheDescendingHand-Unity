@@ -2,6 +2,6 @@
 {
     Unset,
     Locomotion,
-    Stun,
+    Immobilized,
     Dead
 }

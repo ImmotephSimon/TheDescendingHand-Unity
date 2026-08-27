@@ -8,7 +8,7 @@ public class Rarity : ScriptableObject
     [SerializeField, HideInInspector]
     private string id;
     public string Id => id;
-
+    public int Tier;
     public float DropWeight;
     public int MaxAffixes;
     public int MinAffixes;

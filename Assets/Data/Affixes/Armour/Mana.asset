@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Mana
   m_EditorClassIdentifier: 
   id: a213bc12-f3e4-48e7-ab9e-5e1c61093ae2
-  DisplayName: Mana
+  DisplayName: 
   BaseValue: 40
   Modifier:
     TagId: Mod.Stat.Mana

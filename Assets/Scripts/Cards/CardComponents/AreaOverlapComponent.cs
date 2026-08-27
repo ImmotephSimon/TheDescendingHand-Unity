@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 // Proxy attached to the falling object at runtime
 public class PhysicsCollisionNotifier : MonoBehaviour
@@ -31,7 +32,7 @@ public class AreaOverlapComponent : CardComponent
 
     public event Action<IEntity> OnEntityEntered;
     public event Action<IEntity> OnEntityExited;
-    public override bool IsTicking => true;
+    public override bool IsTicking => (_trackedTransform != null || _staticCenter != null);
 
     public AreaOverlapComponent(float radius, LayerMask? targetLayers = null)
     {
@@ -39,22 +40,23 @@ public class AreaOverlapComponent : CardComponent
         _targetLayers = targetLayers;
     }
 
-    public void TrackTransform(Transform targetTransform)
+    public void ToggleTick(Transform targetTransform)
     {
         _trackedTransform = targetTransform;
     }
 
-    public void ActivateAt(Vector3 center)
+    public void ToggleTick(Vector3? position)
     {
-        _staticCenter = center;
+        _staticCenter = position;
     }
 
     public override void Tick(float deltaTime)
     {
-        if (!_trackedTransform && !_staticCenter.HasValue)
+        if (_trackedTransform == null && _staticCenter == null)
             return;
 
-        Vector3 center = _trackedTransform != null ? _trackedTransform.position : _staticCenter ?? Vector3.zero;
+        Vector3 center = _trackedTransform != null ? _trackedTransform.position : _staticCenter.Value;
+
         LayerMask mask = _targetLayers ?? (1 << Owner.HostileLayer);
         Collider[] colliders = Physics.OverlapSphere(center, _radius, mask);
 
@@ -100,7 +102,7 @@ public class AreaOverlapComponent : CardComponent
                 continue;
 
             var hit = new HitInfo(target, Owner, col.ClosestPoint(center));
-            Card.OnHit(hit);
+            Card.OnHit?.Invoke(hit);
         }
     }
 

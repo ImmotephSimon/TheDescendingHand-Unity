@@ -4,10 +4,12 @@ using UnityEngine;
 
 public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
 {
-    protected IAnimationHandler animationHandler;
+    [SerializeField] private TagReactions tagReactions;
+
+    protected IAnimationHandler _animationHandler;
     protected IStatContainer _stats;
     protected DegenComponent _degen;
-    private MitigationLayer mitigationLayer;
+    private MitigationLayer _mitigationLayer;
     private Coroutine _stunRoutine;
     private IHealth _healthHandler;
     private IAilmentHandler _ailmentHandler;
@@ -30,21 +32,24 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
 
     public virtual Vector3 CursorPosition { get; protected set; }
 
+
     public event Action<IEntity> Died;
 
     protected virtual void Awake()
     {
-        mitigationLayer = GetComponent<MitigationLayer>();
+        _mitigationLayer = GetComponent<MitigationLayer>();
         _stats = GetComponent<IStatContainer>();
         _healthHandler = GetComponent<IHealth>();
         _ailmentHandler = GetComponent<IAilmentHandler>();
         _degen = GetComponent<DegenComponent>();
-        Debug.Assert(mitigationLayer != null, $"{name} missing MitigationLayer");
+        Debug.Assert(_mitigationLayer != null, $"{name} missing MitigationLayer");
         Debug.Assert(_stats != null, $"{name} missing stats");
         Debug.Assert(_ailmentHandler != null, $"{name} missing ailment handler");
         Debug.Assert(_degen != null, $"{name} missing DegenComponent");
+        Debug.Assert(tagReactions != null, $"{name} missing TagReactions");
 
-
+        foreach (var reaction in tagReactions.Reactions)
+            reaction.Reaction.StartListening(this);
     }
     protected virtual void Start()
     {
@@ -82,13 +87,17 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
         }
         OnDeath(killer);
         Died?.Invoke(this);
-        animationHandler?.SetAnimationState(CharacterAnimationState.Dead);
+        _animationHandler?.SetAnimationState(CharacterAnimationState.Dead);
         GameWorld.Instance.NotifyDeath(this, killer);
     }
 
     public virtual void TakeDamage(DamageInfo info)
     {
-        var mitigatedDamage = mitigationLayer.CalculateMitigation(info);
+        if (info.Source != null && info.Source.HostileLayer != TeamLayer)
+            return;
+
+
+        var mitigatedDamage = _mitigationLayer.CalculateMitigation(info);
         _ailmentHandler.ApplyAilments(info, mitigatedDamage);
         _healthHandler.AdjustHealth(-mitigatedDamage, info.Source);
     }
@@ -96,10 +105,14 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
     public virtual void ApplyStun(float duration)
     {
         if (IsDead) return;
-        if (_stunRoutine != null) StopCoroutine(_stunRoutine);
+        if (_stunRoutine != null)
+        {
+            StopCoroutine(_stunRoutine);
+            _stats.RemoveModifier(_stunStatHandle);
+        }
         OnStunBegin();
-        _stunStatHandle = _stats.AddModifier(new StatModifier(GameTags.StatusStun));
-        animationHandler?.SetAnimationState(CharacterAnimationState.Stun);
+        _stunStatHandle = _stats.AddModifier(new StatModifier(GameTags.StatusStun, MathOp.Added, 1));
+        //_animationHandler?.SetAnimationState(CharacterAnimationState.Immobilized);
 
         _stunRoutine =  StartCoroutine(StunRoutine(duration));
     }
@@ -111,7 +124,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
         if (IsDead)
             yield break;
 
-        animationHandler?.SetAnimationState(CharacterAnimationState.Locomotion);
+        //_animationHandler?.SetAnimationState(CharacterAnimationState.Locomotion);
         _stats.RemoveModifier(_stunStatHandle);
         OnStunEnd();
     }
@@ -122,7 +135,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
 
     public void ApplyDegen(DegenInfo degenInfo)
     {
-        degenInfo.Damage = mitigationLayer.CalculateMitigation(degenInfo.Damage);
+        degenInfo.Damage = _mitigationLayer.CalculateMitigation(degenInfo.Damage);
         _degen.Apply(degenInfo);
     }
 

@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0b84949ac503a244915b061c29d6d6b, type: 3}
   m_Name: Common
   m_EditorClassIdentifier: 
+  id: ed5dcaba-d72d-403d-b042-475e47befd64
+  Tier: 1
   DropWeight: 400
   MaxAffixes: 2
   MinAffixes: 2

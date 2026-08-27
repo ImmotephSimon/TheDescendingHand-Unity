@@ -8,6 +8,7 @@ public class DungeonManager : MonoBehaviour
     [SerializeField] private DungeonGenerator dungeonGeneratorPrefab;
     [SerializeField] private Light directionalLight;
     [SerializeField] private GameObject overworld;
+    [SerializeField] private Stairs stairsPrefab;
 
     private readonly Dictionary<Transform, DungeonGenerator> dungeonCache = new();
     private DungeonGenerator activeDungeon;
@@ -16,11 +17,14 @@ public class DungeonManager : MonoBehaviour
     public int ZoneLevel => activeDungeon != null ? activeDungeon.ZoneLevel : 0;
     public static DungeonManager Instance { get; private set; }
 
+    private DropsComponent _drops;
+
     public DungeonGenerator ActiveDungeon => IsOverworld ? null : dungeonStack.Peek();
     public bool IsOverworld => dungeonStack.Count == 0;
     private Stack<DungeonGenerator> dungeonStack = new();
 
     private GameObject stairs;
+    
 
     private void Awake()
     {
@@ -30,7 +34,7 @@ public class DungeonManager : MonoBehaviour
             return;
         }
         Instance = this;
-
+        _drops = GetComponent<DropsComponent>();
         stairs = overworld.GetComponentInChildren<Stairs>().gameObject;
         stairs.transform.SetParent(transform);
     }
@@ -107,8 +111,30 @@ public class DungeonManager : MonoBehaviour
         isGenerating = false;
     }
 
-    internal void OnDungeonCompleted(BossLocation bossLocation)
+    internal void OnDungeonCompleted(Transform stairsAnchor)
     {
-        throw new NotImplementedException();
+        Instantiate(
+            stairsPrefab,
+            stairsAnchor.position,
+            stairsAnchor.rotation,
+            transform
+        );
     }
+
+    internal void RegisterDungeonChest(HingeController hingeController)
+    {
+        
+        Action handler = null;
+        handler = () =>
+        {
+            hingeController.PlayerInteracted -= handler;
+            _drops.DropFromChest(
+                hingeController.transform.position,
+                hingeController.transform.forward
+            );
+        };
+
+        hingeController.PlayerInteracted += handler;
+    }
+
 }

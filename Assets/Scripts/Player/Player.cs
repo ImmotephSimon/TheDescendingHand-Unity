@@ -12,7 +12,8 @@ public class Player : Entity, IPlayerCollection
 
     private PlayerMovementController playerMovement;
     private CardController _cardController;
-    private ModifierHandle _sprintHandle;
+    private ModifierHandle _sprintHandle = ModifierHandle.Invalid;
+    private ModifierHandle _movementLockHandle;
 
     public CardController CardController => _cardController;
     public float InteractRange => interactRange;
@@ -24,9 +25,9 @@ public class Player : Entity, IPlayerCollection
         base.Awake();
 
         playerMovement = GetComponent<PlayerMovementController>();
-        animationHandler = GetComponentInChildren<IAnimationHandler>();
+        _animationHandler = GetComponentInChildren<IAnimationHandler>();
         _cardController = GetComponent<CardController>();
-        Debug.Assert(animationHandler != null, $"{name} missing IAnimationHandler");
+        Debug.Assert(_animationHandler != null, $"{name} missing IAnimationHandler");
         Debug.Assert(_cardController != null, $"{name} missing CardController");
 
         enemyDetector.OnEntered += _ => ToggleSprint(false);
@@ -39,19 +40,23 @@ public class Player : Entity, IPlayerCollection
     private void ToggleSprint(bool isEnabled)
     {
         if (isEnabled)
+        {
+            if (_sprintHandle.IsValid)
+                return;
+
             _sprintHandle = _stats.AddModifier(
                 new StatModifier(GameTags.ModStatMovement, MathOp.Multiplicative, 1.8f));
-        else
-            if (_sprintHandle.IsValid)
-            { 
-                _stats.RemoveModifier(_sprintHandle);
-                GetComponent<PlayerNetworkActions>().ShowSpeechBubble("What was that?");
-            }
+        }
+        else if (_sprintHandle.IsValid)
+        {
+            _stats.RemoveModifier(_sprintHandle);
+            GetComponent<PlayerNetworkActions>().ShowSpeechBubble("What was that?");
+        }
     }
 
     protected override void OnDeath(IEntity killer)
     {
-        playerMovement.LockMovement();
+        _movementLockHandle = Stats.AddModifier(new StatModifier(GameTags.ModStatMovement, MathOp.Multiplicative, 0));
         StartCoroutine(ScheduleRevival());
     }
 
@@ -63,8 +68,8 @@ public class Player : Entity, IPlayerCollection
         healthHandler.AdjustHealth(healthHandler.MaxHealth, this);
 
         IsDead = false;
-        playerMovement.UnlockMovement();
-        animationHandler.SetAnimationState(CharacterAnimationState.Locomotion);
+        Stats.RemoveModifier(_movementLockHandle);
+        _animationHandler.SetAnimationState(CharacterAnimationState.Locomotion);
 
         GameWorld.Instance.NotifyRevive(this);
     }

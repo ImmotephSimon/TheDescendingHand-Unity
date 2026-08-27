@@ -27,7 +27,7 @@ public class TargetDummy : Entity
             _healthBar.Bind(GetComponent<IHealth>());
         }
 
-        GetComponent<DropsComponent>().DropFromEnemy();
+        GetComponent<DropsComponent>().DropFromEnemy(transform.position);
     }
 
 

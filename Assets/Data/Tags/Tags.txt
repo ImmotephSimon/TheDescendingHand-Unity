@@ -23,12 +23,14 @@ Mod.Offense.DamagePerMana
 Mod.Stat.Armour
 Mod.Stat.Evasion
 Mod.Stat.Instinct
-Mod.Stat.Level
 Mod.Stat.Health
 Mod.Stat.Mana
+Mod.Stat.Stun.Threshold
+Mod.Stat.Stun.Duration
 Mod.Stat.Movement
 Mod.Stat.Strength
 Mod.Stat.Willpower
+Mod.Stat.Level
 Mod.Utility.Area
 Mod.Utility.CardBias
 Mod.Utility.Cost
@@ -53,6 +55,8 @@ Status.Electrified
 Status.Freeze
 Status.Poison
 Status.Stun
+Status.Hex.Frailty
+Status.Hex.Weakness
 
 Trait.Conductive
 

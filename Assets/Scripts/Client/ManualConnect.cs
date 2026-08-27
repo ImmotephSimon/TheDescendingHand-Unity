@@ -21,5 +21,4 @@ public class ManualConnect : MonoBehaviour
         InstanceFinder.ClientManager.OnClientConnectionState += s => _status = $"State: {s.ConnectionState}";
         }
     }
-    void OnGUI() => GUI.Label(new Rect(10, 10, 300, 20), _status);
 }

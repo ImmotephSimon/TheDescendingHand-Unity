@@ -10,73 +10,51 @@ public class PlayerAnimationController : MonoBehaviour, IAnimationHandler
     [SerializeField] private Animator animator;
     [SerializeField] private AnimationClip dodgeAnimation;
 
-
     private PlayableGraph _graph;
-    private AnimationClipPlayable _clipPlayable;
     private AnimationMixerPlayable _mixer;
     private Coroutine _routine;
-    private float transitionDuration = 0.1f;
-    private PlayerMovementController playerMovement;
-    
-    private static readonly int SpeedHash = Animator.StringToHash("Speed");
+    private const float TransitionDuration = 0.1f;
+    private PlayerMovementController _playerMovement;
+
     private static readonly int LocomotionHash = Animator.StringToHash("Locomotion");
     private static readonly int DeadHash = Animator.StringToHash("Dead");
-    private static readonly int StunHash = Animator.StringToHash("Stunned");
-    private static readonly int CastHash = Animator.StringToHash("Cast");
-    private static readonly int SpecialCastHash = Animator.StringToHash("SpecialCast");
+    private static readonly int ImmobilizationHash = Animator.StringToHash("Immobilized");
+
+    private readonly HashSet<GameTag> _activeStatuses = new();
 
     public Animator Animator => animator;
 
-    private readonly Dictionary<CharacterAnimationState, int> animationHashes = new()
-    {
-        { CharacterAnimationState.Locomotion, LocomotionHash },
-        { CharacterAnimationState.Stun, StunHash },
-        { CharacterAnimationState.Dead, DeadHash }
-    };
-
     private void Start()
     {
-        if (FishNet.InstanceFinder.IsServerStarted && !FishNet.InstanceFinder.IsClientStarted)
-        {
-            enabled = false;
-            return;
-        }
+        _playerMovement = GetComponentInParent<PlayerMovementController>();
 
-        playerMovement = GetComponentInParent<PlayerMovementController>();
-        if (playerMovement == null) Debug.LogError("Missing player movement in parent");
+        if (_playerMovement == null)
+            Debug.LogError("Missing player movement in parent");
+
+        if (ClientBridge.Instance != null)
+        {
+            ClientBridge.Instance.OnClientPlayerReady += _ =>
+            {
+                ClientBridge.Instance.Stats.StatusChanged += HandleStatusChanged;
+            };
+        }
     }
 
-    // --- IAnimationHandler Implementation ---
-
-    public void PlayCastAnimation(CardCastAnimation animation)
+    private void HandleStatusChanged(GameTag status, bool isActive)
     {
-        int hash = animation switch
-        {
-            CardCastAnimation.Default => CastHash,
-            CardCastAnimation.Special => SpecialCastHash,
-            _ => 0
-        };
+        if (isActive)
+            _activeStatuses.Add(status);
+        else
+            _activeStatuses.Remove(status);
 
-        if (hash == 0) return;
-
-        if (animator == null)
+        if (_activeStatuses.Contains(GameTags.StatusStun))
         {
-            Debug.LogError($"[{gameObject.name}] Animator reference is NULL!");
-            return;
+            animator.CrossFade(ImmobilizationHash, TransitionDuration);
         }
-
-        if (animator.runtimeAnimatorController == null)
+        else
         {
-            Debug.LogError($"[{gameObject.name}] Animator has NO RuntimeAnimatorController assigned!");
-            return;
+            animator.CrossFade(LocomotionHash, TransitionDuration);
         }
-
-        if (!animator.HasState(0, hash))
-        {
-            Debug.LogError($"[{gameObject.name}] Controller '{animator.runtimeAnimatorController.name}' does NOT contain state hash '{hash}' on Layer 0!");
-            return;
-        }
-        animator.CrossFade(hash, transitionDuration, 0);
     }
 
     public void StopCurrentAnimation()
@@ -88,26 +66,31 @@ public class PlayerAnimationController : MonoBehaviour, IAnimationHandler
         }
 
         if (_graph.IsValid())
-        {
             _graph.Destroy();
-        }
 
-        animator.CrossFade(LocomotionHash, transitionDuration, 0);
+        animator.CrossFade(LocomotionHash, TransitionDuration, 0);
     }
 
     public void SetAnimationState(CharacterAnimationState state)
     {
-        if (state is CharacterAnimationState.Unset)
+        if (state == CharacterAnimationState.Unset)
             return;
 
-        if (animationHashes.TryGetValue(state, out var hash))
+        int hash = state switch
         {
-            animator.CrossFade(hash, transitionDuration);
-        }
-        else
+            CharacterAnimationState.Locomotion => LocomotionHash,
+            CharacterAnimationState.Immobilized => ImmobilizationHash,
+            CharacterAnimationState.Dead => DeadHash,
+            _ => 0
+        };
+
+        if (hash == 0)
         {
             Debug.LogWarning($"Unhandled animation state: {state}");
+            return;
         }
+
+        animator.CrossFade(hash, TransitionDuration);
     }
 
     public void PlayAttackAnimation(AttackAnimation attackAnimation, Action onFinished)
@@ -120,24 +103,22 @@ public class PlayerAnimationController : MonoBehaviour, IAnimationHandler
         throw new NotImplementedException();
     }
 
-    // --- Playable Graph Clip Logic ---
-
-    public void PlayAnimation(AnimationClip clip, float duration, Action onFinished = null)
-    {
-        PlayClip(clip, duration, true, onFinished);
-    }
 
     public float PlayDodgeRoll()
     {
-        PlayClip(dodgeAnimation, dodgeAnimation.length, false);
+        PlayClip(dodgeAnimation, dodgeAnimation.length);
         return dodgeAnimation.length;
+    }
+
+    public Action PlayAnimation(AnimationClip clip, float duration)
+    {
+        PlayClip(clip, duration);
+        return StopCurrentAnimation;
     }
 
     private void PlayClip(
         AnimationClip clip,
-        float duration,
-        bool lockMovement,
-        Action onFinished = null)
+        float duration)
     {
         StopCurrentAnimation();
 
@@ -150,11 +131,11 @@ public class PlayerAnimationController : MonoBehaviour, IAnimationHandler
             _graph,
             animator.runtimeAnimatorController);
 
-        _clipPlayable = AnimationClipPlayable.Create(_graph, clip);
-        _mixer = AnimationMixerPlayable.Create(_graph, 2);
+        var clipPlayable = AnimationClipPlayable.Create(_graph, clip);
 
+        _mixer = AnimationMixerPlayable.Create(_graph, 2);
         _mixer.ConnectInput(0, controllerPlayable, 0);
-        _mixer.ConnectInput(1, _clipPlayable, 0);
+        _mixer.ConnectInput(1, clipPlayable, 0);
 
         _mixer.SetInputWeight(0, 1f);
         _mixer.SetInputWeight(1, 0f);
@@ -168,17 +149,13 @@ public class PlayerAnimationController : MonoBehaviour, IAnimationHandler
         _graph.Play();
 
         _routine = StartCoroutine(
-            PlayClipRoutine(duration, 0.15f, lockMovement, onFinished));
+            PlayClipRoutine(duration, 0.15f));
     }
 
     private IEnumerator PlayClipRoutine(
         float duration,
-        float fadeTime,
-        bool lockMovement,
-        Action callback)
+        float fadeTime)
     {
-        if (lockMovement)
-            playerMovement.LockMovement();
 
         float time = 0f;
 
@@ -213,7 +190,6 @@ public class PlayerAnimationController : MonoBehaviour, IAnimationHandler
         }
 
         StopCurrentAnimation();
-        callback?.Invoke();
     }
 
     private void OnDestroy()
@@ -223,10 +199,5 @@ public class PlayerAnimationController : MonoBehaviour, IAnimationHandler
 
         if (_graph.IsValid())
             _graph.Destroy();
-    }
-
-    public void StopCastAnimation()
-    {
-        animator.CrossFade(LocomotionHash, transitionDuration, 0);
     }
 }

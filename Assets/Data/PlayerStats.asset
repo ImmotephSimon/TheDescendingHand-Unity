@@ -22,6 +22,14 @@ MonoBehaviour:
       Tags:
         Tags: []
   - Stat:
+      TagId: Mod.Stat.Stun.Threshold
+    Op: 0
+    Value: 0.05
+    RequiredTags:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Stat:
       TagId: Mod.Offense.Damage
     Op: 0
     Value: 3
@@ -41,7 +49,15 @@ MonoBehaviour:
   - Stat:
       TagId: Mod.Stat.Movement
     Op: 1
-    Value: 0
+    Value: 4
+    RequiredTags:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  - Stat:
+      TagId: Mod.Stat.Stun.Duration
+    Op: 0
+    Value: 0.6
     RequiredTags:
       MatchAll: 0
       Tags:

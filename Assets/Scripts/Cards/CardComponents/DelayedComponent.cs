@@ -39,7 +39,7 @@ public class DelayedComponent : CardComponent
         OnCompleted?.Invoke();
     }
 
-    protected override void OnBegin()
+    protected override void OnActivate()
     {
         _timer = 0f;
         _active = true;
