@@ -13,9 +13,8 @@ public class RockslideDefinition : CardDefinition
     [SerializeField] private float interval = 0.5f;
     [SerializeField] private float meshScale = 0.3f;
 
-    public override Card Create(CardInitContext context)
+    public override void Construct(CardInitContext context, Card card)
     {
-        var card = new Card(context.InstanceId, this, context.Owner);
 
         var overlap = new AreaOverlapComponent(radius);
         var damage = new DirectDamageComponent(
@@ -56,7 +55,5 @@ public class RockslideDefinition : CardDefinition
         card.AddComponent(sequence);
         card.AddComponent(overlap);
         card.AddComponent(damage);
-
-        return card;
     }
 }

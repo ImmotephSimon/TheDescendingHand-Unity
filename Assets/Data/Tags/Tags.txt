@@ -67,3 +67,8 @@ Type.Defensive
 Type.DoT
 Type.Melee
 Type.Projectile
+
+// Server Entity / Prefab identifiers 
+Prefab.Projectile
+Prefab.Card
+Prefab.CardWall

@@ -1,5 +1,8 @@
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using System;
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ProjectileController : NetworkBehaviour
@@ -7,7 +10,8 @@ public class ProjectileController : NetworkBehaviour
     private static int EnvironmentMask;
     private int DynamicHitMask => EnvironmentMask | (1 << _owner.HostileLayer);
 
-    private GameObject _visual;
+    private readonly SyncVar<string> _vfxId = new();
+
     private Vector3 _velocity;
     private bool _initialized;
     private SphereCollider _collider;
@@ -15,6 +19,7 @@ public class ProjectileController : NetworkBehaviour
     private IEntity _owner;
     private float _chainRadius = 4f;
     private IEntity _lastHitEntity;
+    private GameObject _visual;
     private readonly float maxProjectileDistanceSqr = 1800f;
 
     public event Action<HitInfo> OnHit;
@@ -30,37 +35,46 @@ public class ProjectileController : NetworkBehaviour
 
     public void Initialize(ProjectileInfo info, IEntity owner)
     {
-        _visual = info.Visual;
         _info = info;
         _owner = owner;
         _velocity = _info.GetLaunchVelocity(_owner);
         _initialized = true;
-
-        Debug.Assert(_visual != null, $"Projectile visual is null.");
-        if (IsClientStarted)
-        {
-            ClientBridge.Instance.VFXView.AttachAbilityVisual(_visual, transform);
-        }
     }
 
-    [Server]
-    private void Update()
+
+    public override void OnStartServer()
     {
-        if (!_initialized) return;
+        base.OnStartServer();
 
-        if (_owner != null && Vector3.SqrMagnitude(transform.position - _owner.Transform.position) >= maxProjectileDistanceSqr)
+        GameObject vfxPrefab = _info.Visual;
+
+        if (VfxRegistry.Instance.TryGetId(vfxPrefab, out string vfxId))
         {
-            End();
-            return;
+            _vfxId.Value = vfxId;
         }
+        StartCoroutine(ServerTickRoutine());
+    }
 
-        _velocity += Physics.gravity * _info.Direction.Gravity * Time.deltaTime;
 
-        Vector3 movement = _velocity * Time.deltaTime;
 
-        CheckCollision(transform.position, movement);
+    private IEnumerator ServerTickRoutine()
+    {
+        while (base.IsSpawned && _initialized)
+        {
+            if (_owner != null && Vector3.SqrMagnitude(transform.position - _owner.Transform.position) >= maxProjectileDistanceSqr)
+            {
+                End();
+                yield break;
+            }
 
-        transform.position += movement;
+            _velocity += Physics.gravity * _info.Direction.Gravity * Time.deltaTime;
+            Vector3 movement = _velocity * Time.deltaTime;
+
+            CheckCollision(transform.position, movement);
+            transform.position += movement;
+
+            yield return null;
+        }
     }
 
     private void End()
@@ -203,12 +217,8 @@ public class ProjectileController : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        if (_visual == null)
-        {
-            Debug.LogWarning($"Projectile {name} has no visual assigned.");
-            return;
-        }
-
+        VfxRegistry.Instance.TryGetPrefab(_vfxId.Value, out _visual);
+        Debug.Log($"OnStartClient() Visuals: {_visual.name}");
         ClientBridge.Instance.VFXView.AttachAbilityVisual(_visual, transform);
     }
 

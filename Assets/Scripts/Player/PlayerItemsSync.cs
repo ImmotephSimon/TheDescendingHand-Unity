@@ -177,7 +177,7 @@ public class PlayerItemsSync : NetworkBehaviour
         string rarityId,
         List<AffixState> explicits)
     {
-        if (!ItemDatabase.Instance.TryGet(baseTypeId, out var baseType))
+        if (!ItemRegistry.Instance.TryGet(baseTypeId, out var baseType))
             return null;
 
         var equip = baseType.Components
@@ -207,7 +207,7 @@ public class PlayerItemsSync : NetworkBehaviour
             .Where(x => x != null)
             .ToList();
 
-        var rarity = ItemDatabase.Instance.Rarities
+        var rarity = ItemRegistry.Instance.Rarities
             .FirstOrDefault(x => x.Id == rarityId);
 
         return new ItemInstance(baseType, rarity, affixes);

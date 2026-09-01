@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Items/Item Database")]
-public class ItemDatabase : ScriptableObject
+[CreateAssetMenu(menuName = "Registries/Items")]
+public class ItemRegistry : ScriptableObject
 {
     [SerializeField] private GameObject itemPrefab;
     [SerializeField] private List<Rarity> rarities = new();
@@ -11,14 +11,14 @@ public class ItemDatabase : ScriptableObject
     public GameObject ItemPrefab => itemPrefab;
     public List<Rarity> Rarities => rarities;
 
-    private static ItemDatabase _instance;
-    public static ItemDatabase Instance
+    private static ItemRegistry _instance;
+    public static ItemRegistry Instance
     {
         get
         {
             if (_instance == null)
             {
-                _instance = Resources.Load<ItemDatabase>("ItemDatabase");
+                _instance = Resources.Load<ItemRegistry>("ItemRegistry");
                 if (_instance != null)
                 {
                     _instance.Initialize();

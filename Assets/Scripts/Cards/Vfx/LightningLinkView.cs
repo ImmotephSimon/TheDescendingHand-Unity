@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -38,6 +37,7 @@ public class ChainLightningView : MonoBehaviour, IVfx
         previousEnd = end;
         visualEffect.SetVector3("Pos1", start);
         visualEffect.SetVector3("Pos4", end);
+        Debug.Log($"[VFX Init] Start: {start}, End: {end}, TargetNull: {target == null}, TargetPos: {target?.position}");
     }
 
     public void UpdateTarget(Transform target)
@@ -85,7 +85,7 @@ public class ChainLightningView : MonoBehaviour, IVfx
         {
             end = target.position;
             float currentSpeed = Vector3.Distance(previousEnd, end) / Time.deltaTime;
-            maxSpeed = Math.Max(maxSpeed, currentSpeed);
+            maxSpeed = Mathf.Max(maxSpeed, currentSpeed);
             previousEnd = end;
         }
     }

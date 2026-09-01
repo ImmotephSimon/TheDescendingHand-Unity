@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed5c18a75f53355409b9bfbae7432355, type: 3}
+  m_Name: Shockwave
+  m_EditorClassIdentifier: 
+  id: 7194c6a6-740c-4a32-aaac-4ba04315752d
+  castTime: 1
+  spawnAtCursor: 0
+  visuals:
+    Name: Shockwave
+    Description: Debris
+    Art: {fileID: 0}
+    AnimationOverride: {fileID: 0}
+    Vfx:
+    - {fileID: 1007127540951276732, guid: 3ace37360f306cb4aac03640550fa9ef, type: 3}
+  DeckOverrides:
+    addedDraws: 0
+    addedDiscards: 0
+  radius: 8
+  force: 20
+  upwardModifier: 0
+  effectiveness: 1
+  damageConversion:
+    TagId: Restriction.Physical
+  delayDuration: 1

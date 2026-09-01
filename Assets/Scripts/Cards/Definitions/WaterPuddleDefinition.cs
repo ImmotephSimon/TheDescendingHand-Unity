@@ -8,13 +8,13 @@ public class WaterPuddleDefinition : CardDefinition
     [SerializeField] private float radius = 3f;
     [SerializeField] private float effectiveness;
     [SerializeField] private GameTag damageConversion;
+    [SerializeField] private float duration = 8f;
 
-    public override Card Create(CardInitContext context)
+    private Action _cancelVisuals;
+
+
+    public override void Construct(CardInitContext context, Card card)
     {
-        var card = new Card(
-            context.InstanceId,
-            this,
-            context.Owner);
 
         var overlap = new AreaOverlapComponent(radius);
 
@@ -35,6 +35,9 @@ public class WaterPuddleDefinition : CardDefinition
 
             electrified = IsElectrified;
 
+            _cancelVisuals.Invoke();
+            _cancelVisuals = context.ClientSpawn(this, new VfxSpawnParams(card.TargetLocation, 1, duration));
+            
             // Change the puddle's behavior/state here.
         }
 
@@ -42,7 +45,7 @@ public class WaterPuddleDefinition : CardDefinition
         card.OnActivated += () =>
         {
             overlap.ToggleTick(card.TargetLocation);
-            context.ClientSpawn(this, new VfxSpawnParams(card.TargetLocation) { Scale = Vector3.one * radius });
+            _cancelVisuals = context.ClientSpawn(this, new VfxSpawnParams(card.TargetLocation, 0, duration) { Scale = Vector3.one * radius });
         };
 
 
@@ -79,8 +82,6 @@ public class WaterPuddleDefinition : CardDefinition
         card.AddComponent(overlap);
         card.AddComponent(damage);
         card.AddComponent(status);
-
-        return card;
     }
 
 

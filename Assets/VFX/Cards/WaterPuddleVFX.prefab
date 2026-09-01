@@ -46,7 +46,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4332320229337483796, guid: a03d0bd94d6bfdc4ba8af7afcf99012d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4332320229337483796, guid: a03d0bd94d6bfdc4ba8af7afcf99012d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -83,7 +83,11 @@ PrefabInstance:
     - target: {fileID: 4371816664840330776, guid: a03d0bd94d6bfdc4ba8af7afcf99012d, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 2100000, guid: 66884ece01ab07140a9f79546797d77c, type: 2}
+      objectReference: {fileID: 2100000, guid: 925f6ea0ecdf1344185f2d3329d25504, type: 2}
+    - target: {fileID: 4371816664840330776, guid: a03d0bd94d6bfdc4ba8af7afcf99012d, type: 3}
+      propertyPath: m_Offset.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4690780756773977823, guid: a03d0bd94d6bfdc4ba8af7afcf99012d, type: 3}
       propertyPath: m_Name
       value: Decal

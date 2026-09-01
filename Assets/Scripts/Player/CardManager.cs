@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 public class CardManager : ICardContainer, ICardPiles
 {
+    private static readonly int maxHandSize = 5;
+    private int _drawCount = 2;
+
     private readonly Card[] _hand;
     private readonly List<Card> _drawPile = new();
     private readonly List<Card> _discard = new();
@@ -13,9 +16,18 @@ public class CardManager : ICardContainer, ICardPiles
     public event Action<int, Card> OnCardAdded;
     public event Action<int, Card> OnCardRemoved;
 
-    public CardManager(IEnumerable<Card> startingCards, int handSize = 5)
+
+    public IReadOnlyList<CardDefinition> DrawPile =>
+        _drawPile.Select(card => card.Definition).ToList();
+
+    public IReadOnlyList<CardDefinition> DiscardPile =>
+        _discard.Select(card => card.Definition).ToList();
+
+
+    public CardManager(IEnumerable<Card> startingCards)
     {
-        _hand = new Card[handSize];
+        _hand = new Card[maxHandSize];
+        
 
         _drawPile.AddRange(startingCards);
         ShuffleDrawPile();
@@ -30,7 +42,7 @@ public class CardManager : ICardContainer, ICardPiles
 
     public void DrawHand()
     {
-        for (int i = 0; i < _hand.Length; i++)
+        for (int i = 0; i < _drawCount; i++)
         {
             if (_drawPile.Count == 0)
                 break;
@@ -72,13 +84,6 @@ public class CardManager : ICardContainer, ICardPiles
 
         return drawnCard;
     }
-
-
-    public IReadOnlyList<CardDefinition> DrawPile =>
-        _drawPile.Select(card => card.Definition).ToList();
-
-    public IReadOnlyList<CardDefinition> DiscardPile =>
-        _discard.Select(card => card.Definition).ToList();
 
     private int FindEmptyHandSlot()
     {

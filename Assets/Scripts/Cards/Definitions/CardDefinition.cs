@@ -17,7 +17,7 @@ public abstract class CardDefinition : ScriptableObject
 
     public CardVisuals Visuals => visuals; 
     public DeckOverrides DeckOverrides; 
-    public abstract Card Create(CardInitContext context);
+    public abstract void Construct(CardInitContext context, Card card);
 
 #if UNITY_EDITOR
     private void OnValidate()
@@ -32,19 +32,21 @@ public abstract class CardDefinition : ScriptableObject
 public struct VfxSpawnParams
 {
     public Guid InstanceId;
+    public int VfxIndex;
     public Vector3 Position;
     public Quaternion Rotation;
     public Vector3 Scale;
     public float Duration;
 
-    public VfxSpawnParams(Vector3 position, float duration = 0f)
-        : this(position, Quaternion.identity, duration)
+    public VfxSpawnParams(Vector3 position, int vfxIndex = 0, float duration = 0f)
+        : this(position, Quaternion.identity, vfxIndex, duration)
     {
     }
 
-    public VfxSpawnParams(Vector3 position, Quaternion rotation, float duration = 0f)
+    public VfxSpawnParams(Vector3 position, Quaternion rotation, int vfxIndex = 0, float duration = 0f)
     {
         InstanceId = Guid.NewGuid();
+        VfxIndex = vfxIndex;
         Position = position;
         Rotation = rotation;
         Scale = Vector3.one;
@@ -56,14 +58,14 @@ public readonly struct CardInitContext
 {
     public readonly Guid InstanceId;
     public readonly IEntity Owner;
-    public readonly Action<GameObject> ServerSpawn;
-    public readonly Action<CardDefinition, VfxSpawnParams> ClientSpawn;
+    public readonly Func<GameObject, GameObject> ServerSpawn;
+    public readonly Func<CardDefinition, VfxSpawnParams, Action> ClientSpawn;
 
     public CardInitContext(
         Guid instanceId,
         IEntity owner,
-        Action<GameObject> serverNetworkSpawn,
-        Action<CardDefinition, VfxSpawnParams> clientNetworkSpawn)
+        Func<GameObject, GameObject> serverNetworkSpawn,
+        Func<CardDefinition, VfxSpawnParams, Action> clientNetworkSpawn)
     {
         InstanceId = instanceId;
         Owner = owner;

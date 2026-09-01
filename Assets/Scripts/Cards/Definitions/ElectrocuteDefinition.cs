@@ -7,13 +7,9 @@ public class ElectrocuteDefinition : CardDefinition
     [SerializeField] private float effectiveness;
     [SerializeField] private GameTag damageConversion;
 
-    public override Card Create(CardInitContext context)
+    public override void Construct(CardInitContext context, Card card)
     {
-        var card = new Card(
-            context.InstanceId,
-            this,
-            context.Owner);
-
+        
         var damage = new DirectDamageComponent(
             effectiveness,
             damageConversion);
@@ -27,7 +23,5 @@ public class ElectrocuteDefinition : CardDefinition
         card.AddComponent(damage);
         card.AddComponent(projectile);
         card.AddComponent(statusEffect);
-
-        return card;
     }
 }

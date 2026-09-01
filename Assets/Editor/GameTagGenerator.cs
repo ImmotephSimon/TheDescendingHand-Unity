@@ -32,7 +32,7 @@ public static class GameTagGenerator
 
             foreach (var line in lines)
             {
-                if (string.IsNullOrWhiteSpace(line))
+                if (string.IsNullOrWhiteSpace(line) || line.StartsWith("//"))
                     continue;
 
                 var parts = line.Split('.');

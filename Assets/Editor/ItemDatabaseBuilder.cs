@@ -24,11 +24,11 @@ public static class ItemDatabaseBuilder
                 definitions.Add(definition);
         }
 
-        ItemDatabase database = AssetDatabase.LoadAssetAtPath<ItemDatabase>(DatabasePath);
+        ItemRegistry database = AssetDatabase.LoadAssetAtPath<ItemRegistry>(DatabasePath);
 
         if (database == null)
         {
-            database = ScriptableObject.CreateInstance<ItemDatabase>();
+            database = ScriptableObject.CreateInstance<ItemRegistry>();
             AssetDatabase.CreateAsset(database, DatabasePath);
         }
 

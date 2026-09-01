@@ -26,14 +26,10 @@ public class EnemyCardAttack : EnemyAttack
         }
         var owner = GetComponent<IEntity>() ?? GetComponentInParent<IEntity>();
 
-        var context = new CardInitContext(
-            Guid.NewGuid(),
-            owner,
-            serverNetworkSpawn: go => InstanceFinder.ServerManager.Spawn(go),
-            clientNetworkSpawn: null
-        );
+        var networkActions = GetComponent<EnemyNetworkActions>();
+        
 
-        _card = cardDef.CardDefinition.Create(context);
+        _card = CardFactory.CreateFromDefinition(cardDef.CardDefinition, owner);
     }
 
     public override void Execute(Transform target)

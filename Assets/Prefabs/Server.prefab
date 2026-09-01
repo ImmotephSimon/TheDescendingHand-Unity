@@ -18,11 +18,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 927076904386195409, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: _initializedTimestamp
-      value: -8584142004645919030
+      value: -8584135833413239994
       objectReference: {fileID: 0}
     - target: {fileID: 927076904386195409, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: <PrefabId>k__BackingField
-      value: 10
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 927076904386195409, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: NetworkBehaviours.Array.size
@@ -60,6 +60,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 5036442494900270532, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: _cardPrefab
+      value: 
+      objectReference: {fileID: 7759561611833895041, guid: 5722867f81ead58488e74b3e93913eaa, type: 3}
     - target: {fileID: 7133544487953197772, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
       value: 256

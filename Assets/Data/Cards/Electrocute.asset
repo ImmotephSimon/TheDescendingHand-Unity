@@ -19,13 +19,12 @@ MonoBehaviour:
     Name: Electrocute
     Description: Projectile\nChain
     Art: {fileID: 2800000, guid: b53a8d460ad12fd44a8ac6247013bee3, type: 3}
-    CastAnimation: 0
-    Impact: {fileID: 0}
+    AnimationOverride: {fileID: 0}
+    Vfx: []
   DeckOverrides:
     addedDraws: 0
     addedDiscards: 0
   projectileInfo:
-    Prefab: {fileID: 755919957440293959, guid: 09d0ab38ffa41c24fb5537cb07e4f326, type: 3}
     Speed: 15
     Direction:
       Sideways: 0

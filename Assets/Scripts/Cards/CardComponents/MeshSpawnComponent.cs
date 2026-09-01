@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 public class MeshSpawnComponent : CardComponent
 {
     private readonly GameObject _prefab;
-    private readonly Action<GameObject> _onSpawn;
+    private readonly Func<GameObject, GameObject> _onSpawn;
     private readonly Vector3 _offset;
     private readonly bool _useGravity;
     private readonly float _scale;
@@ -14,7 +14,7 @@ public class MeshSpawnComponent : CardComponent
 
     public MeshSpawnComponent(
         GameObject prefab,
-        Action<GameObject> spawnNetworkObject,
+        Func<GameObject, GameObject> spawnNetworkObject,
         Vector3 offset = default,
         bool useGravity = false,
         float scale = 1f)

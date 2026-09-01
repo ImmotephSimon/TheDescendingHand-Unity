@@ -19,8 +19,9 @@ MonoBehaviour:
     Name: Hex Burst
     Description: Conditional
     Art: {fileID: 2800000, guid: 091406837e8e7da46944bc9897274eca, type: 3}
-    CastAnimation: 0
-    Impact: {fileID: 4422894025167180682, guid: b6bf06d8b658e41488f1c5621ef0269d, type: 3}
+    AnimationOverride: {fileID: 0}
+    Vfx:
+    - {fileID: 4422894025167180682, guid: b6bf06d8b658e41488f1c5621ef0269d, type: 3}
   DeckOverrides:
     addedDraws: 0
     addedDiscards: 0

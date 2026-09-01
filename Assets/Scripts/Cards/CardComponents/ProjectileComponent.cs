@@ -6,7 +6,7 @@ using UnityEngine;
 public class ProjectileComponent : CardComponent
 {
     private readonly ProjectileInfo _info;
-    private readonly Action<GameObject> _onSpawnProjectile;
+    private readonly Func<GameObject, GameObject> _onSpawnProjectile;
     private const float MultiProjectileAngle = 15f;
 
     public event Action<HitInfo> OnProjectileHit;
@@ -14,12 +14,11 @@ public class ProjectileComponent : CardComponent
 
     public ProjectileComponent(
         ProjectileInfo info,
-        Action<GameObject> spawnNetworkObject)
+        Func<GameObject,GameObject> spawnNetworkObject)
         : base(GameTags.TypeProjectile)
     {
         _info = info;
         _onSpawnProjectile = spawnNetworkObject;
-        Debug.Assert(!info.IsEmpty, $"[{nameof(ProjectileComponent)}] Construction failed: Prefab is unassigned in ProjectileInfo.");
     }
 
 
@@ -53,8 +52,11 @@ public class ProjectileComponent : CardComponent
 
     private void SpawnProjectile(Quaternion rotation)
     {
+
+        ServerPrefabRegistry.Instance.TryGetPrefab(GameTags.PrefabProjectile, out GameObject prefab);
+
         var projectile = UnityEngine.Object.Instantiate(
-            _info.Prefab,
+            prefab,
             _info.GetSpawnPosition(Owner),
             rotation);
 

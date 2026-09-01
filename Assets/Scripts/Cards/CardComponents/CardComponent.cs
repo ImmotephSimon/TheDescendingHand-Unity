@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class CardComponent
+public abstract class CardComponent : MonoBehaviour
 {
     protected IStatContainer Stats { get; private set; }
     protected Card Card { get; private set; }

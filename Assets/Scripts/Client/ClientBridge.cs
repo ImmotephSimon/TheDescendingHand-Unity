@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class ClientBridge : MonoBehaviour
 {
-    [SerializeField] private CardRegistry cardRegistry;
+    [SerializeField] private CardRegistry testCards;
+
+
     public static ClientBridge Instance { get; private set; }
     public VFXView VFXView { get; private set; }
     public GlobePositioner GlobePositioner { get; private set; }
@@ -15,8 +17,9 @@ public class ClientBridge : MonoBehaviour
     public CardHandController CardHandController { get; private set; }
     public PlayerNetworkActions PlayerNetwork { get; private set; }
     public EquipmentVisuals EquipmentVisuals { get; private set; }
-    public CardRegistry CardRegistry => cardRegistry;
     public PlayerStatsSync Stats { get; private set; }
+    public VfxRegistry VfxRegistry => VfxRegistry.Instance;
+    public CardRegistry CardRegistry => testCards.Cards.Count > 0? testCards : CardRegistry.Instance;
 
     public event Action<ClientPlayer> OnClientPlayerReady;
 

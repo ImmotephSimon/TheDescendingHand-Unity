@@ -19,13 +19,12 @@ MonoBehaviour:
     Name: Fireball
     Description: 
     Art: {fileID: 0}
-    CastAnimation: 0
-    Impact: {fileID: 0}
+    AnimationOverride: {fileID: 0}
+    Vfx: []
   DeckOverrides:
     addedDraws: 0
     addedDiscards: 0
   projectileInfo:
-    Prefab: {fileID: 755919957440293959, guid: 09d0ab38ffa41c24fb5537cb07e4f326, type: 3}
     Speed: 3
     Direction:
       Sideways: 0
@@ -38,6 +37,7 @@ MonoBehaviour:
     Chains: 0
     Bounces: 0
   effectiveness: 2
-  damageConversion: {fileID: 11400000, guid: 519c1345743010546999a4520005845f, type: 2}
+  damageConversion:
+    TagId: 
   duration: 0.2
   radius: 2

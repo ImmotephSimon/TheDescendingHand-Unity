@@ -30,6 +30,8 @@ public class AreaOverlapComponent : CardComponent
 
     private readonly HashSet<IEntity> _currentOccupants = new();
 
+    public HashSet<IEntity> CurrentOccupants => _currentOccupants;
+
     public event Action<IEntity> OnEntityEntered;
     public event Action<IEntity> OnEntityExited;
     public override bool IsTicking => (_trackedTransform != null || _staticCenter != null);

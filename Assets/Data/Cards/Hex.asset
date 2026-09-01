@@ -19,13 +19,12 @@ MonoBehaviour:
     Name: Curse
     Description: ???
     Art: {fileID: 2800000, guid: 7e0e9e6e965a9d04ab82b46f5f7fcda8, type: 3}
-    CastAnimation: 0
-    Impact: {fileID: 660952664026147940, guid: c4ef8773d78968641a566da97d2ab368, type: 3}
+    AnimationOverride: {fileID: 0}
+    Vfx:
+    - {fileID: 660952664026147940, guid: c4ef8773d78968641a566da97d2ab368, type: 3}
   DeckOverrides:
     addedDraws: 0
     addedDiscards: 0
   radius: 4
   delay: 3
   curseDuration: 5
-  curseTag:
-    TagId: 

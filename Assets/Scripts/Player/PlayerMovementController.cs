@@ -355,16 +355,6 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
             return;
         }
 
-        //Vector3 aimDirection = _bufferedMousePos - transform.position;
-        //aimDirection.y = 0f;
-
-        //if (aimDirection.sqrMagnitude > 0.001f)
-        //{
-        //    Vector3 localAim = transform.InverseTransformDirection(aimDirection.normalized);
-
-        //    _animator.SetFloat("AimX", localAim.x, 0.15f, Time.deltaTime);
-        //    _animator.SetFloat("AimY", localAim.z, 0.15f, Time.deltaTime);
-        //}
 
         _visual.localRotation = Quaternion.identity;
 

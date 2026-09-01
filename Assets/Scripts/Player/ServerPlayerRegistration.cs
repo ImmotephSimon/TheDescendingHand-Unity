@@ -29,12 +29,8 @@ public class ServerPlayerRegistration : NetworkBehaviour
 
         var networkActions = GetComponent<PlayerNetworkActions>();
 
-        CardFactory cardFactory =
-            networkActions.CreateCardFactory(cardRegistry);
-
         cardController.InitializeServer(
             player,
-            cardFactory,
             cardRegistry);
     }
 }

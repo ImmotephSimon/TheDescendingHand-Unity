@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class AreaDegenComponent : CardComponent
 {
-    private readonly AreaOverlapComponent _overlap;
-    private readonly DurationDamageComponent _degen;
-    public override bool IsTicking => !_stopped;
+    public AreaOverlapComponent Overlap { get; }
 
-    private readonly HashSet<IEntity> _targets = new();
-    private bool _stopped = false;
+    private readonly DurationDamageComponent _degen;
+
+    public override bool IsTicking => _degen.IsTicking;
 
     public AreaDegenComponent(
         float radius,
@@ -17,66 +15,49 @@ public class AreaDegenComponent : CardComponent
         float duration,
         int maxStacks)
     {
-        _overlap = new AreaOverlapComponent(radius);
+        Overlap = new AreaOverlapComponent(radius);
+
         _degen = new DurationDamageComponent(
             damageConversion,
             effectiveness,
             duration,
             maxStacks);
 
-        _overlap.OnEntityEntered += OnEntered;
-        _overlap.OnEntityExited += OnExited;
+        Overlap.OnEntityEntered += OnEntered;
+        Overlap.OnEntityExited += OnExited;
     }
 
     public override void Initialize(Card card, IEntity owner)
     {
         base.Initialize(card, owner);
-
-        _overlap.Initialize(card, owner);
+        Overlap.Initialize(card, owner);
         _degen.Initialize(card, owner);
     }
 
     protected override void OnActivate()
     {
-        _stopped = false;
-        _overlap.Activate();
+        Overlap.Activate();
         _degen.Activate();
-    }
-
-    public void TrackTransform(Transform transform)
-    {
-        _overlap.ToggleTick(transform);
     }
 
     private void OnEntered(IEntity target)
     {
-        _targets.Add(target);
+        _degen.ApplyDegen(target);
     }
 
     private void OnExited(IEntity target)
     {
-        _targets.Remove(target);
         _degen.StopDegen(target);
     }
 
-
     public override void Tick(float deltaTime)
     {
-        _overlap.Tick(deltaTime);
-
-        foreach (var target in _targets) 
-        {
-            _degen.ApplyDegen(target);
-        }
+        _degen.Tick(deltaTime);
     }
 
-    public void Stop()
+    protected override void OnCancel()
     {
-        foreach (var target in _targets) 
-        {
-            _degen.StopDegen(target);
-        }
-        _targets.Clear();
-        _stopped = true;
+        Overlap.Cancel();
+        _degen.Cancel();
     }
 }

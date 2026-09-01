@@ -23,6 +23,8 @@ public class ChannelingComponent : CardComponent
     public event Action OnCompleted;
     public event Action OnInterrupted;
 
+    public override bool IsTicking => _isChanneling;
+
     public ChannelingComponent(
         float tickInterval,
         float totalDuration,
@@ -42,13 +44,12 @@ public class ChannelingComponent : CardComponent
         _tickTimer = 0f;
         _isInputHeld = true;
         _isChanneling = true;
-
     }
 
 
-    public void SetInputHeld(bool held)
+    public void SetInputHeld(bool IsDown)
     {
-        _isInputHeld = held;
+        _isInputHeld = IsDown;
     }
 
     public override void Tick(float deltaTime)

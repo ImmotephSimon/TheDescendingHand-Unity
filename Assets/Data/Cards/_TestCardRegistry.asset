@@ -10,8 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 617c97e38cb8c51489fc369c809e038b, type: 3}
-  m_Name: CardRegistry
+  m_Name: _TestCardRegistry
   m_EditorClassIdentifier: 
-  cards:
-  - {fileID: 11400000, guid: e2b7ad8f1a069bc4984834016914d041, type: 2}
-  - {fileID: 11400000, guid: 8cad8e3c2146f0548ac2064e6f08acfe, type: 2}
+  cards: []

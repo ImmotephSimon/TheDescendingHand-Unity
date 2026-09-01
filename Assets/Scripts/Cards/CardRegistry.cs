@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Cards/Registry")]
+[CreateAssetMenu(menuName = "Registries/Cards")]
 public class CardRegistry : ScriptableObject
 {
     [SerializeField] private List<CardDefinition> cards = new();
@@ -9,6 +9,24 @@ public class CardRegistry : ScriptableObject
     private Dictionary<string, CardDefinition> _lookup;
 
     public List<CardDefinition> Cards => cards;
+
+    private static CardRegistry _instance;
+    public static CardRegistry Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                // Put the CardRegistry asset in Assets/Resources/CardRegistry.asset
+                _instance = Resources.Load<CardRegistry>("CardRegistry");
+                if (_instance == null)
+                {
+                    Debug.LogError("No CardRegistry asset found in Resources folder!");
+                }
+            }
+            return _instance;
+        }
+    }
 
     private void OnEnable()
     {

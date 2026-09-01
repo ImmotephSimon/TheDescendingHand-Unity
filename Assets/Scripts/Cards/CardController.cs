@@ -4,10 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class CardController : NetworkBehaviour, IAbilitySystem
 {
@@ -29,7 +26,6 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     private IStatContainer stats;
     private CardManager _cardManager;
     private IEntity _owner; 
-    private CardFactory _factory;
     private CardRegistry _registry;
     private (Card Card, int HandIndex, Coroutine Handle)? _pendingCast;
 
@@ -56,20 +52,19 @@ public class CardController : NetworkBehaviour, IAbilitySystem
 
     }
 
-    public void InitializeServer(IEntity owner, CardFactory factory, CardRegistry registry)
+    public void InitializeServer(IEntity owner, CardRegistry registry)
     {
         _owner = owner;
-        _factory = factory;
         _registry = registry;
         //CardDefinition definition = _registry.GetRandomCard();
         List<Card> cards = new();
         foreach (CardDefinition def in _registry.Cards)
         {
-            cards.Add(factory.CreateFromDefinition(def, _owner));
+            cards.Add(CardFactory.CreateFromDefinition(def, _owner));
         }
         
         
-        _cardManager = new CardManager(cards, handSize: 5);
+        _cardManager = new CardManager(cards);
         _cardManager.OnCardAdded += OnCardAdded;
         _cardManager.OnCardRemoved += OnCardRemoved;
     }
@@ -101,22 +96,20 @@ public class CardController : NetworkBehaviour, IAbilitySystem
 
 
     [ObserversRpc]
-    private void CardStartedObserversRpc(CardCastAnimation castAnimation)
+    private void CardStartedObserversRpc(string cardId)
     {
-        AnimationClip clipToPlay = castAnimation switch
-        {
-            CardCastAnimation.Special => null,
-            _ => standardCastAnimation
-        };
+        if (!ClientBridge.Instance.CardRegistry.TryGet(cardId, out var definition))
+            return;
 
-        if (clipToPlay != null)
-        {
-            _animationHandler?.PlayAnimation(clipToPlay, duration: clipToPlay.length);
-        }
-        else
-        {
-            Debug.LogError($"[CardStartedObserversRpc] No animation clip handled for {castAnimation}.");
-        }
+
+
+        var clip = definition.Visuals.AnimationOverride != null
+           ? definition.Visuals.AnimationOverride
+           : standardCastAnimation;
+
+        Debug.Assert(clip != null, $"[CardStartedObserversRpc] No animation clip handled for {clip}.");
+
+        _animationHandler?.PlayAnimation(clip, duration: clip.length);
     }
 
     [ObserversRpc]
@@ -148,7 +141,7 @@ public class CardController : NetworkBehaviour, IAbilitySystem
 
         if (_activeCard != null)
         {
-            var channel = _activeCard.GetComponent<ChannelingComponent>();
+            var channel = _activeCard.GetCardComponent<ChannelingComponent>();
             channel?.SetInputHeld(false);
         }
     }
@@ -160,14 +153,14 @@ public class CardController : NetworkBehaviour, IAbilitySystem
 
         card.SetTargetLocation(card.SpawnAtCursor ? _owner.CursorPosition : _owner.Transform.position);
 
-        CardStartedObserversRpc(card.Definition.Visuals.CastAnimation);
+        CardStartedObserversRpc(card.Definition.Id);
         var castHandle = StartCoroutine(Server_CastTimeRoutine(card));
         _pendingCast = (card, handIndex, castHandle);
     }
 
     private void Server_ExecuteCard(Card card)
     {
-        var channel = card.GetComponent<ChannelingComponent>();
+        var channel = card.GetCardComponent<ChannelingComponent>();
         if (channel != null)
         {
             _activeCard = card;
@@ -200,7 +193,7 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     {
         if (_activeCard != card) return;
 
-        var channel = card.GetComponent<ChannelingComponent>();
+        var channel = card.GetCardComponent<ChannelingComponent>();
         if (channel != null)
         {
             channel.OnCompleted -= _onActiveCardCompleted;

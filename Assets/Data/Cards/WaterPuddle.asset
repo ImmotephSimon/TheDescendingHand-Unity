@@ -17,14 +17,16 @@ MonoBehaviour:
   spawnAtCursor: 0
   visuals:
     Name: Water Puddle
-    Description: 
+    Description: Wet
     Art: {fileID: 2800000, guid: ed365c034b707e64fb4e2681b91b8f6e, type: 3}
-    CastAnimation: 0
-    Impact: {fileID: 4422894025167180682, guid: 2667054c4967f2940b00d415a7edb12a, type: 3}
+    AnimationOverride: {fileID: 0}
+    Vfx:
+    - {fileID: 4422894025167180682, guid: 2667054c4967f2940b00d415a7edb12a, type: 3}
+    - {fileID: 6255241496188343087, guid: dcca08f5d8bf5d744a8d223ffba43ccf, type: 3}
   DeckOverrides:
     addedDraws: 0
     addedDiscards: 0
   radius: 3
-  effectiveness: 0
+  effectiveness: 1
   damageConversion:
     TagId: Restriction.Element.Lightning

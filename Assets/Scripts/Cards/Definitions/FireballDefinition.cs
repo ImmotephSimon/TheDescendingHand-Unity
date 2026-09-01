@@ -9,9 +9,8 @@ public class FireballDefinition : CardDefinition
     [SerializeField] private float duration;
     [SerializeField] private float radius;
 
-    public override Card Create(CardInitContext context)
+    public override void Construct(CardInitContext context, Card card)
     {
-        var card = new Card(context.InstanceId, this, context.Owner);
         var projectile = new ProjectileComponent(projectileInfo, context.ServerSpawn);
         var areaDegen = new AreaDegenComponent(
             radius,
@@ -22,13 +21,11 @@ public class FireballDefinition : CardDefinition
 
         projectile.OnSpawned += controller =>
         {
-            areaDegen.TrackTransform(controller.transform);
-            controller.OnDespawn += () => areaDegen.Stop();
+            areaDegen.Overlap.ToggleTick(controller.transform);
+            controller.OnDespawn += areaDegen.Cancel;
         };
-        
+
         card.AddComponent(projectile);
         card.AddComponent(areaDegen);
-
-        return card;
     }
 }

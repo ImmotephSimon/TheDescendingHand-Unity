@@ -36,7 +36,7 @@ public class ItemDrop : WorldDrop
     {
         if (asServer || (string.IsNullOrEmpty(next))) return;
 
-        if (ItemDatabase.Instance.TryGet(next, out var def))
+        if (ItemRegistry.Instance.TryGet(next, out var def))
         {
             _definition = def;
 

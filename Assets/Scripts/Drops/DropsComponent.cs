@@ -5,7 +5,7 @@ public class DropsComponent : MonoBehaviour
 {
     public void DropFromChest(Vector3 position, Vector3 forward)
     {
-        Rarity rarity = ItemDatabase.Instance.RollRandomRarity(
+        Rarity rarity = ItemRegistry.Instance.RollRandomRarity(
             new System.Random(), minimumTier: 1);
 
         LootDefinition definition =
@@ -24,7 +24,7 @@ public class DropsComponent : MonoBehaviour
 
     public void DropFromEnemy(Vector3 position)
     {
-        Rarity rarity = ItemDatabase.Instance.RollRandomRarity(
+        Rarity rarity = ItemRegistry.Instance.RollRandomRarity(
             new System.Random());
 
         LootDefinition definition =

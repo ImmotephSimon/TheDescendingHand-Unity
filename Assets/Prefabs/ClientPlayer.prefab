@@ -146,8 +146,6 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 927076904386195409}
   _networkObjectCache: {fileID: 927076904386195409}
-  _acceleration: 30
-  _deceleration: 40
   _dodgeSpeedCurve:
     serializedVersion: 2
     m_Curve:
@@ -266,6 +264,7 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 927076904386195409}
   _networkObjectCache: {fileID: 0}
+  standardCastAnimation: {fileID: 0}
 --- !u!114 &8811871346479937663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -308,6 +307,37 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 927076904386195409}
   _networkObjectCache: {fileID: 0}
+--- !u!1 &1023503492681108299
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6474512108490192150}
+  m_Layer: 0
+  m_Name: HelmetSocket
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6474512108490192150
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023503492681108299}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -0.093, y: -0.029, z: 0}
+  m_LocalScale: {x: 0.65, y: 0.65, z: 0.65}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4664636089254985326}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1 &2353634765356765508
 GameObject:
   m_ObjectHideFlags: 0
@@ -496,6 +526,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Meshes
       objectReference: {fileID: 0}
+    - target: {fileID: 360482456012347889, guid: ea9285ea89bfa1449acc379a399b49e7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ea9285ea89bfa1449acc379a399b49e7, type: 3}
       propertyPath: m_Name
       value: Visuals
@@ -503,6 +537,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: ea9285ea89bfa1449acc379a399b49e7, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5621397594947625191, guid: ea9285ea89bfa1449acc379a399b49e7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: ea9285ea89bfa1449acc379a399b49e7, type: 3}
       propertyPath: m_Controller
@@ -517,8 +555,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5621397594947625191, guid: ea9285ea89bfa1449acc379a399b49e7, type: 3}
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 2304244481032835489, guid: ea9285ea89bfa1449acc379a399b49e7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6474512108490192150}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ea9285ea89bfa1449acc379a399b49e7, type: 3}
       insertIndex: -1
@@ -577,7 +619,7 @@ MonoBehaviour:
   - Type: {fileID: 11400000, guid: f01af71c047dd70418b8497a35a13735, type: 2}
     BoneAnchor: {fileID: 9768380570910715}
   - Type: {fileID: 11400000, guid: 72072ba10aea13b4597c61474179ed53, type: 2}
-    BoneAnchor: {fileID: 4664636089254985326}
+    BoneAnchor: {fileID: 6474512108490192150}
 --- !u!4 &6398760302403520548 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ea9285ea89bfa1449acc379a399b49e7, type: 3}

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using FishNet;
+using UnityEngine;
 
 [CreateAssetMenu(menuName = "Cards/Explosive Arrow")]
 public class ExplosiveArrowDefinition : CardDefinition
@@ -10,12 +11,8 @@ public class ExplosiveArrowDefinition : CardDefinition
     [SerializeField] private float channelTickInterval;
     [SerializeField] private float maxChannelDuration;
 
-    public override Card Create(CardInitContext context)
+    public override void Construct(CardInitContext context, Card card)
     {
-        var card = new Card(
-            context.InstanceId,
-            this,
-            context.Owner);
 
         var damage = new DirectDamageComponent(
             effectiveness,
@@ -40,6 +37,13 @@ public class ExplosiveArrowDefinition : CardDefinition
             {
                 damage.TriggerDamage(hit, scalar);
 
+                Debug.Log(
+                    $"ClientSpawn called | " +
+                    $"Instance={context.InstanceId} | " +
+                    $"Server={InstanceFinder.IsServerStarted} | " +
+                    $"NetworkAction={GetInstanceID()}"
+                );
+
                 // Only spawns vfx on hit
                 context.ClientSpawn(this, new VfxSpawnParams(hit.Position));
             }
@@ -55,7 +59,5 @@ public class ExplosiveArrowDefinition : CardDefinition
         card.AddComponent(damage);
         card.AddComponent(damageAcc);
         card.AddComponent(delay);
-
-        return card;
     }
 }

@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6048eafafd8ad1149af0faed0dcbf0f0, type: 3}
+  m_Name: RicochetShot
+  m_EditorClassIdentifier: 
+  id: 91555985-8594-4eb1-b948-7b8d4ca8ebf8
+  castTime: 1
+  spawnAtCursor: 0
+  visuals:
+    Name: Ricochet Shot
+    Description: 
+    Art: {fileID: 0}
+    AnimationOverride: {fileID: 0}
+    Vfx: []
+  DeckOverrides:
+    addedDraws: 0
+    addedDiscards: 0
+  projectileInfo:
+    Speed: 5
+    Direction:
+      Sideways: 0
+      Upward: 0
+      Forward: 1
+      Gravity: 0
+    Visual: {fileID: 5489294000875374177, guid: fe3d3f231b074684ba04ba547cfe4f92, type: 3}
+    Count: 1
+    Pierce: 10
+    Chains: 0
+    Bounces: 3
+  effectiveness: 1
+  damageConversion:
+    TagId: Restriction.Physical
