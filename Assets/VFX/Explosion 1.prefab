@@ -76,6 +76,22 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: d9420d6ef011f7042b0873f1bf9787bb, type: 2}
+    - target: {fileID: 7522982782318301002, guid: 017c9fcd02ca72049806a4014da0bea6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7522982782318301003, guid: 017c9fcd02ca72049806a4014da0bea6, type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7522982782318301003, guid: 017c9fcd02ca72049806a4014da0bea6, type: 3}
+      propertyPath: EmissionModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7980186131264812128, guid: 017c9fcd02ca72049806a4014da0bea6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3797119926229357577, guid: 017c9fcd02ca72049806a4014da0bea6, type: 3}
     m_RemovedGameObjects: []

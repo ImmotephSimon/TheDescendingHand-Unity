@@ -4,11 +4,11 @@ using System.Collections.Generic;
 public class DamageAccComponent : CardComponent
 {
     private readonly List<HitInfo> _accumulatedHits = new();
-    private readonly float _storedPct;
+    private float _storedPct;
 
     public event Action<IReadOnlyList<HitInfo>, float> OnReleased;
 
-    public DamageAccComponent(float storedPct)
+    public void Configure(float storedPct)
     {
         _storedPct = storedPct;
     }

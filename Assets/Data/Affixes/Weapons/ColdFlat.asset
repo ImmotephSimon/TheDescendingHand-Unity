@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ColdFlat
   m_EditorClassIdentifier: 
   id: ad48fab7-9ac0-481f-94ed-a794a90c35ad
-  DisplayName: ColdFlat
+  DisplayName: 
   BaseValue: 40
   Modifier:
     TagId: Mod.Offense.Damage

@@ -6,8 +6,8 @@ using UnityEngine;
 public class Rarity : ScriptableObject
 {
     [SerializeField, HideInInspector]
-    private string id;
-    public string Id => id;
+    private Guid id;
+    public Guid Id => id;
     public int Tier;
     public float DropWeight;
     public int MaxAffixes;
@@ -24,8 +24,12 @@ public class Rarity : ScriptableObject
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        if (string.IsNullOrEmpty(id))
-            id = Guid.NewGuid().ToString();
+        string path = UnityEditor.AssetDatabase.GetAssetPath(this);
+        if (!string.IsNullOrEmpty(path))
+        {
+            string hex = UnityEditor.AssetDatabase.AssetPathToGUID(path);
+            id = Guid.Parse(hex);
+        }
     }
 #endif
 }

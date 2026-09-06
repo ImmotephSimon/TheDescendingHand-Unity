@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BaseMin
   m_EditorClassIdentifier: 
   id: 2bd5ecbc-defe-4519-888f-1bbd1de15a37
-  DisplayName: BaseMin
+  DisplayName: 
   BaseValue: 40
   Modifier:
     TagId: Mod.Offense.Damage.Min

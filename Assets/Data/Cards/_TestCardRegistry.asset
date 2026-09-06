@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 617c97e38cb8c51489fc369c809e038b, type: 3}
   m_Name: _TestCardRegistry
   m_EditorClassIdentifier: 
-  cards: []
+  cards:
+  - {fileID: 11400000, guid: 94614cddc4bc3aa4cbe6de0db41403c0, type: 2}
+  - {fileID: 11400000, guid: e790687b550bebb489c4d49bd9d1578a, type: 2}

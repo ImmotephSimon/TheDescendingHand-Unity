@@ -1,58 +1,32 @@
 using System;
-
+using System.Collections;
+using UnityEngine;
 public class SequenceComponent : CardComponent
 {
-    private readonly CardComponent _step;
-    private readonly int _steps;
-    private readonly float _delay;
+    private int _steps;
+    private float _delay;
 
-    private int _currentStep;
-    private bool _running;
-    private ServerScheduler _scheduler;
+    public Action OnSequence;
 
-    public override bool IsTicking => false;
-
-    public SequenceComponent(CardComponent step, int steps, float delay)
+    public void Configure(int steps, float delay)
     {
-        _step = step ?? throw new ArgumentNullException(nameof(step));
         _steps = steps;
         _delay = delay;
     }
 
-    public override void Initialize(Card card, IEntity owner)
+    public override void Initialize(CardRuntime card, IEntity owner)
     {
         base.Initialize(card, owner);
-        _scheduler = GameWorld.Instance.Scheduler;
+        OnBeginRoutine();
     }
 
-    protected override void OnActivate()
-    {
-        _currentStep = 1;
-        _running = true;
 
-        ScheduleNextStep();
-    }
-
-    private void ExecuteNextStep()
+    protected IEnumerator OnBeginRoutine()
     {
-        if (!_running || _currentStep >= _steps)
+        for (int i = 0; i < _steps; i++)
         {
-            _running = false;
-            return;
+            OnSequence.Invoke();
+            if (i < _steps - 1) yield return new WaitForSeconds(_delay);
         }
-
-        _currentStep++;
-
-        _step.Activate();
-
-        if (_currentStep < _steps)
-            ScheduleNextStep();
-        else
-            _running = false;
-    }
-
-    private void ScheduleNextStep()
-    {
-        _scheduler.Schedule(_delay, ExecuteNextStep);
     }
 }

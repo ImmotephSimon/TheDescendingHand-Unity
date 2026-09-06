@@ -1543,7 +1543,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f558352e95febe74d84b8c1793cc92d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hudRoot: {fileID: 0}
   experienceBar: {fileID: 8431565463157720893}
   healthText: {fileID: 1113767758176690740}
   manaText: {fileID: 1952017697071253746}
@@ -1642,7 +1641,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8edc72eb68d426a49ae7405a75a3600b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 75a6401446d7990409fe8a5b109d6c68, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

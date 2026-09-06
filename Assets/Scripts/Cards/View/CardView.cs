@@ -54,7 +54,7 @@ public class CardView : MonoBehaviour
     {
         title.text = visuals.Name;
         description.text = visuals.Description;
-        art.material.mainTexture = visuals.Art;
+        art.material.mainTexture = visuals.Art.texture;
     }
 
     public void UpdateParent(Transform parent)

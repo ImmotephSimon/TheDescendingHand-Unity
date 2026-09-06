@@ -16,7 +16,7 @@ public class PlayerNetworkActions : NetworkActionBase
         var player = GetComponent<Player>();
         var inventory = player.GetComponent<IInventory>();
 
-        if (!inventory.TryGet(id, out IInventoryItem inventoryItem) || inventoryItem is not ItemInstance item)
+        if (!inventory.TryGet(id, out IInventoryItem inventoryItem) || inventoryItem is not ItemDropInstance item)
             return;
 
         if (!inventory.TryRemove(item))

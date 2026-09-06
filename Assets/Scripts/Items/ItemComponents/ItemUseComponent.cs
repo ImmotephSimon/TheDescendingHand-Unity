@@ -2,9 +2,9 @@
 [System.Serializable]
 public abstract class ItemUseComponent
 {
-    public virtual void Initialize(ItemInstance Instance)
+    public virtual void Initialize(ItemDropInstance Instance)
     {
     }
 
-    public abstract void Use(ItemInstance instance, IEntity user);
+    public abstract void Use(ItemDropInstance instance, IEntity user);
 }

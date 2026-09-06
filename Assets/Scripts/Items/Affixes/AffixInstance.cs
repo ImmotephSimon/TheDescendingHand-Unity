@@ -44,8 +44,8 @@ public class AffixInstance
 
     public string GetDisplayText()
     {
-        if (!string.IsNullOrWhiteSpace(Definition.DisplayName))
-            return $"{Definition.DisplayName}: {Value}";
+        if (!string.IsNullOrWhiteSpace(Definition.NameOverride))
+            return $"{Definition.NameOverride}: {Value}";
 
         return ToStatModifier().ToString();
     }

@@ -6,7 +6,7 @@ public class AffixDefinition : ScriptableObject
 {
     [SerializeField, HideInInspector]
     private string id;
-    public string DisplayName;
+    public string NameOverride;
     public float BaseValue;
     public GameTag Modifier;
     public MathOp MathOp;

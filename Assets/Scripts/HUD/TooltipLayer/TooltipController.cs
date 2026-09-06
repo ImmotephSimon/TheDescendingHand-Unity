@@ -39,21 +39,8 @@ public class TooltipController : MonoBehaviour
     }
 #endif
 
-    public void Show(IInventoryItem item)
-    {
-        switch (item)
-        {
-            case ItemInstance itemInstance:
-                ShowItem(itemInstance);
-                break;
 
-            case CardInstance cardInstance:
-                ShowCard(cardInstance);
-                break;
-        }
-    }
-
-    public void ShowItem(ItemInstance item)
+    public void ShowItem(ItemTooltipDto item)
     {
         Hide();
 
@@ -61,7 +48,7 @@ public class TooltipController : MonoBehaviour
         Show(itemTooltip.GetComponent<RectTransform>());
     }
 
-    public void ShowCard(CardInstance card)
+    public void ShowCard(CardDropInstance card)
     {
         Hide();
 

@@ -18,7 +18,7 @@ MonoBehaviour:
   visuals:
     Name: Shockwave
     Description: Debris
-    Art: {fileID: 0}
+    Art: {fileID: 21300000, guid: 14a0f66a7be165c4ba476e3d7c40e390, type: 3}
     AnimationOverride: {fileID: 0}
     Vfx:
     - {fileID: 1007127540951276732, guid: 3ace37360f306cb4aac03640550fa9ef, type: 3}

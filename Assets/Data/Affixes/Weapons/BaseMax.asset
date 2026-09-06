@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BaseMax
   m_EditorClassIdentifier: 
   id: a80e9a93-3bc5-4ad7-8e1d-7bb6c8b0ca88
-  DisplayName: BaseMax
+  DisplayName: 
   BaseValue: 40
   Modifier:
     TagId: Mod.Offense.Damage.Max

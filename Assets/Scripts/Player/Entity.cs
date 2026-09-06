@@ -133,7 +133,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
     protected virtual void OnStunBegin(){}
     protected virtual void OnStunEnd(){}
 
-    public void ApplyDegen(DegenInfo degenInfo)
+    public virtual void ApplyDegen(DegenInfo degenInfo)
     {
         degenInfo.Damage = _mitigationLayer.CalculateMitigation(degenInfo.Damage);
         _degen.Apply(degenInfo);

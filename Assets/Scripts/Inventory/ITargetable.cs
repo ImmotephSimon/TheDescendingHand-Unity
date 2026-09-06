@@ -9,6 +9,6 @@ public enum InventoryResponse
 public interface ITargetable
 {
     TagContainer GetTargetingRequirements();
-    InventoryResponse ApplyTargetedEffect(ItemInstance targetItem);
-    void StartTargeting(ItemInstance orbInstance, TagContainer requirements, Action<ItemInstance> onTargetSelected);
+    InventoryResponse ApplyTargetedEffect(ItemDropInstance targetItem);
+    void StartTargeting(ItemDropInstance orbInstance, TagContainer requirements, Action<ItemDropInstance> onTargetSelected);
 }

@@ -28,7 +28,7 @@ public class PlayerInventory : BaseInventory, ITargetable
         if (!TryGet(row, column, out IInventoryItem inventoryItem))
             return;
 
-        if (inventoryItem is not ItemInstance item)
+        if (inventoryItem is not ItemDropInstance item)
         {
             Debug.LogWarning($"Can't equip {inventoryItem}");
             return;
@@ -109,7 +109,7 @@ public class PlayerInventory : BaseInventory, ITargetable
 
     private void DropInWorld(IInventoryItem instance)
     {
-        ClientBridge.Instance.PlayerNetwork.RequestDrop(instance.Id.ToString());
+        ClientBridge.Instance.PlayerNetwork.RequestDrop(instance.InventoryId.ToString());
         CursorItemController.Instance.CursorItem.Clear();
     }
 
@@ -118,12 +118,12 @@ public class PlayerInventory : BaseInventory, ITargetable
         throw new NotImplementedException();
     }
 
-    public InventoryResponse ApplyTargetedEffect(ItemInstance targetItem)
+    public InventoryResponse ApplyTargetedEffect(ItemDropInstance targetItem)
     {
         throw new NotImplementedException();
     }
 
-    public void StartTargeting(ItemInstance orbInstance, TagContainer requirements, Action<ItemInstance> onTargetSelected)
+    public void StartTargeting(ItemDropInstance orbInstance, TagContainer requirements, Action<ItemDropInstance> onTargetSelected)
     {
         throw new NotImplementedException();
     }

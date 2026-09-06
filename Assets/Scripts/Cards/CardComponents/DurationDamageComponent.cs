@@ -4,14 +4,14 @@ using UnityEngine;
 public class DurationDamageComponent : CardComponent
 {
     private ICalculator _calc;
-    private readonly float _effectiveness;
-    private readonly float _duration;
-    private readonly int _maxStacks;
+    private float _effectiveness;
+    private float _duration;
+    private int _maxStacks;
 
     private Dictionary<GameTag, float> _damage;
     private GameTag _damageConversion;
 
-    public DurationDamageComponent(
+    public void Configure(
         GameTag damageConversion,
         float effectiveness,
         float duration,
@@ -23,7 +23,7 @@ public class DurationDamageComponent : CardComponent
         _maxStacks = maxStacks;
     }
 
-    public override void Initialize(Card card, IEntity owner)
+    public override void Initialize(CardRuntime card, IEntity owner)
     {
         base.Initialize(card, owner);
 

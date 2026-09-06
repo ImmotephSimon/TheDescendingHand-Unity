@@ -15,11 +15,13 @@ public class ShockwaveDefinition : CardDefinition
         ? (_debrisLayerMask = LayerMask.GetMask("Debris"))
         : _debrisLayerMask;
 
-    public override void Construct(CardInitContext context, Card card)
+    public override void Construct(CardInitContext context, CardRuntime card)
     {
-        var overlap = new AreaOverlapComponent(radius);
-        var damage = new DirectDamageComponent(effectiveness, damageConversion, triggerOnHit: false);
-        var delay = new DelayedComponent(delayDuration);
+        var overlap = card.AddSphereOverlap(radius);
+        var damage = card.AddCardComponent<DirectDamageComponent>();
+        damage.Configure(effectiveness, damageConversion, triggerOnHit: false);
+        var delay = card.AddCardComponent<DelayedComponent>();
+        delay.Configure(delayDuration);
 
         delay.OnCompleted += () =>
         {
@@ -55,11 +57,8 @@ public class ShockwaveDefinition : CardDefinition
                 }
             }
 
-            overlap.TriggerAt(epicentre);
+            //overlap.TriggerAt(epicentre);
+            card.transform.position = epicentre;
         };
-
-        card.AddComponent(overlap);
-        card.AddComponent(damage);
-        card.AddComponent(delay);
     }
 }

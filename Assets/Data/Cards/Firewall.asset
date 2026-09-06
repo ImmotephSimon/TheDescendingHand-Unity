@@ -14,20 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 6b106af9-0826-4f65-98a0-ca0986ce72c9
   castTime: 1
-  spawnAtCursor: 0
+  spawnAtCursor: 1
   visuals:
     Name: Firewall
     Description: 
-    Art: {fileID: 0}
+    Art: {fileID: 21300000, guid: 8ec5b52b09d90074a83d61c1334190f9, type: 3}
     AnimationOverride: {fileID: 0}
-    Vfx: []
+    Vfx:
+    - {fileID: 3752580005957151951, guid: c8d198a4fc8c2284bb7708097ddc0984, type: 3}
   DeckOverrides:
     addedDraws: 0
     addedDiscards: 0
-  firewallPrefab: {fileID: 0}
-  effectiveness: 0
+  firewallPrefab: {fileID: 2646070988946056756, guid: 919f17fddb6c8e3439c57f53f0e54135, type: 3}
+  effectiveness: 1
   damageConversion:
     TagId: 
   duration: 5
-  radius: 2
+  size: 1
   spawnOffset: {x: 0, y: 0, z: 0}

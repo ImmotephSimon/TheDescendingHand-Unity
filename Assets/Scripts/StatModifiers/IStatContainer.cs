@@ -12,4 +12,6 @@ public interface IStatContainer
     void StopListening(GameTag stat, Action<float> listener);
     void StopListening(GameTag[] stats, Action<float> listener);
 
+    (float added, float additive, float multiplicative) GetScaling(GameTag stat, TagContainer context);
+    (float added, float additive, float multiplicative) GetScaling(GameTag stat);
 }

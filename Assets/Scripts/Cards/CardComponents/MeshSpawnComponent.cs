@@ -4,15 +4,15 @@ using UnityEngine.UIElements;
 
 public class MeshSpawnComponent : CardComponent
 {
-    private readonly GameObject _prefab;
-    private readonly Func<GameObject, GameObject> _onSpawn;
-    private readonly Vector3 _offset;
-    private readonly bool _useGravity;
-    private readonly float _scale;
+    private GameObject _prefab;
+    private Func<GameObject, GameObject> _serverSpawn;
+    private Vector3 _offset;
+    private bool _useGravity;
+    private float _scale;
 
     public event Action<GameObject> OnSpawned;
 
-    public MeshSpawnComponent(
+    public void Configure(
         GameObject prefab,
         Func<GameObject, GameObject> spawnNetworkObject,
         Vector3 offset = default,
@@ -20,7 +20,7 @@ public class MeshSpawnComponent : CardComponent
         float scale = 1f)
     {
         _prefab = prefab;
-        _onSpawn = spawnNetworkObject;
+        _serverSpawn = spawnNetworkObject;
         _offset = offset;
         _useGravity = useGravity;
         _scale = scale;
@@ -37,13 +37,16 @@ public class MeshSpawnComponent : CardComponent
         spawned.transform.localScale = Vector3.one * _scale;
         spawned.layer = Owner.AttackLayer;
 
-        if (spawned.TryGetComponent<Rigidbody>(out var rb))
-        {
-            rb.isKinematic = !_useGravity;
-            rb.useGravity = _useGravity;
-        }
+        Rigidbody rb = spawned.GetComponent<Rigidbody>();
+        if (rb == null)
+            rb = spawned.AddComponent<Rigidbody>();
 
-        _onSpawn?.Invoke(spawned);
+        rb.isKinematic = !_useGravity;
+        rb.useGravity = _useGravity;
+
+
+        if (_serverSpawn != null)
+            spawned = _serverSpawn(spawned);
         OnSpawned?.Invoke(spawned);
     }
 

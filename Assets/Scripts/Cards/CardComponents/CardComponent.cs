@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class CardComponent : MonoBehaviour
 {
     protected IStatContainer Stats { get; private set; }
-    protected Card Card { get; private set; }
+    protected CardRuntime Card { get; private set; }
     protected IEntity Owner { get; private set; }
     public virtual bool IsTicking => false;
     public IEnumerable<GameTag> GetTags() => _tags;
@@ -22,14 +22,13 @@ public abstract class CardComponent : MonoBehaviour
         OnActivate();
     }
 
-    public virtual void Initialize(Card card, IEntity owner)
+    public virtual void Initialize(CardRuntime card, IEntity owner)
     {
         Card = card;
         Owner = owner;
     }
     protected virtual void OnActivate() { }
     protected virtual void OnCancel() { }
-    public virtual void Tick(float deltaTime) { }
 
     public void Cancel() => OnCancel();
 }

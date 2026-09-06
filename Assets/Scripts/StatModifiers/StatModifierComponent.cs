@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
 public class StatModifierComponent : MonoBehaviour, IStatContainer, ICalculator
 {
@@ -144,38 +142,9 @@ public class StatModifierComponent : MonoBehaviour, IStatContainer, ICalculator
         if (stat == null)
             return 0;
 
-        float value = baseValue;
-        float additive = 0;
-        float multiplier = 1;
+        var (added, additive, multiplicative) = GetScaling(stat, context);
 
-        if (!modifiers.TryGetValue(stat, out var statModifiers))
-            return value;
-
-        foreach (var modifier in statModifiers.Values)
-        {
-            if (!modifier.RequiredTags.IsSatisfiedBy(context))
-                continue;
-
-            switch (modifier.Op)
-            {
-                case MathOp.Set:
-                    return modifier.Value;
-
-                case MathOp.Added:
-                    value += modifier.Value;
-                    break;
-
-                case MathOp.Additive:
-                    additive += modifier.Value;
-                    break;
-
-                case MathOp.Multiplicative:
-                    multiplier *= modifier.Value;
-                    break;
-            }
-        }
-
-        return value * (1 + additive) * multiplier;
+        return (baseValue + added) * (1 + additive) * multiplicative;
     }
 
     public float GetStat(GameTag stat)
@@ -196,7 +165,7 @@ public class StatModifierComponent : MonoBehaviour, IStatContainer, ICalculator
 
             _damage.Add(damageType, baseDamage * effectiveness);
         }
-        Debug.Log("ignoring damage conversion atm");
+        Debug.Log("CalculateDamage: ignoring damage conversion atm");
         return _damage;
     }
 
@@ -231,4 +200,34 @@ public class StatModifierComponent : MonoBehaviour, IStatContainer, ICalculator
 #endif
     }
 
+    public (float added, float additive, float multiplicative) GetScaling(
+        GameTag stat,
+        TagContainer context)
+    {
+        if (!modifiers.TryGetValue(stat, out var statModifiers))
+            return (0, 0, 1);
+
+        float added = 0, additive = 0, multiplicative = 1;
+
+        foreach (var modifier in statModifiers.Values)
+        {
+            if (!modifier.RequiredTags.IsSatisfiedBy(context))
+                continue;
+
+            switch (modifier.Op)
+            {
+                case MathOp.Set: return (modifier.Value, 0, 1);
+                case MathOp.Added: added += modifier.Value; break;
+                case MathOp.Additive: additive += modifier.Value; break;
+                case MathOp.Multiplicative: multiplicative *= modifier.Value; break;
+            }
+        }
+
+        return (added, additive, multiplicative);
+    }
+
+    public (float added, float additive, float multiplicative) GetScaling(GameTag stat)
+    {
+        return GetScaling(stat, TagContainer.Empty);
+    }
 }

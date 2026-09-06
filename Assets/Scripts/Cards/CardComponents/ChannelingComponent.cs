@@ -9,9 +9,9 @@ public enum ChannelInputMode
 
 public class ChannelingComponent : CardComponent
 {
-    private readonly float _tickInterval;
-    private readonly float _totalDuration;
-    private readonly ChannelInputMode _inputMode;
+    private float _tickInterval;
+    private float _totalDuration;
+    private ChannelInputMode _inputMode;
     private float _minDuration;
 
     private float _elapsedTime;
@@ -25,12 +25,11 @@ public class ChannelingComponent : CardComponent
 
     public override bool IsTicking => _isChanneling;
 
-    public ChannelingComponent(
+    public void Configure(
         float tickInterval,
         float totalDuration,
         ChannelInputMode inputMode = ChannelInputMode.HoldToChannel,
         float minDuration = 0f)
-        : base(GameTags.TypeChannelling)
     {
         _tickInterval = tickInterval;
         _totalDuration = totalDuration;
@@ -52,12 +51,12 @@ public class ChannelingComponent : CardComponent
         _isInputHeld = IsDown;
     }
 
-    public override void Tick(float deltaTime)
+    private void Update()
     {
         if (!_isChanneling) return;
 
-        _elapsedTime += deltaTime;
-        _tickTimer += deltaTime;
+        _elapsedTime += Time.deltaTime;
+        _tickTimer += Time.deltaTime;
 
         // Fixed: Properly stop channeling and notify listeners on key release
         if (_inputMode == ChannelInputMode.HoldToChannel && !_isInputHeld && _elapsedTime >= _minDuration)

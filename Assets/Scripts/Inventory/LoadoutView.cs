@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,12 +14,29 @@ public class LoadoutView : MonoBehaviour
     private void Awake()
     {
         foreach (var slot in slots)
+        {
             slot.OnSlotRightClicked += HandleSlotRightClicked;
+            slot.OnSlotHoverEnter += HandleSlotHoverEnter;
+            slot.OnSlotHoverExit += HandleSlotHoverExit;
+        }
+            
     }
 
+    private void HandleSlotHoverEnter(EquipmentType type)
+    {
+        var dto = _items.EquippedItems.FirstOrDefault(x => x.EquipmentTypeId == type.ID);
+        if (dto.Equals(default(ItemTooltipDto))) return;
+
+        TooltipController.Instance.ShowItem(dto);
+    }
+
+    private void HandleSlotHoverExit()
+    {
+        TooltipController.Instance.Hide();
+    }
     private void HandleSlotRightClicked(EquipmentType type)
     {
-        _items.RequestUnequip(type.ID);
+        _items.Server_RequestUnequip(type.ID);
     }
 
     public void Bind(PlayerItemsSync items)
@@ -48,14 +66,14 @@ public class LoadoutView : MonoBehaviour
             var dto = _items.EquippedItems
                 .FirstOrDefault(x => x.EquipmentTypeId == slot.SlotType.ID);
 
-            if (dto.Equals(default(EquippedItemDto)))
+            if (dto.Equals(default(ItemTooltipDto)))
             {
                 slot.UpdateSlot(null, emptySlotSprite);
                 continue;
             }
+            ItemRegistry.Instance.TryGetDefinition(dto.BaseTypeId, out ItemDefinition def);
 
-            var item = _items.ReconstructItem(dto);
-            slot.UpdateSlot(item, emptySlotSprite);
+            slot.UpdateSlot(def.Appearance.Icon, emptySlotSprite);
         }
     }
 

@@ -7,16 +7,13 @@ public class HexBurstDefinition : CardDefinition
     [SerializeField] private float effectiveness;
     [SerializeField] private GameTag damageConversion;
 
-    public override void Construct(CardInitContext context, Card card)
+    public override void Construct(CardInitContext context, CardRuntime card)
     {
 
-        var overlap = new AreaOverlapComponent(radius);
-        var damage = new DirectDamageComponent(effectiveness, damageConversion, triggerOnHit: false);
+        var overlap = card.AddSphereOverlap(radius);
+        var damage = card.AddCardComponent<DirectDamageComponent>();
+        damage.Configure(effectiveness, damageConversion, triggerOnHit: false);
 
-        card.OnActivated += () =>
-        {
-            overlap.TriggerAt(card.TargetLocation);
-        };
 
         card.OnHit += info =>
         {
@@ -33,9 +30,5 @@ public class HexBurstDefinition : CardDefinition
                 }
             }
         };
-
-
-        card.AddComponent(overlap);
-        card.AddComponent(damage);
     }
 }

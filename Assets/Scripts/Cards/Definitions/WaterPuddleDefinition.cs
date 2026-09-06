@@ -12,15 +12,15 @@ public class WaterPuddleDefinition : CardDefinition
 
     private Action _cancelVisuals;
 
-
-    public override void Construct(CardInitContext context, Card card)
+    public override void Construct(CardInitContext context, CardRuntime card)
     {
+        var overlap = card.AddSphereOverlap(radius);
 
-        var overlap = new AreaOverlapComponent(radius);
+        var status = card.AddCardComponent<StatusEffectComponent>();
+        status.Configure(GameTags.StatusFreeze, 4f);
 
-        var status = new StatusEffectComponent(GameTags.StatusFreeze, 4f);
-
-        var damage = new DirectDamageComponent(
+        var damage = card.AddCardComponent<DirectDamageComponent>();
+        damage.Configure(
             effectiveness,
             damageConversion,
             triggerOnHit: false);
@@ -28,27 +28,31 @@ public class WaterPuddleDefinition : CardDefinition
         var listeners = new Dictionary<IEntity, Action<float>>();
         var electrified = false;
 
-        void SetElectrified(bool IsElectrified)
+        void SetElectrified(bool isElectrified)
         {
-            if (electrified == IsElectrified)
+            if (electrified == isElectrified)
                 return;
 
-            electrified = IsElectrified;
+            electrified = isElectrified;
 
             _cancelVisuals.Invoke();
-            _cancelVisuals = context.ClientSpawn(this, new VfxSpawnParams(card.TargetLocation, 1, duration));
-            
+            _cancelVisuals = context.ClientSpawn(
+                this,
+                new VfxSpawnParams(card.TargetLocation, 1, duration));
+
             // Change the puddle's behavior/state here.
         }
 
-
         card.OnActivated += () =>
         {
-            overlap.ToggleTick(card.TargetLocation);
-            _cancelVisuals = context.ClientSpawn(this, new VfxSpawnParams(card.TargetLocation, 0, duration) { Scale = Vector3.one * radius });
+            card.transform.position = card.TargetLocation;
+            _cancelVisuals = context.ClientSpawn(
+                this,
+                new VfxSpawnParams(card.TargetLocation, 0, duration)
+                {
+                    Scale = Vector3.one * radius
+                });
         };
-
-
 
         overlap.OnEntityEntered += entity =>
         {
@@ -58,8 +62,6 @@ public class WaterPuddleDefinition : CardDefinition
                     return;
 
                 SetElectrified(true);
-
-
             };
 
             listeners[entity] = listener;
@@ -76,13 +78,6 @@ public class WaterPuddleDefinition : CardDefinition
                 entity.Stats.StopListening(GameTags.StatusElectrified, listener);
                 listeners.Remove(entity);
             }
-
         };
-
-        card.AddComponent(overlap);
-        card.AddComponent(damage);
-        card.AddComponent(status);
     }
-
-
 }

@@ -6,27 +6,28 @@ using UnityEngine;
 public class DirectDamageComponent : CardComponent
 {
     private Dictionary<GameTag, float> _damage = new();
-    private readonly GameTag _damageConversion;
-    private readonly bool _triggerOnHit;
-    private readonly float _effectiveness;
+    private GameTag _damageConversion;
+    private bool _triggerOnHit;
+    private float _effectiveness;
     private ICalculator _calc;
 
-    public DirectDamageComponent(float effectiveness, GameTag damageConversion, bool triggerOnHit = true)
+    public void Configure(float effectiveness, GameTag damageConversion, bool triggerOnHit = true)
     {
         _effectiveness = effectiveness;
         _damageConversion = damageConversion;
         _triggerOnHit = triggerOnHit;
+
+        if (_triggerOnHit)
+            Card.OnHit += HandleHit;
     }
 
-    public override void Initialize(Card card, IEntity owner)
+    public override void Initialize(CardRuntime card, IEntity owner)
     {
         base.Initialize(card, owner);
 
         _calc = Card.Owner.Transform.GetComponent<ICalculator>();
         Debug.Assert(_calc != null, $"Failed to find calculator.");
 
-        if (_triggerOnHit)
-            Card.OnHit += HandleHit;
     }
 
     private void HandleHit(HitInfo info)

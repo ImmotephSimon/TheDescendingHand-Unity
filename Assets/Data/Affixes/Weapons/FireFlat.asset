@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: FireFlat
   m_EditorClassIdentifier: 
   id: 5c34b123-ff47-46ed-b360-ab32fc6a7796
-  DisplayName: FireFlat
+  DisplayName: 
   BaseValue: 40
   Modifier:
     TagId: Mod.Offense.Damage

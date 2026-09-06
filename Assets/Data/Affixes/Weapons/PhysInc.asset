@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PhysInc
   m_EditorClassIdentifier: 
   id: 53bdbc32-500b-4fb0-b70c-479af43d80ba
-  DisplayName: PhysInc
+  DisplayName: 
   BaseValue: 0.2
   Modifier:
     TagId: Mod.Offense.Damage

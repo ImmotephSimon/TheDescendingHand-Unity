@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,27 +29,38 @@ public class ItemRegistry : ScriptableObject
         }
     }
 
-    private Dictionary<string, ItemDefinition> _lookup;
+    private Dictionary<Guid, ItemDefinition> _lookup;
 
     private void Initialize()
     {
         if (_lookup != null)
             return;
 
-        _lookup = new Dictionary<string, ItemDefinition>();
+        _lookup = new Dictionary<Guid, ItemDefinition>();
 
         foreach (var item in Items)
         {
-            if (item != null && !string.IsNullOrEmpty(item.ID))
-                _lookup[item.ID] = item;
+            if (item == null || item.Id == Guid.Empty)
+                continue;
+
+            if (!_lookup.TryAdd(item.Id, item))
+            {
+                Debug.LogError($"[ItemRegistry] Duplicate ItemDefinition Id '{item.Id}' on '{item.name}'. Collision with '{_lookup[item.Id].name}'.");
+            }
         }
 
     }
 
-    public bool TryGet(string id, out ItemDefinition definition)
+    public bool TryGetDefinition(Guid id, out ItemDefinition definition)
     {
         Initialize();
-        return _lookup.TryGetValue(id, out definition);
+        if (!_lookup.TryGetValue(id, out definition))
+        {
+            Debug.LogError($"Invalid id for TryGetDefinition (id: {id})");
+            return false;
+        }
+
+        return true;
     }
 
     public Rarity RollRandomRarity(System.Random rng, int minimumTier = 0)
@@ -81,6 +93,13 @@ public class ItemRegistry : ScriptableObject
 
         return null;
     }
+
+    public bool TryGetRarity(Guid id, out Rarity rarity)
+    {
+        rarity = rarities.Find(r => r != null && r.Id == id);
+        return rarity != null;
+    }
+
 
     public ItemDefinition RollRandomItem()
     {

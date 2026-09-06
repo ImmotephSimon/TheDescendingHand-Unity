@@ -7,7 +7,7 @@ public class CardVisuals
 {
     public string Name;
     public string Description;
-    public Texture2D Art;
+    public Sprite Art;
     public AnimationClip AnimationOverride;
     public List<GameObject> Vfx;
 }

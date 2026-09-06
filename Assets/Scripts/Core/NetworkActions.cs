@@ -7,8 +7,7 @@ using UnityEngine;
 public abstract class NetworkActionBase : NetworkBehaviour
 {
     [SerializeField] private GameObject _cardPrefab;
-
-
+    private IEntity _owner;
     private readonly Dictionary<Guid, GameObject> _activeClientVfx = new();
 
     private const int MaxSpawnedObjects = 50;
@@ -19,35 +18,38 @@ public abstract class NetworkActionBase : NetworkBehaviour
         base.OnStartServer();
         CardFactory.Initialize(
             registry: ClientBridge.Instance.CardRegistry,
-            cardPrefab: _cardPrefab,
+            cardRuntimePrefab: _cardPrefab,
             serverNetworkSpawn: SpawnCapped,
             clientNetworkSpawn: SpawnClientVfx
         );
     }
 
+    private void Awake()
+    {
+        _owner = GetComponent<IEntity>();
+    }
+
 
     [Server]
-    public Card CreateCard(CardDefinition definition)
+    public CardInstance CreateCard(CardDefinition definition)
     {
-        return CardFactory.CreateFromDefinition(definition, GetComponent<IEntity>());
+        return CardFactory.CreateCardInstance(definition, _owner);
     }
 
 
     protected Action SpawnClientVfx(CardDefinition cardDefinition, VfxSpawnParams vfxSpawnParams)
     {
-        Debug.Log(
-            $"SpawnClientVfx | " +
-            $"Instance={GetInstanceID()} | " +
-            $"IsServer={IsServerStarted} | " +
-            $"IsClient={IsClientStarted} | " +
-            $"IsSpawned={IsSpawned}"
-        );
+        Vector3 direction = (vfxSpawnParams.Position - _owner.Transform.position).normalized;
+        direction.y = 0f;
+
+        vfxSpawnParams.Rotation = Quaternion.LookRotation(direction);
+
         SpawnClientVfxObserversRpc(cardDefinition.Id, vfxSpawnParams);
         return () => StopClientVfx(vfxSpawnParams.InstanceId);
     }
 
     [ObserversRpc]
-    private void SpawnClientVfxObserversRpc(string cardId, VfxSpawnParams vfxParams)
+    private void SpawnClientVfxObserversRpc(Guid cardId, VfxSpawnParams vfxParams)
     {
         if (!ClientBridge.Instance.CardRegistry.TryGet(cardId, out CardDefinition def))
             return;

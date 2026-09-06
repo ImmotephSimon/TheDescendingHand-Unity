@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemInstance : IInventoryItem
+public class ItemDropInstance : IInventoryItem
 {
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid Instance { get; protected set; } = Guid.NewGuid();
+    public Vector2Int Size => BaseType.InventorySize;
+    public Sprite Icon => BaseType.Appearance.Icon;
     public ItemDefinition BaseType { get; }
     public Rarity Rarity { get; }
     public List<AffixInstance> Explicits { get; }
@@ -13,12 +15,9 @@ public class ItemInstance : IInventoryItem
 
     public List<ItemUseComponent> Components { get; } = new();
 
+    public Guid InventoryId => BaseType.Id;
 
-    public Vector2Int Size => BaseType.InventorySize;
-
-    public Sprite Icon => BaseType.Appearance.Icon;
-
-    public ItemInstance(ItemDefinition baseType, Rarity rarity, List<AffixInstance> explicits)
+    public ItemDropInstance(ItemDefinition baseType, Rarity rarity, List<AffixInstance> explicits)
     {
         BaseType = baseType;
         Rarity = rarity;
@@ -61,5 +60,10 @@ public class ItemInstance : IInventoryItem
         }
 
         ActiveExplicits.Clear();
+    }
+
+    public void Display()
+    {
+        throw new NotImplementedException();
     }
 }

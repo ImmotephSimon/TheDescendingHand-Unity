@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ManaDamage
   m_EditorClassIdentifier: 
   id: 0eac233e-4c0e-451a-9922-2a54e9cf7e5f
-  DisplayName: ManaDamage
+  DisplayName: 
   BaseValue: 0.2
   Modifier:
     TagId: Mod.Offense.DamagePerMana

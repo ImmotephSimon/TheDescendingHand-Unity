@@ -1,44 +1,20 @@
+using FishNet.Connection;
+using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using FishNet.Object;
-using FishNet.Object.Synchronizing;
 
 public class PlayerItemsSync : NetworkBehaviour
 {
 
-    [Serializable]
-    public struct InventoryItemDto
-    {
-        public string ItemId;
-        public string BaseTypeId;
-        public string RarityId;
-        public Vector2Int Position;
-        public Vector2Int Size;
-        public List<AffixState> Explicits;
-    }
 
-    [Serializable]
-    public struct EquippedItemDto
-    {
-        public string EquipmentTypeId;
-        public string BaseTypeId;
-        public string RarityId;
-        public List<AffixState> Explicits;
-    }
-
-    [Serializable]
-    public struct AffixState
-    {
-        public string DefinitionId;
-        public float Tier;
-    }
 
     private readonly SyncList<InventoryItemDto> _inventoryItems = new();
     private PlayerInventory _inventory;
     private Loadout _loadout;
-    private readonly SyncList<EquippedItemDto> _equippedItems = new();
+    private readonly SyncList<ItemTooltipDto> _equippedItems = new();
 
     public event Action InventoryChanged;
     public event Action LoadoutChanged;
@@ -48,7 +24,10 @@ public class PlayerItemsSync : NetworkBehaviour
 
     public int InventoryRows => _inventoryRows.Value;
     public int InventoryColumns => _inventoryColumns.Value;
-    public IReadOnlyList<EquippedItemDto> EquippedItems => _equippedItems;
+
+
+    public IReadOnlyList<InventoryItemDto> InventoryItems => _inventoryItems;
+    public IReadOnlyList<ItemTooltipDto> EquippedItems => _equippedItems;
 
     public override void OnStartServer()
     {
@@ -89,24 +68,15 @@ public class PlayerItemsSync : NetworkBehaviour
     {
         _inventoryItems.Clear();
 
-        foreach (var entry in _inventory.GetPlacedItems())
+        foreach (var entry in _inventory.GetItemPositions())
         {
-            var item = (ItemInstance)entry.Key;
+            IInventoryItem item = entry.Key;
 
             _inventoryItems.Add(new InventoryItemDto
             {
-                ItemId = item.Id.ToString(),
-                BaseTypeId = item.BaseType.ID,
-                RarityId = item.Rarity.Id,
+                ItemId = item.InventoryId,
                 Position = entry.Value,
-                Size = item.Size,
-                Explicits = item.Explicits
-                    .Select(affix => new AffixState
-                    {
-                        DefinitionId = affix.Definition.Id,
-                        Tier = affix.Tier
-                    })
-                    .ToList()
+                Size = item.Size
             });
         }
     }
@@ -122,24 +92,20 @@ public class PlayerItemsSync : NetworkBehaviour
             InventoryChanged?.Invoke();
     }
 
-    public IReadOnlyDictionary<IInventoryItem, Vector2Int> GetInventoryItems()
-    {
-        var result = new Dictionary<IInventoryItem, Vector2Int>();
 
-        foreach (var dto in _inventoryItems)
-        {
-            var item = ReconstructItem(dto);
-            if (item != null)
-                result[item] = dto.Position;
-        }
+    
 
-        return result;
-    }
-
+    /// <summary>
+    /// recently refactored, so keep
+    /// </summary>
+    /// <param name="row"></param>
+    /// <param name="column"></param>
+    /// <param name="item"></param>
+    /// <returns></returns>
     public bool TryGetInventoryItem(
         int row,
         int column,
-        out IInventoryItem item)
+        out InventoryItemDto item)
     {
         foreach (InventoryItemDto dto in _inventoryItems)
         {
@@ -154,64 +120,53 @@ public class PlayerItemsSync : NetworkBehaviour
                 continue;
             }
 
-            item = ReconstructItem(dto);
-            return item != null;
+            item = dto;
+            return true;
         }
 
-        item = null;
+        item = default;
         return false;
     }
 
-    public ItemInstance ReconstructItem(InventoryItemDto dto)
-    {
-        return ReconstructItem(dto.BaseTypeId, dto.RarityId, dto.Explicits);
-    }
+    
+    
+    //public ItemDropInstance ReconstructItem(ItemTooltipDto dto)
+    //{
+    //    if (!ItemRegistry.Instance.TryGetDefinition(dto.BaseTypeId, out var baseType))
+    //        return null;
 
-    public ItemInstance ReconstructItem(EquippedItemDto dto)
-    {
-        return ReconstructItem(dto.BaseTypeId, dto.RarityId, dto.Explicits);
-    }
+    //    var equip = baseType.Components
+    //        .OfType<EquipComponentDefinition>()
+    //        .FirstOrDefault();
 
-    private ItemInstance ReconstructItem(
-        string baseTypeId,
-        string rarityId,
-        List<AffixState> explicits)
-    {
-        if (!ItemRegistry.Instance.TryGet(baseTypeId, out var baseType))
-            return null;
+    //    if (equip.EquipmentType.ModifierPool.Entries == null)
+    //        return null;
 
-        var equip = baseType.Components
-            .OfType<EquipComponentDefinition>()
-            .FirstOrDefault();
+    //    var affixes = dto.Explicits
+    //        .Select(state =>
+    //        {
+    //            var entry = equip.EquipmentType.ModifierPool.Entries
+    //                .FirstOrDefault(x =>
+    //                    x.Definition != null &&
+    //                    x.Definition.Id == state.DefinitionId);
 
-        if (equip.EquipmentType.ModifierPool.Entries == null)
-            return null;
+    //            if (entry?.Definition == null)
+    //                return null;
 
-        var affixes = explicits
-            .Select(state =>
-            {
-                var entry = equip.EquipmentType.ModifierPool.Entries
-                    .FirstOrDefault(x =>
-                        x.Definition != null &&
-                        x.Definition.Id == state.DefinitionId);
+    //            return new AffixInstance
+    //            {
+    //                Definition = entry.Definition,
+    //                Tier = state.Tier
+    //            };
+    //        })
+    //        .Where(x => x != null)
+    //        .ToList();
 
-                if (entry?.Definition == null)
-                    return null;
+    //    var rarity = ItemRegistry.Instance.Rarities
+    //        .FirstOrDefault(x => x.Id == dto.RarityId);
 
-                return new AffixInstance
-                {
-                    Definition = entry.Definition,
-                    Tier = state.Tier
-                };
-            })
-            .Where(x => x != null)
-            .ToList();
-
-        var rarity = ItemRegistry.Instance.Rarities
-            .FirstOrDefault(x => x.Id == rarityId);
-
-        return new ItemInstance(baseType, rarity, affixes);
-    }
+    //    return new ItemDropInstance(baseType, rarity, affixes);
+    //}
 
 
     [ServerRpc]
@@ -227,6 +182,34 @@ public class PlayerItemsSync : NetworkBehaviour
     }
 
 
+    //private void HandleLoadoutChanged()
+    //{
+    //    if (IsServerStarted)
+    //    {
+    //        _equippedItems.Clear();
+
+    //        foreach (var entry in _loadout.Equipped)
+    //        {
+    //            var item = entry.Value;
+
+    //            _equippedItems.Add(new ItemTooltipDto
+    //            {
+    //                EquipmentTypeId = entry.Key.ID,
+    //                BaseTypeId = item.BaseType.ID,
+    //                RarityId = item.Rarity.Id,
+    //                Explicits = item.Explicits
+    //                    .Select(affix => new AffixState
+    //                    {
+    //                        DefinitionId = affix.Definition.Id,
+    //                        Tier = affix.Tier
+    //                    })
+    //                    .ToList()
+    //            });
+    //        }
+    //    }
+
+    //    LoadoutChanged?.Invoke();
+    //}
     private void HandleLoadoutChanged()
     {
         if (IsServerStarted)
@@ -235,30 +218,15 @@ public class PlayerItemsSync : NetworkBehaviour
 
             foreach (var entry in _loadout.Equipped)
             {
-                var item = entry.Value;
-
-                _equippedItems.Add(new EquippedItemDto
-                {
-                    EquipmentTypeId = entry.Key.ID,
-                    BaseTypeId = item.BaseType.ID,
-                    RarityId = item.Rarity.Id,
-                    Explicits = item.Explicits
-                        .Select(affix => new AffixState
-                        {
-                            DefinitionId = affix.Definition.Id,
-                            Tier = affix.Tier
-                        })
-                        .ToList()
-                });
+                _equippedItems.Add(CreateItemTooltip(entry.Value));
             }
         }
 
         LoadoutChanged?.Invoke();
     }
 
-
     [ServerRpc]
-    public void RequestUnequip(string equipmentTypeId)
+    public void Server_RequestUnequip(Guid equipmentTypeId)
     {
         Debug.Log($"Unequip request: {equipmentTypeId}");
         foreach (var entry in _loadout.Equipped)
@@ -266,5 +234,52 @@ public class PlayerItemsSync : NetworkBehaviour
 
         EquipmentType.TryGet(equipmentTypeId, out EquipmentType equipmentSlot);
         _loadout.Unequip(equipmentSlot);
+    }
+
+    [ServerRpc]
+    public void Server_RequestInventoryTooltip(int row, int column)
+    {
+        if (!_inventory.TryGet(row, column, out IInventoryItem item))
+            return;
+
+        if (item is not ItemDropInstance itemDrop)
+        {
+            Debug.LogError($"visualizing cards unhandled");
+            return;
+        }
+
+        var dto = CreateItemTooltip(itemDrop);
+
+        Target_InventoryTooltipRpc(Owner, dto);
+    }
+
+    [TargetRpc]
+    private void Target_InventoryTooltipRpc(NetworkConnection connection, ItemTooltipDto dto)
+    {
+        TooltipController.Instance.ShowItem(dto);
+    }
+
+    private ItemTooltipDto CreateItemTooltip(ItemDropInstance item)
+    {
+        var equipUse = item.BaseType.Components
+            .OfType<EquipComponentDefinition>()
+            .FirstOrDefault();
+
+        Debug.Assert(equipUse != null, $"CreateItemTooltip for item which can't be equipped.");
+
+        return new ItemTooltipDto
+        {
+            EquipmentTypeId = equipUse.EquipmentType.ID,
+            BaseTypeId = item.BaseType.Id,
+            RarityId = item.Rarity.Id,
+
+            Implicits = item.BaseType.Implicits
+                .Select(AffixState.FromModifier)
+                .ToList(),
+
+            Explicits = item.Explicits
+                .Select(AffixState.FromInstance)
+                .ToList()
+        };
     }
 }

@@ -45,7 +45,7 @@ public class AffixDefinitionImporter : EditorWindow
         {
             var asset = ScriptableObject.CreateInstance<AffixDefinition>();
             asset.name = raw.Id;
-            asset.DisplayName = raw.Id;
+            asset.NameOverride = raw.Id;
             asset.BaseValue = raw.BaseValue;
             string tagId = validTagIds.Contains(raw.Modifier) ? raw.Modifier : string.Empty;
             if (System.Enum.TryParse<MathOp>(raw.MathOp, out var parsedOp)) asset.MathOp = parsedOp;

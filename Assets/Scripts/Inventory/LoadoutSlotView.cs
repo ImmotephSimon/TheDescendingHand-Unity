@@ -8,20 +8,16 @@ public class LoadoutSlotView : MonoBehaviour, IPointerEnterHandler, IPointerExit
     [SerializeField] private EquipmentType slotType;
     [SerializeField] private Image icon;
 
-    private ItemInstance _currentItem;
     public event Action<EquipmentType> OnSlotRightClicked;
+    public event Action<EquipmentType> OnSlotHoverEnter;
+    public event Action OnSlotHoverExit;
+
     public EquipmentType SlotType => slotType;
 
-    public void UpdateSlot(ItemInstance item, Sprite emptySprite)
+    public void UpdateSlot(Sprite itemIcon, Sprite emptySprite)
     {
-        _currentItem = item;
-        bool hasItem = item != null;
-
-        if (icon != null)
-        {
-            icon.sprite = hasItem ? item.BaseType.Appearance.Icon : emptySprite;
-            icon.enabled = icon.sprite != null;
-        }
+        icon.sprite = itemIcon != null ? itemIcon : emptySprite;
+        icon.enabled = icon.sprite != null;
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -34,12 +30,11 @@ public class LoadoutSlotView : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (_currentItem == null) return;
-        TooltipController.Instance.ShowItem(_currentItem);
+        OnSlotHoverEnter?.Invoke(slotType);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        TooltipController.Instance.Hide();
+        OnSlotHoverExit?.Invoke();
     }
 }

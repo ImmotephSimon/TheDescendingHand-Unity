@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EleMult
   m_EditorClassIdentifier: 
   id: 8d99b13e-c2bb-4906-93c5-f3ec1b7c40d8
-  DisplayName: EleMult
+  DisplayName: 
   BaseValue: 2
   Modifier:
     TagId: Mod.Offense.Damage

@@ -13,9 +13,9 @@ public class PlayerAnimationController : MonoBehaviour, IAnimationHandler
     private PlayableGraph _graph;
     private AnimationMixerPlayable _mixer;
     private Coroutine _routine;
-    private const float TransitionDuration = 0.1f;
+    private const float BlendTime = 0.15f;
     private PlayerMovementController _playerMovement;
-
+    private AnimationClipPlayable _activeClip;
     private static readonly int LocomotionHash = Animator.StringToHash("Locomotion");
     private static readonly int DeadHash = Animator.StringToHash("Dead");
     private static readonly int ImmobilizationHash = Animator.StringToHash("Immobilized");
@@ -49,11 +49,11 @@ public class PlayerAnimationController : MonoBehaviour, IAnimationHandler
 
         if (_activeStatuses.Contains(GameTags.StatusStun))
         {
-            animator.CrossFade(ImmobilizationHash, TransitionDuration);
+            animator.CrossFade(ImmobilizationHash, BlendTime);
         }
         else
         {
-            animator.CrossFade(LocomotionHash, TransitionDuration);
+            animator.CrossFade(LocomotionHash, BlendTime);
         }
     }
 
@@ -68,7 +68,7 @@ public class PlayerAnimationController : MonoBehaviour, IAnimationHandler
         if (_graph.IsValid())
             _graph.Destroy();
 
-        animator.CrossFade(LocomotionHash, TransitionDuration, 0);
+        //animator.CrossFade(LocomotionHash, BlendTime, 0);
     }
 
     public void SetAnimationState(CharacterAnimationState state)
@@ -90,7 +90,7 @@ public class PlayerAnimationController : MonoBehaviour, IAnimationHandler
             return;
         }
 
-        animator.CrossFade(hash, TransitionDuration);
+        animator.CrossFade(hash, BlendTime);
     }
 
     public void PlayAttackAnimation(AttackAnimation attackAnimation, Action onFinished)
@@ -104,9 +104,9 @@ public class PlayerAnimationController : MonoBehaviour, IAnimationHandler
     }
 
 
-    public float PlayDodgeRoll()
+    public float PlayDodgeRoll(float duration)
     {
-        PlayClip(dodgeAnimation, dodgeAnimation.length);
+        PlayClip(dodgeAnimation, duration);
         return dodgeAnimation.length;
     }
 
@@ -131,11 +131,12 @@ public class PlayerAnimationController : MonoBehaviour, IAnimationHandler
             _graph,
             animator.runtimeAnimatorController);
 
-        var clipPlayable = AnimationClipPlayable.Create(_graph, clip);
+        _activeClip = AnimationClipPlayable.Create(_graph, clip);
+        _activeClip.SetSpeed(clip.length / duration);
 
         _mixer = AnimationMixerPlayable.Create(_graph, 2);
         _mixer.ConnectInput(0, controllerPlayable, 0);
-        _mixer.ConnectInput(1, clipPlayable, 0);
+        _mixer.ConnectInput(1, _activeClip, 0);
 
         _mixer.SetInputWeight(0, 1f);
         _mixer.SetInputWeight(1, 0f);
@@ -149,20 +150,19 @@ public class PlayerAnimationController : MonoBehaviour, IAnimationHandler
         _graph.Play();
 
         _routine = StartCoroutine(
-            PlayClipRoutine(duration, 0.15f));
+            AnimationRoutine(duration));
     }
 
-    private IEnumerator PlayClipRoutine(
-        float duration,
-        float fadeTime)
+    private IEnumerator AnimationRoutine(
+        float duration)
     {
 
         float time = 0f;
 
-        while (time < fadeTime)
+        while (time < BlendTime)
         {
             time += Time.deltaTime;
-            float weight = time / fadeTime;
+            float weight = time / BlendTime;
 
             _mixer.SetInputWeight(0, 1f - weight);
             _mixer.SetInputWeight(1, weight);
@@ -174,22 +174,25 @@ public class PlayerAnimationController : MonoBehaviour, IAnimationHandler
         _mixer.SetInputWeight(1, 1f);
 
         yield return new WaitForSeconds(
-            Mathf.Max(0f, duration - fadeTime * 2f));
+            Mathf.Max(0f, duration));
+
+        _activeClip.SetTime(_activeClip.GetDuration());
+        _activeClip.SetSpeed(0f);
 
         time = 0f;
 
-        while (time < fadeTime)
+        while (time < BlendTime)
         {
             time += Time.deltaTime;
-            float weight = time / fadeTime;
+            float weight = time / BlendTime;
 
             _mixer.SetInputWeight(0, weight);
             _mixer.SetInputWeight(1, 1f - weight);
 
             yield return null;
         }
-
         StopCurrentAnimation();
+        
     }
 
     private void OnDestroy()

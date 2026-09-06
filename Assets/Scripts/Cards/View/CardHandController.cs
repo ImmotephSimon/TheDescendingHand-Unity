@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class CardHandController : MonoBehaviour
@@ -7,7 +8,7 @@ public class CardHandController : MonoBehaviour
 
     private GameObject[] cards = new GameObject[10];
 
-    public void OnCardAdded(int index, string cardDefinitionId)
+    public void OnCardAdded(int index, Guid cardDefinitionId)
     {
         GameObject cardObject = Instantiate(physicalCardPrefab, handView.transform);
 

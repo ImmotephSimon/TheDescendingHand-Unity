@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0b84949ac503a244915b061c29d6d6b, type: 3}
   m_Name: Common
   m_EditorClassIdentifier: 
-  id: ed5dcaba-d72d-403d-b042-475e47befd64
   Tier: 1
   DropWeight: 400
   MaxAffixes: 2
   MinAffixes: 2
   AllowedDrops:
   - rid: 7617656375266771146
+  - rid: 3345370885775163800
   CanHaveUniqueMods: 0
   DisplayColor: {r: 0, g: 0.103065014, b: 1, a: 1}
   LightIntensity: 0.3
@@ -26,6 +26,10 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 3345370885775163800
+      type: {class: CardLootDefinition, ns: , asm: Assembly-CSharp}
+      data:
+        Prefab: {fileID: 315467223515205245, guid: f45f3f303806c01469581299b98fd536, type: 3}
     - rid: 7617656375266771146
       type: {class: ItemLootDefinition, ns: , asm: Assembly-CSharp}
       data:

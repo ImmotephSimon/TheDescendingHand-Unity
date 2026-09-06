@@ -35,7 +35,7 @@ public class EquipmentVisuals : MonoBehaviour
 
         if (item.Appearance?.WorldModel == null)
         {
-            Debug.LogWarning($"Item '{item.ID}' has no EquippedPrefab assigned for {type}.");
+            Debug.LogWarning($"Item '{item.Id}' has no EquippedPrefab assigned for {type}.");
             return;
         }
 

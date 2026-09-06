@@ -7,18 +7,16 @@ public class RicochetShotDefinition : CardDefinition
     [SerializeField] private float effectiveness;
     [SerializeField] private GameTag damageConversion;
 
-    public override void Construct(CardInitContext context, Card card)
+    public override void Construct(CardInitContext context, CardRuntime card)
     {
-
-        var damage = new DirectDamageComponent(
+        var damage = card.AddCardComponent<DirectDamageComponent>();
+        damage.Configure(
             effectiveness,
             damageConversion);
 
-        var projectile = new ProjectileComponent(
+        var projectile = card.AddCardComponent<ProjectileComponent>();
+        projectile.Configure(
             projectileInfo,
             context.ServerSpawn);
-
-        card.AddComponent(damage);
-        card.AddComponent(projectile);
     }
 }

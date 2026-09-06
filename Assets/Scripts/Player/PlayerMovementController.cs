@@ -14,6 +14,7 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
 {
     private readonly float _accelerationMultiplier = 12f;
     private readonly float _decelerationMultiplier = 16f;
+    private static readonly float _baseDodgeDuration = 2.033f;
 
     [SerializeField] private AnimationCurve _dodgeSpeedCurve = new AnimationCurve(
         new Keyframe(0f, 0f),    // initial delay
@@ -48,7 +49,6 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         public Vector3 CurrentMoveVelocity;
         public MovementAction CurrentAction;
         public float ActionTimer;
-        public float DodgeDuration;
 
         private uint _tick;
 
@@ -63,7 +63,6 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
             Vector3 currentMoveVelocity,
             MovementAction currentAction,
             float actionTimer,
-            float dodgeDuration,
             uint tick)
         {
             Position = position;
@@ -72,7 +71,6 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
             CurrentMoveVelocity = currentMoveVelocity;
             CurrentAction = currentAction;
             ActionTimer = actionTimer;
-            DodgeDuration = dodgeDuration;
             _tick = tick;
         }
     }
@@ -91,16 +89,15 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
 
     private MovementAction _currentAction;
     private float _actionTimer;
-    private float _dodgeDuration;
 
-    private int _movementLocks;
     private IStatContainer _statContainer;
     private MovementAction _bufferedAction;
+    
     const float AnimationReferenceSpeed = 4f;
     private readonly SyncVar<float> _networkedMoveSpeed = new(2.5f);
+    private readonly SyncVar<float> _networkedDodgeDuration = new(_baseDodgeDuration);
 
     public Vector3 CursorPosition => _bufferedMousePos;
-    public bool CanMove => _movementLocks == 0;
     public Vector3 Position => transform.position;
     public float Gravity { get; private set; } = -9.81f;
     public float MoveSpeed => _networkedMoveSpeed.Value;
@@ -121,8 +118,10 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
 
     public void SetLocalInput(Vector2 input, Vector3 mousePos)
     {
-        _bufferedInput = input;
         _bufferedMousePos = mousePos;
+        _bufferedInput = !IsImmobilized()
+            ? input
+            : Vector2.zero;
     }
 
     public override void OnStartNetwork()
@@ -141,6 +140,13 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
     private void OnMovementStatChanged(float newValue)
     {
         _networkedMoveSpeed.Value = newValue;
+
+
+        var (_, additive, multiplicative) =
+            _statContainer.GetScaling(GameTags.ModStatMovement);
+        _networkedDodgeDuration.Value =
+            _baseDodgeDuration / ((1 + additive) * multiplicative);
+        
     }
 
     public override void OnStopNetwork()
@@ -170,7 +176,6 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
                 ActionRequested = _bufferedAction
             };
 
-            //_bufferedAction = MovementAction.None;
             MoveCharacter(md);
         }
         else if (IsServerInitialized)
@@ -191,8 +196,12 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         ReplicateState state = ReplicateState.Invalid,
         Channel channel = Channel.Unreliable)
     {
-        if (!CanMove || IsImmobilized())
+        if (IsImmobilized())
+        {
+            _currentMoveVelocity = Vector3.zero;
             return;
+        }
+            
 
         _bufferedMousePos = md.MouseWorldPosition;
 
@@ -249,20 +258,24 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
     private void StartDodgeRoll()
     {
         _currentAction = MovementAction.DodgeRoll;
-        _dodgeDuration = _animationHandler.PlayDodgeRoll();
-        _actionTimer = _dodgeDuration;
+
+        _animationHandler.PlayDodgeRoll(_networkedDodgeDuration.Value);
+
+        _actionTimer = _networkedDodgeDuration.Value;
     }
 
     private void ProcessDodgeRollAction(Vector3 movementInput, float delta)
     {
         _actionTimer -= delta;
 
-        float progress = 1f - (_actionTimer / _dodgeDuration);
+        
+        float progress = 1f - (_actionTimer / _networkedDodgeDuration.Value);
         float speedMultiplier = _dodgeSpeedCurve.Evaluate(progress);
 
         Vector3 moveDir = movementInput.sqrMagnitude > 0.001f
             ? movementInput
             : transform.forward;
+
 
         _currentMoveVelocity = moveDir * (MoveSpeed * speedMultiplier);
 
@@ -293,11 +306,18 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
             transform.rotation = Quaternion.LookRotation(direction);
 
         float moveSpeed = MoveSpeed;
+
+        if (moveSpeed <= 0f)
+        {
+            _currentMoveVelocity = Vector3.zero;
+            return;
+        }
+
         Vector3 targetVelocity = movementInput * moveSpeed;
 
         float rate = movementInput.sqrMagnitude > 0.001f
-             ? MoveSpeed * _accelerationMultiplier
-             : MoveSpeed * _decelerationMultiplier;
+            ? moveSpeed * _accelerationMultiplier
+            : moveSpeed * _decelerationMultiplier;
 
         _currentMoveVelocity = Vector3.MoveTowards(
             _currentMoveVelocity,
@@ -316,7 +336,6 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         _currentMoveVelocity = rd.CurrentMoveVelocity;
         _currentAction = rd.CurrentAction;
         _actionTimer = rd.ActionTimer;
-        _dodgeDuration = rd.DodgeDuration;
     }
 
     public override void CreateReconcile()
@@ -329,7 +348,6 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
                 _currentMoveVelocity,
                 _currentAction,
                 _actionTimer,
-                _dodgeDuration,
                 InstanceFinder.TimeManager.Tick));
     }
 

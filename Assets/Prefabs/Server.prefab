@@ -274,7 +274,7 @@ MonoBehaviour:
   _componentIndexCache: 6
   _addedNetworkObject: {fileID: 5204800278082625481}
   _networkObjectCache: {fileID: 5204800278082625481}
-  cardRegistry: {fileID: 11400000, guid: dbc5fdb1cbf049e43a5b28ed6e176ee2, type: 2}
+  cardRegistry: {fileID: 11400000, guid: d10fb8c24588bbd4198011091344e1b8, type: 2}
 --- !u!114 &8371837318812353100
 MonoBehaviour:
   m_ObjectHideFlags: 0

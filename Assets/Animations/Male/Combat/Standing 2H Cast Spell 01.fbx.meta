@@ -35,8 +35,8 @@ ModelImporter:
       name: Standing 2H Cast Spell 01
       takeName: mixamo.com
       internalID: -203655887218126122
-      firstFrame: 0
-      lastFrame: 65
+      firstFrame: 15
+      lastFrame: 42
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

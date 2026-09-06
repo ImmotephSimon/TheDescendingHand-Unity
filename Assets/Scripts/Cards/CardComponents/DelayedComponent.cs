@@ -1,8 +1,9 @@
 ﻿using System;
+using UnityEngine;
 
 public class DelayedComponent : CardComponent
 {
-    private readonly float _delay;
+    private float _delay;
 
     private float _timer;
     private bool _active;
@@ -10,7 +11,7 @@ public class DelayedComponent : CardComponent
     public override bool IsTicking => true;
     public event Action OnCompleted;
 
-    public DelayedComponent(float delay)
+    public void Configure(float delay)
     {
         _delay = delay;
     }
@@ -25,12 +26,12 @@ public class DelayedComponent : CardComponent
         _paused = false;
     }
 
-    public override void Tick(float deltaTime)
+    private void Update()
     {
         if (!_active || _paused)
             return;
 
-        _timer += deltaTime;
+        _timer += Time.deltaTime;
 
         if (_timer < _delay)
             return;

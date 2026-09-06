@@ -12,19 +12,21 @@ public class DegenComponent : MonoBehaviour
     private class ActiveDegen
     {
         public DegenInfo Info { get; }
-        public float ElapsedTime { get; set; }
-        
+        public float ExpirationTime { get; }
 
         public ActiveDegen(DegenInfo info)
         {
             Info = info;
+            ExpirationTime = Time.time + info.Duration;
         }
     }
 
     private void Awake()
     {
         _healthHandler = GetComponent<IHealth>();
-        Debug.Assert(_healthHandler != null, $"[{nameof(DegenComponent)}] Missing IHealth implementation on {gameObject.name}.");
+        Debug.Assert(
+            _healthHandler != null,
+            $"[{nameof(DegenComponent)}] Missing IHealth implementation on {gameObject.name}.");
     }
 
     public void Apply(DegenInfo degenInfo)
@@ -34,14 +36,13 @@ public class DegenComponent : MonoBehaviour
 
         for (int i = 0; i < _activeDegens.Count; i++)
         {
-            if (_activeDegens[i].Info.Id == degenInfo.Id)
-            {
-                count++;
-                if (oldest == null || _activeDegens[i].ElapsedTime > oldest.ElapsedTime)
-                {
-                    oldest = _activeDegens[i];
-                }
-            }
+            if (_activeDegens[i].Info.Id != degenInfo.Id)
+                continue;
+
+            count++;
+
+            if (oldest == null || _activeDegens[i].ExpirationTime < oldest.ExpirationTime)
+                oldest = _activeDegens[i];
         }
 
         if (count < degenInfo.MaxStacks)
@@ -50,7 +51,8 @@ public class DegenComponent : MonoBehaviour
         }
         else if (oldest != null)
         {
-            oldest.ElapsedTime = 0f;
+            _activeDegens.Remove(oldest);
+            _activeDegens.Add(new ActiveDegen(degenInfo));
         }
     }
 
@@ -61,28 +63,31 @@ public class DegenComponent : MonoBehaviour
 
     private void Update()
     {
-        if (_activeDegens.Count == 0) return;
+        if (_activeDegens.Count == 0)
+            return;
 
         _tickTimer += Time.deltaTime;
 
-        if (_tickTimer < TickInterval) return;
+        if (_tickTimer < TickInterval)
+            return;
 
         float tick = _tickTimer;
         _tickTimer = 0f;
 
-        for (int i = _activeDegens.Count - 1; i >= 0; i--)
-        {
-            var degen = _activeDegens[i];
+        var activeDegens = _activeDegens.ToArray();
 
+        foreach (var degen in activeDegens)
+        {
             foreach (var (tag, amount) in degen.Info.Damage)
             {
-                _healthHandler.AdjustHealth(-amount * TickInterval, degen.Info.Source, false);
+                _healthHandler.AdjustHealth(
+                    -amount * TickInterval,
+                    degen.Info.Source,
+                    false);
             }
 
-            degen.ElapsedTime += tick;
-
-            if (degen.ElapsedTime >= degen.Info.Duration)
-                _activeDegens.RemoveAt(i);
+            if (Time.time >= degen.ExpirationTime)
+                _activeDegens.Remove(degen);
         }
     }
 }

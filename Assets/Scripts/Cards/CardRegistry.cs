@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ public class CardRegistry : ScriptableObject
 {
     [SerializeField] private List<CardDefinition> cards = new();
 
-    private Dictionary<string, CardDefinition> _lookup;
+    private Dictionary<Guid, CardDefinition> _lookup;
 
     public List<CardDefinition> Cards => cards;
 
@@ -17,7 +18,6 @@ public class CardRegistry : ScriptableObject
         {
             if (_instance == null)
             {
-                // Put the CardRegistry asset in Assets/Resources/CardRegistry.asset
                 _instance = Resources.Load<CardRegistry>("CardRegistry");
                 if (_instance == null)
                 {
@@ -28,21 +28,25 @@ public class CardRegistry : ScriptableObject
         }
     }
 
-    private void OnEnable()
+    [ContextMenu("Log Card IDs")]
+    private void LogCardIds()
     {
-        _lookup = null;
+        foreach (var card in cards)
+        {
+            if (card != null)
+                Debug.Log($"{card.name} = {card.Id}");
+        }
     }
+
+    private void OnEnable() => _lookup = null;
 
 #if UNITY_EDITOR
-    private void OnValidate()
-    {
-        _lookup = null;
-    }
+    private void OnValidate() => _lookup = null;
 #endif
 
-    public bool TryGet(string definitionId, out CardDefinition definition)
+    public bool TryGet(Guid definitionId, out CardDefinition definition)
     {
-        if (string.IsNullOrEmpty(definitionId))
+        if (definitionId == Guid.Empty)
         {
             definition = null;
             return false;
@@ -56,7 +60,7 @@ public class CardRegistry : ScriptableObject
     {
         if (_lookup != null) return;
 
-        _lookup = new Dictionary<string, CardDefinition>();
+        _lookup = new Dictionary<Guid, CardDefinition>();
 
         for (int i = 0; i < cards.Count; i++)
         {
@@ -68,7 +72,7 @@ public class CardRegistry : ScriptableObject
                 continue;
             }
 
-            if (string.IsNullOrEmpty(card.Id))
+            if (card.Id == Guid.Empty)
             {
                 Debug.LogError($"[{name}] CardDefinition '{card.name}' has no assigned Id.");
                 continue;
@@ -83,7 +87,7 @@ public class CardRegistry : ScriptableObject
 
     public CardDefinition GetRandomCard()
     {
-        return cards[Random.Range(0, cards.Count)];
+        if (cards == null || cards.Count == 0) return null;
+        return cards[UnityEngine.Random.Range(0, cards.Count)];
     }
-
 }

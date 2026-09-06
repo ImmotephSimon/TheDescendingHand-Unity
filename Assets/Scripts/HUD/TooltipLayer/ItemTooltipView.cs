@@ -22,36 +22,43 @@ public class ItemTooltipView : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
     }
 
-    public void SetItem(ItemInstance item)
+    public void SetItem(ItemTooltipDto item)
     {
-        var definition = item.BaseType;
+        ItemRegistry.Instance.TryGetDefinition(item.BaseTypeId, out ItemDefinition definition);
+        ItemRegistry.Instance.TryGetRarity(item.RarityId, out Rarity rarity);
 
-        SetTextSection(nameText, definition.DisplayName, item.Rarity.DisplayColor);
+        SetTextSection(nameText, definition.DisplayName, rarity.DisplayColor);
 
-        var equipComp = definition.Components
-            .OfType<EquipComponentDefinition>()
-            .FirstOrDefault();
-
+        var equipComp = GetEquipComponent(definition);
         if (equipComp != null)
+        {
             SetTextSection(baseTypeText, equipComp.EquipmentType.name);
+        }
 
         SetTextSection(implicitsText, BuildImplicits(item));
-        SetTextSection(explicitsText, BuildAffixes(item.Explicits));
+        SetTextSection(explicitsText, AffixesToString(item.Explicits));
 
         bool hasLore = !string.IsNullOrEmpty(definition.Lore);
-
         if (bottomSection != null)
+        {
             bottomSection.SetActive(hasLore);
+        }
 
         SetTextSection(loreText, definition.Lore);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
     }
 
+    public EquipComponentDefinition GetEquipComponent(ItemDefinition definition)
+    {
+        return definition.Components
+            .OfType<EquipComponentDefinition>()
+            .FirstOrDefault();
+    }
+
     private void SetTextSection(TextMeshProUGUI field, string content)
     {
-        if (field == null)
-            return;
+        if (field == null) return;
 
         bool hasContent = !string.IsNullOrEmpty(content);
         field.gameObject.SetActive(hasContent);
@@ -62,8 +69,7 @@ public class ItemTooltipView : MonoBehaviour
 
     private void SetTextSection(TextMeshProUGUI field, string content, Color color)
     {
-        if (field == null)
-            return;
+        if (field == null) return;
 
         bool hasContent = !string.IsNullOrEmpty(content);
         field.gameObject.SetActive(hasContent);
@@ -75,7 +81,7 @@ public class ItemTooltipView : MonoBehaviour
         }
     }
 
-    private string BuildImplicits(ItemInstance item)
+    private string BuildImplicits(ItemTooltipDto item)
     {
         var lines = new List<string>();
 
@@ -98,17 +104,17 @@ public class ItemTooltipView : MonoBehaviour
         return string.Join("\n", lines);
     }
 
-    private string GetRawImplicitText(ItemInstance item)
+    private string GetRawImplicitText(ItemTooltipDto item)
     {
-        if (item?.BaseType?.Implicits == null)
+        if (item.Implicits == null)
             return string.Empty;
 
         var lines = new List<string>();
 
-        foreach (var modifier in item.BaseType.Implicits)
+        foreach (var affix in item.Implicits)
         {
-            if (!IsDisplayedAsWeaponStat(modifier.Stat))
-                lines.Add(modifier.ToString());
+            if (!IsDisplayedAsWeaponStat(affix.Modifier))
+                lines.Add(new StatModifier(affix.Modifier, affix.MathOp, affix.RolledValue, affix.TagRequirement).ToString());
         }
 
         return string.Join("\n", lines);
@@ -116,8 +122,7 @@ public class ItemTooltipView : MonoBehaviour
 
     private bool IsDamageStat(GameTag stat)
     {
-        if (stat == null)
-            return false;
+        if (stat == null) return false;
 
         if (stat == GameTags.ModOffenseDamage ||
             stat == GameTags.ModOffenseDamageMin ||
@@ -126,8 +131,7 @@ public class ItemTooltipView : MonoBehaviour
 
         foreach (var damageType in GameTags.DamageTypes)
         {
-            if (stat == damageType)
-                return true;
+            if (stat == damageType) return true;
         }
 
         return false;
@@ -155,19 +159,16 @@ public class ItemTooltipView : MonoBehaviour
         return elements;
     }
 
-    private string GetDamageText(ItemInstance item)
+    private string GetDamageText(ItemTooltipDto item)
     {
         var ranges = new Dictionary<GameTag, (float Min, float Max)>();
 
         void AddModifier(GameTag stat, MathOp op, TagRequirement tags, float value)
         {
-            Debug.Log($"Damage modifier: {stat} / {op} / {value} / damage={IsDamageStat(stat)}");
-
             if (!IsDamageStat(stat) || op != MathOp.Added)
                 return;
 
             var elements = GetElementTags(tags, stat);
-
             if (elements.Count == 0)
                 elements.Add(GameTags.RestrictionPhysical);
 
@@ -189,40 +190,23 @@ public class ItemTooltipView : MonoBehaviour
             }
         }
 
-        if (item?.BaseType?.Implicits != null)
+        if (item.Implicits != null)
         {
-            foreach (var modifier in item.BaseType.Implicits)
-            {
-                AddModifier(
-                    modifier.Stat,
-                    modifier.Op,
-                    modifier.RequiredTags,
-                    modifier.Value);
-            }
+            foreach (var affix in item.Implicits)
+                AddModifier(affix.Modifier, affix.MathOp, affix.TagRequirement, affix.RolledValue);
         }
 
-        if (item?.Explicits != null)
+        if (item.Explicits != null)
         {
             foreach (var affix in item.Explicits)
-            {
-                if (affix?.Definition == null)
-                    continue;
-
-                AddModifier(
-                    affix.Definition.Modifier,
-                    affix.Definition.MathOp,
-                    affix.Definition.TagRequirement,
-                    affix.Value);
-            }
+                AddModifier(affix.Modifier, affix.MathOp, affix.TagRequirement, affix.RolledValue);
         }
 
         void ApplyMultiplier(GameTag stat, TagRequirement tags, float value)
         {
-            if (!IsDamageStat(stat))
-                return;
+            if (!IsDamageStat(stat)) return;
 
             var elements = GetElementTags(tags, stat);
-
             if (elements.Count == 0)
                 elements.Add(GameTags.RestrictionPhysical);
 
@@ -235,37 +219,25 @@ public class ItemTooltipView : MonoBehaviour
 
                 range.Min *= multiplier;
                 range.Max *= multiplier;
-
                 ranges[element] = range;
             }
         }
 
-        if (item?.BaseType?.Implicits != null)
+        if (item.Implicits != null)
         {
-            foreach (var modifier in item.BaseType.Implicits)
+            foreach (var affix in item.Implicits)
             {
-                if (modifier.Op == MathOp.Multiplicative)
-                {
-                    ApplyMultiplier(
-                        modifier.Stat,
-                        modifier.RequiredTags,
-                        modifier.Value);
-                }
+                if (affix.MathOp == MathOp.Multiplicative)
+                    ApplyMultiplier(affix.Modifier, affix.TagRequirement, affix.RolledValue);
             }
         }
 
-        if (item?.Explicits != null)
+        if (item.Explicits != null)
         {
             foreach (var affix in item.Explicits)
             {
-                if (affix?.Definition == null ||
-                    affix.Definition.MathOp != MathOp.Multiplicative)
-                    continue;
-
-                ApplyMultiplier(
-                    affix.Definition.Modifier,
-                    affix.Definition.TagRequirement,
-                    affix.Value);
+                if (affix.MathOp == MathOp.Multiplicative)
+                    ApplyMultiplier(affix.Modifier, affix.TagRequirement, affix.RolledValue);
             }
         }
 
@@ -282,89 +254,72 @@ public class ItemTooltipView : MonoBehaviour
             }
             else
             {
-                lines.Add(
-                    $"{GetDamageLabel(element)}: " +
-                    $"<color={GetDamageColorHex(element)}>{min}-{max}</color>");
+                lines.Add($"{GetDamageLabel(element)}: <color={GetDamageColorHex(element)}>{min}-{max}</color>");
             }
         }
 
         return string.Join("\n", lines);
     }
 
-
-
-    private string GetCritText(ItemInstance item)
+    private string GetCritText(ItemTooltipDto item)
     {
         float baseCrit = 0f;
         float critMultiplier = 1f;
 
-        if (item?.BaseType?.Implicits != null)
+        void ProcessAffix(GameTag stat, MathOp op, float value)
         {
-            foreach (var modifier in item.BaseType.Implicits)
-            {
-                if (modifier.Stat != GameTags.ModOffenseCritical)
-                    continue;
+            if (stat != GameTags.ModOffenseCritical) return;
 
-                if (modifier.Op == MathOp.Added)
-                    baseCrit += modifier.Value;
-                else if (modifier.Op == MathOp.Multiplicative)
-                    critMultiplier *= 1f + NormalizePercent(modifier.Value);
-            }
+            if (op == MathOp.Added)
+                baseCrit += value;
+            else if (op == MathOp.Multiplicative)
+                critMultiplier *= 1f + NormalizePercent(value);
         }
 
-        if (item?.Explicits != null)
+        if (item.Implicits != null)
+        {
+            foreach (var affix in item.Implicits)
+                ProcessAffix(affix.Modifier, affix.MathOp, affix.RolledValue);
+        }
+
+        if (item.Explicits != null)
         {
             foreach (var affix in item.Explicits)
-            {
-                if (affix?.Definition == null ||
-                    affix.Definition.Modifier != GameTags.ModOffenseCritical)
-                    continue;
-
-                if (affix.Definition.MathOp == MathOp.Added)
-                    baseCrit += affix.Value;
-                else if (affix.Definition.MathOp == MathOp.Multiplicative)
-                    critMultiplier *= 1f + NormalizePercent(affix.Value);
-            }
+                ProcessAffix(affix.Modifier, affix.MathOp, affix.RolledValue);
         }
 
-        if (baseCrit <= 0f)
-            return string.Empty;
+        if (baseCrit <= 0f) return string.Empty;
 
         float finalCrit = baseCrit * critMultiplier;
-
         return $"Critical: {finalCrit:F2}%";
     }
 
-    private string GetSpeedText(ItemInstance item)
+    private string GetSpeedText(ItemTooltipDto item)
     {
         float castSpeed = 0f;
         bool found = false;
 
-        if (item?.BaseType?.Implicits != null)
+        if (item.Implicits != null)
         {
-            foreach (var modifier in item.BaseType.Implicits)
+            foreach (var affix in item.Implicits)
             {
-                if (modifier.Stat != GameTags.ModOffenseCastSpeed)
-                    continue;
+                if (affix.Modifier != GameTags.ModOffenseCastSpeed) continue;
 
-                castSpeed = modifier.Value;
+                castSpeed = affix.RolledValue;
                 found = true;
                 break;
             }
         }
 
-        if (!found)
-            return string.Empty;
+        if (!found) return string.Empty;
 
         if (item.Explicits != null)
         {
             foreach (var affix in item.Explicits)
             {
-                if (affix?.Definition == null ||
-                    affix.Definition.Modifier != GameTags.ModOffenseCastSpeed)
-                    continue;
+                if (affix.Modifier != GameTags.ModOffenseCastSpeed) continue;
 
-                castSpeed *= 1f + NormalizePercent(affix.Value);
+                castSpeed *= 1f + NormalizePercent(affix.RolledValue);
             }
         }
 
@@ -378,57 +333,26 @@ public class ItemTooltipView : MonoBehaviour
 
     private string GetDamageLabel(GameTag element)
     {
-        if (element == GameTags.RestrictionElementFire)
-            return "Fire Damage";
-
-        if (element == GameTags.RestrictionElementCold)
-            return "Cold Damage";
-
-        if (element == GameTags.RestrictionElementLightning)
-            return "Lightning Damage";
-
-        if (element == GameTags.RestrictionChaos)
-            return "Chaos Damage";
-
+        if (element == GameTags.RestrictionElementFire) return "Fire Damage";
+        if (element == GameTags.RestrictionElementCold) return "Cold Damage";
+        if (element == GameTags.RestrictionElementLightning) return "Lightning Damage";
+        if (element == GameTags.RestrictionChaos) return "Chaos Damage";
         return "Damage";
     }
 
     private string GetDamageColorHex(GameTag element)
     {
-        if (element == GameTags.RestrictionElementFire)
-            return "#FF5555";
-
-        if (element == GameTags.RestrictionElementCold)
-            return "#55FFFF";
-
-        if (element == GameTags.RestrictionElementLightning)
-            return "#FFFF55";
-
-        if (element == GameTags.RestrictionChaos)
-            return "#D355FF";
-
+        if (element == GameTags.RestrictionElementFire) return "#FF5555";
+        if (element == GameTags.RestrictionElementCold) return "#55FFFF";
+        if (element == GameTags.RestrictionElementLightning) return "#FFFF55";
+        if (element == GameTags.RestrictionChaos) return "#D355FF";
         return "#FFFFFF";
     }
 
-    private string BuildAffixes(List<AffixInstance> affixes)
+    private string AffixesToString(List<AffixState> states)
     {
-        if (affixes == null || affixes.Count == 0)
-            return string.Empty;
-
-        var sorted = affixes
-        .Where(a => a != null)
-        .OrderBy(a => a.Definition.Slot);
-
-        var lines = new List<string>();
-
-        foreach (var affix in affixes)
-        {
-            var modifier = affix?.ToStatModifier();
-
-            if (modifier != null)
-                lines.Add(modifier.ToString());
-        }
-
-        return string.Join("\n", lines);
+        if (states == null || states.Count == 0) return string.Empty;
+        return string.Join("\n", states.Select(s =>
+            new StatModifier(s.Modifier, s.MathOp, s.RolledValue, s.TagRequirement).ToString()));
     }
 }

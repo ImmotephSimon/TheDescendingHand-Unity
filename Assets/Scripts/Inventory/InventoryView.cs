@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class InventoryView : MonoBehaviour
 {
@@ -100,8 +101,7 @@ public class InventoryView : MonoBehaviour
 
     private void HandleSlotHovered(InventorySlotView slot)
     {
-        if (_items.TryGetInventoryItem(slot.Row, slot.Column, out var item))
-            TooltipController.Instance.Show(item);
+        _items.Server_RequestInventoryTooltip(slot.Row, slot.Column);
     }
 
     private void HandleSlotUnhovered(InventorySlotView slot)
@@ -120,23 +120,26 @@ public class InventoryView : MonoBehaviour
             ? itemContainer
             : transform;
 
-        foreach (var entry in _items.GetInventoryItems())
+        foreach (InventoryItemDto entry in _items.InventoryItems)
         {
-            IInventoryItem item = entry.Key;
-            Vector2Int origin = entry.Value;
+            if (!ItemRegistry.Instance.TryGetDefinition(entry.ItemId, out var definition))
+            {
+                return;
+            }
+            Vector2Int origin = entry.Position;
 
             ItemIconView icon = Instantiate(itemIconPrefab, parent);
             spawnedIcons.Add(icon);
 
             Vector2 position = GetLocalPosition(origin.x, origin.y);
-            Vector2Int size = item.Size;
+            Vector2Int size = entry.Size;
 
             Vector2 pixelSize = new(
                 size.x * cellSize.x + (size.x - 1) * spacing.x,
                 size.y * cellSize.y + (size.y - 1) * spacing.y
             );
 
-            icon.Render(item.Icon, position, pixelSize);
+            icon.Render(definition.Appearance.Icon, position, pixelSize);
         }
     }
 

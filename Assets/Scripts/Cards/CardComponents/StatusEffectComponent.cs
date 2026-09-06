@@ -2,19 +2,19 @@ using System.Collections.Generic;
 
 public class StatusEffectComponent : CardComponent
 {
-    private readonly GameTag _Statustag;
-    private readonly float _duration;
+    private GameTag _Statustag;
+    private float _duration;
     private readonly Dictionary<IEntity, ModifierHandle> _activeStatuses = new();
 
     public override bool IsTicking => false;
 
-    public StatusEffectComponent(GameTag statusTag, float duration)
+    public void Configure(GameTag statusTag, float duration)
     {
         _Statustag = statusTag;
         _duration = duration;
     }
 
-    public override void Initialize(Card card, IEntity owner)
+    public override void Initialize(CardRuntime card, IEntity owner)
     {
         base.Initialize(card, owner);
         Card.OnHit += HandleOnHit;

@@ -4,27 +4,30 @@ using UnityEngine;
 public abstract class CardDefinition : ScriptableObject
 {
     [SerializeField, HideInInspector]
-    private string id;
+    private Guid id;
 
     [SerializeField]
     private float castTime = 1f;
     [SerializeField] private bool spawnAtCursor = false;
     [SerializeField]
     public CardVisuals visuals = new();
-    public string Id => id;
+    public Guid Id => id;
     public float CastTime => castTime;
     public bool SpawnAtCursor => spawnAtCursor;
 
     public CardVisuals Visuals => visuals; 
     public DeckOverrides DeckOverrides; 
-    public abstract void Construct(CardInitContext context, Card card);
+    public abstract void Construct(CardInitContext context, CardRuntime card);
 
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        // Stable asset GUID used as the type identifier for network/save RPCs
-        if (string.IsNullOrEmpty(id))
-            id = Guid.NewGuid().ToString();
+        string path = UnityEditor.AssetDatabase.GetAssetPath(this);
+        if (!string.IsNullOrEmpty(path))
+        {
+            string hex = UnityEditor.AssetDatabase.AssetPathToGUID(path);
+            id = System.Guid.Parse(hex);
+        }
     }
 #endif
 }
@@ -38,19 +41,16 @@ public struct VfxSpawnParams
     public Vector3 Scale;
     public float Duration;
 
-    public VfxSpawnParams(Vector3 position, int vfxIndex = 0, float duration = 0f)
-        : this(position, Quaternion.identity, vfxIndex, duration)
-    {
-    }
+    
 
-    public VfxSpawnParams(Vector3 position, Quaternion rotation, int vfxIndex = 0, float duration = 0f)
+    public VfxSpawnParams(Vector3 position, int vfxIndex = 0, float duration = 0f)
     {
         InstanceId = Guid.NewGuid();
         VfxIndex = vfxIndex;
         Position = position;
-        Rotation = rotation;
-        Scale = Vector3.one;
         Duration = duration;
+        Rotation = Quaternion.identity;
+        Scale = Vector3.one;
     }
 }
 

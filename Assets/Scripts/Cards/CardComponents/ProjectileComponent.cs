@@ -5,17 +5,16 @@ using UnityEngine;
 
 public class ProjectileComponent : CardComponent
 {
-    private readonly ProjectileInfo _info;
-    private readonly Func<GameObject, GameObject> _onSpawnProjectile;
+    private ProjectileInfo _info;
+    private Func<GameObject, GameObject> _onSpawnProjectile;
     private const float MultiProjectileAngle = 15f;
 
     public event Action<HitInfo> OnProjectileHit;
     public event Action<ProjectileController> OnSpawned;
 
-    public ProjectileComponent(
+    public void Configure(
         ProjectileInfo info,
         Func<GameObject,GameObject> spawnNetworkObject)
-        : base(GameTags.TypeProjectile)
     {
         _info = info;
         _onSpawnProjectile = spawnNetworkObject;

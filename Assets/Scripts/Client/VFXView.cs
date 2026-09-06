@@ -20,7 +20,12 @@ public class VFXView : MonoBehaviour
 
         if (instance.TryGetComponent<IVfx>(out var vfx))
         {
-            vfx.Initialize(new VfxSpawnParams(target.position, Quaternion.identity), target);
+            var spawnParams = new VfxSpawnParams(target.position)
+            {
+                Rotation = target.rotation
+            };
+
+            vfx.Initialize(spawnParams, target);
         }
 
         if (!_activeVisuals.TryGetValue(target, out var list))
@@ -42,6 +47,7 @@ public class VFXView : MonoBehaviour
             {
                 if (instance.TryGetComponent<IVfx>(out var vfx))
                 {
+                    Debug.Log($"Client {prefab.name} stop folliwng: {target.name}");
                     vfx.Stop();
                 }
                 else

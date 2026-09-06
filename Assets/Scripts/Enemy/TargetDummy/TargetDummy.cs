@@ -16,18 +16,33 @@ public class TargetDummy : Entity
 
     }
 
-    
-    public override void TakeDamage(DamageInfo info)
+    protected override void Start()
     {
-        base.TakeDamage(info);
+        base.Start();
 
-        if (_healthBar == null) 
-        { 
+        if (_healthBar == null)
+        {
             _healthBar = GetComponentInChildren<EnemyHealthBar>();
             _healthBar.Bind(GetComponent<IHealth>());
         }
+    }
 
+
+    public override void TakeDamage(DamageInfo info)
+    {
+        base.TakeDamage(info);
+        HandleTargetDummyHit();
+    }
+
+    private void HandleTargetDummyHit()
+    {
         GetComponent<DropsComponent>().DropFromEnemy(transform.position);
+    }
+
+    public override void ApplyDegen(DegenInfo degenInfo)
+    {
+        base.ApplyDegen(degenInfo);
+        HandleTargetDummyHit();
     }
 
 

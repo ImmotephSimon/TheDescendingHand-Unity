@@ -5,29 +5,29 @@ using UnityEngine;
 
 public class Loadout
 {
-    private readonly Dictionary<EquipmentType, ItemInstance> equipped = new();
+    private readonly Dictionary<EquipmentType, ItemDropInstance> equipped = new();
 
     public event Action OnLoadoutChanged;
-    public event Action<ItemInstance> OnItemUnequipped;
+    public event Action<ItemDropInstance> OnItemUnequipped;
 
     public Func<Vector2Int, bool> CanUnequipToDestination;
     private IEntity _owner;
 
-    public IReadOnlyDictionary<EquipmentType, ItemInstance> Equipped => equipped;
+    public IReadOnlyDictionary<EquipmentType, ItemDropInstance> Equipped => equipped;
 
     public Loadout(IEntity owner)
     {
         _owner = owner;
     }
 
-    public ItemInstance GetEquipped(EquipmentType type)
+    public ItemDropInstance GetEquipped(EquipmentType type)
     {
         equipped.TryGetValue(type, out var item);
         return item;
     }
 
 
-    public bool Equip(ItemInstance item)
+    public bool Equip(ItemDropInstance item)
     {
         var equipDefinition = item.BaseType.Components.OfType<EquipComponentDefinition>().FirstOrDefault();
         if (equipDefinition == null)
@@ -60,7 +60,7 @@ public class Loadout
             Debug.Log($"Key={key}, id={key.GetInstanceID()}");
 
 
-        if (!equipped.TryGetValue(slot, out ItemInstance item)) return false;
+        if (!equipped.TryGetValue(slot, out ItemDropInstance item)) return false;
 
         if (!CanUnequipToDestination(item.BaseType.InventorySize))
         {

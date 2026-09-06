@@ -18,7 +18,7 @@ MonoBehaviour:
   visuals:
     Name: Fireball
     Description: 
-    Art: {fileID: 0}
+    Art: {fileID: 21300000, guid: dd3885098198d104888439be4c590aba, type: 3}
     AnimationOverride: {fileID: 0}
     Vfx: []
   DeckOverrides:

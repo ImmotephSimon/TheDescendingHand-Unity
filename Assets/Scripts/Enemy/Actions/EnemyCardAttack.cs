@@ -1,10 +1,10 @@
 using System;
-using FishNet;
 using UnityEngine;
 
 public class EnemyCardAttack : EnemyAttack
 {
-    private Card _card;
+    private CardInstance _card;
+    private CardRuntime _runtime;
 
     public override float CooldownDuration => 7f;
     public override AttackAnimation AttackAnimation => AttackAnimation.Special;
@@ -15,47 +15,45 @@ public class EnemyCardAttack : EnemyAttack
 
         if (def is not EnemyCardAttackDefinition cardDef)
         {
-            Debug.LogError($"[{gameObject.name}] EnemyCardAttack initialized with invalid definition type: {def?.GetType().Name ?? "null"}", this);
+            Debug.LogError(
+                $"[{gameObject.name}] EnemyCardAttack initialized with invalid definition type: " +
+                $"{def?.GetType().Name ?? "null"}",
+                this);
+
             return;
         }
 
         if (cardDef.CardDefinition == null)
         {
-            Debug.LogError($"[{gameObject.name}] EnemyCardAttackDefinition '{cardDef.name}' is missing its CardDefinition assignment!", cardDef);
+            Debug.LogError(
+                $"[{gameObject.name}] EnemyCardAttackDefinition '{cardDef.name}' is missing its CardDefinition assignment!",
+                cardDef);
+
             return;
         }
+
         var owner = GetComponent<IEntity>() ?? GetComponentInParent<IEntity>();
 
-        var networkActions = GetComponent<EnemyNetworkActions>();
-        
-
-        _card = CardFactory.CreateFromDefinition(cardDef.CardDefinition, owner);
+        _card = CardFactory.CreateCardInstance(
+            cardDef.CardDefinition,
+            owner);
     }
 
     public override void Execute(Transform target)
     {
-        // base.Execute(target); Don't toggle hit collider
+        _runtime = CardFactory.CreateRuntime(_card);
 
-        _card.SetTargetLocation(target.position);
+        _runtime.SetTargetLocation(target.position);
     }
 
     public override void OnAnimationFinish()
     {
-        _card.ExecuteCastTimeDone();
-    }
-
-    private void Update()
-    {
-        if (_card != null && _card.IsTicking)
-        {
-            _card.Tick(Time.deltaTime);
-        }
+        _runtime?.ExecuteCastTimeDone();
     }
 
 
     public override void Stop()
     {
-        // base.Stop(); Don't toggle hit collider
-        _card?.ExecuteCancelled();
+        _runtime?.ExecuteCancelled();
     }
 }

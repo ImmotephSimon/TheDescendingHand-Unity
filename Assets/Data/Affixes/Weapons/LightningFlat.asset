@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LightningFlat
   m_EditorClassIdentifier: 
   id: 5406631e-a5c7-4c0a-872d-4715aef5ab8a
-  DisplayName: LightningFlat
+  DisplayName: 
   BaseValue: 40
   Modifier:
     TagId: Mod.Offense.Damage

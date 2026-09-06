@@ -15,7 +15,7 @@ public class OrbComponentDefinition : ItemComponentDefinition
         return new OrbUseComponent(this);
     }
 
-    public InventoryResponse ApplyEffect(ItemInstance targetItem)
+    public InventoryResponse ApplyEffect(ItemDropInstance targetItem)
     {
         // TODO: Modify targetItem (e.g., add affix, reroll, etc.)
 

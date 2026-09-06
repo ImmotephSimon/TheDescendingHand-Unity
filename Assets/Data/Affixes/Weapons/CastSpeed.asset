@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CastSpeed
   m_EditorClassIdentifier: 
   id: 35688220-4ad0-44d3-9406-43f7ae87be5e
-  DisplayName: CastSpeed
+  DisplayName: 
   BaseValue: 1.3
   Modifier:
     TagId: Mod.Offense.CastSpeed

@@ -3,7 +3,10 @@ using UnityEngine;
 
 public interface IInventoryItem
 {
-    Guid Id { get; }
+    Guid InventoryId { get; }
     Vector2Int Size { get; }
     Sprite Icon { get; }
+
+    public void Display();
 }
+

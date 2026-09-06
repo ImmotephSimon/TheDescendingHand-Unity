@@ -7,28 +7,32 @@ public class FirewallDefinition : CardDefinition
     [SerializeField] private float effectiveness;
     [SerializeField] private GameTag damageConversion;
     [SerializeField] private float duration = 5f;
-    [SerializeField] private float radius = 2f;
+    [SerializeField] private float size = 1f;
     [SerializeField] private Vector3 spawnOffset;
 
-    public override void Construct(CardInitContext context, Card card)
+    public override void Construct(CardInitContext context, CardRuntime card)
     {
-
-        var spawn = new MeshSpawnComponent(
+        var spawn = card.AddCardComponent<MeshSpawnComponent>();
+        spawn.Configure(
             firewallPrefab,
-            context.ServerSpawn,
+            null,
             spawnOffset,
             useGravity: false);
 
-        var areaDegen = new AreaDegenComponent(
-            radius,
+        var overlap = card.AddBoxOverlap(
+            new Vector3(4f, 2f, 1f) * size/*,overrideLayer: LayerMask.NameToLayer("Wall")*/);
+
+        var areaDegen = card.AddCardComponent<AreaDegenComponent>();
+        areaDegen.Configure(
+            overlap,
             damageConversion,
             effectiveness,
             duration,
             1);
 
-        areaDegen.Overlap.ToggleTick(card.TargetLocation);
-
-        card.AddComponent(spawn);
-        card.AddComponent(areaDegen);
+        card.OnActivated += () =>
+        {
+            context.ClientSpawn.Invoke(this, new VfxSpawnParams(card.TargetLocation, 0, duration));
+        };
     }
 }

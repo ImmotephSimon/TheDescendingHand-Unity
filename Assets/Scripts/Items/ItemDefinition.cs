@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -5,7 +6,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewItemDefinition", menuName = "Items/Item Definition")]
 public class ItemDefinition : ScriptableObject
 {
-    public string ID;
+    public Guid Id;
     public string DisplayName;
 
     
@@ -18,22 +19,21 @@ public class ItemDefinition : ScriptableObject
 
     [SerializeReference, SerializeReferenceDropdown]
     public List<ItemComponentDefinition> Components = new();
-    
-    
+
+
 
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        if (string.IsNullOrEmpty(ID))
-            ID = IdFormat(name);
+        string path = UnityEditor.AssetDatabase.GetAssetPath(this);
+        if (!string.IsNullOrEmpty(path))
+        {
+            string hex = UnityEditor.AssetDatabase.AssetPathToGUID(path);
+            Id = System.Guid.Parse(hex);
+        }
 
         if (string.IsNullOrEmpty(DisplayName))
             DisplayName = DisplayFormat(name);
-    }
-
-    public static string IdFormat(string input)
-    {
-        return Regex.Replace(input, "([a-z0-9])([A-Z])", "$1_$2").ToLower();
     }
 
     public static string DisplayFormat(string input)

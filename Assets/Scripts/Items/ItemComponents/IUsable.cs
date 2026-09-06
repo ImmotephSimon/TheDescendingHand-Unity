@@ -1,4 +1,4 @@
 ﻿public interface IUsable
 {
-    void Use(ItemInstance instance, IEntity user);
+    void Use(ItemDropInstance instance, IEntity user);
 }

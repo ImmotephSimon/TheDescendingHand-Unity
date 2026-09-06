@@ -24,7 +24,7 @@ public class SuctionComponent : CardComponent
     }
 
 
-    public override void Tick(float deltaTime)
+    private void Update()
     {
         if (!_isSuctionActive)
             return;

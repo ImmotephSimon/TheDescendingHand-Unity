@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewEquipmentType", menuName = "Items/Equipment Type")]
 public class EquipmentType : ScriptableObject
 {
-    private static readonly Dictionary<string, EquipmentType> Registry = new();
+    private static readonly Dictionary<Guid, EquipmentType> Registry = new();
 
-    [SerializeField] private string id;
+    [SerializeField] private Guid id;
     [SerializeField] private ModifierPool modifierPool;
 
-    public string ID => id;
+    public Guid ID => id;
     public ModifierPool ModifierPool => modifierPool;
 
     private void OnEnable()
@@ -20,13 +21,17 @@ public class EquipmentType : ScriptableObject
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        if (string.IsNullOrEmpty(id))
-            id = ItemDefinition.IdFormat(name);
+        string path = UnityEditor.AssetDatabase.GetAssetPath(this);
+        if (!string.IsNullOrEmpty(path))
+        {
+            string hex = UnityEditor.AssetDatabase.AssetPathToGUID(path);
+            id = Guid.Parse(hex);
+        }
     }
 #endif
 
 
-    public static bool TryGet(string id, out EquipmentType type)
+    public static bool TryGet(Guid id, out EquipmentType type)
     {
         return Registry.TryGetValue(id, out type);
     }

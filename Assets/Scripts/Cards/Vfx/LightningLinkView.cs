@@ -62,6 +62,7 @@ public class ChainLightningView : MonoBehaviour, IVfx
 
         switch (state)
         {
+
             case LightningState.Grow:
                 Grow();
                 break;
@@ -118,6 +119,7 @@ public class ChainLightningView : MonoBehaviour, IVfx
 
     public void Stop()
     {
+        Debug.Log($"stopping vfx {gameObject.name}");
         if (target != null)
         {
             end = target.position;

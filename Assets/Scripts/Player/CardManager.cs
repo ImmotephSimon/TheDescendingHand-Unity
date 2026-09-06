@@ -1,48 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using UnityEngine;
 
 public class CardManager : ICardContainer, ICardPiles
 {
-    private static readonly int maxHandSize = 5;
-    private int _drawCount = 2;
+    private readonly CardInstance[] _hand;
+    private readonly List<CardInstance> _drawPile = new();
+    private readonly List<CardInstance> _discard = new();
+    private int _playedIndex = -1;
 
-    private readonly Card[] _hand;
-    private readonly List<Card> _drawPile = new();
-    private readonly List<Card> _discard = new();
-    private readonly Random _random = new();
+    public event Action<int, CardInstance> OnCardAdded;
+    public event Action<int, CardInstance> OnCardRemoved;
 
-    public event Action<int, Card> OnCardAdded;
-    public event Action<int, Card> OnCardRemoved;
-
-
-    public IReadOnlyList<CardDefinition> DrawPile =>
-        _drawPile.Select(card => card.Definition).ToList();
-
-    public IReadOnlyList<CardDefinition> DiscardPile =>
-        _discard.Select(card => card.Definition).ToList();
-
-
-    public CardManager(IEnumerable<Card> startingCards)
+    public CardManager(IEnumerable<CardInstance> startingCards, int handSize = 5)
     {
-        _hand = new Card[maxHandSize];
-        
+        _hand = new CardInstance[handSize];
 
         _drawPile.AddRange(startingCards);
         ShuffleDrawPile();
     }
 
-    public IReadOnlyList<Card> Hand => _hand;
-    public bool IsHandFull => _hand.All(card => card != null);
+    public IReadOnlyList<CardInstance> Hand =>
+        Array.AsReadOnly(_hand);
 
-    public bool IsHandEmpty => _hand.All(card => card == null);
+    public bool IsHandFull =>
+        _hand.All(card => card != null);
 
-    public int Capacity => _hand.Length;
+    public bool IsHandEmpty =>
+        _hand.All(card => card == null);
+
+    public int Capacity =>
+        _hand.Length;
 
     public void DrawHand()
     {
-        for (int i = 0; i < _drawCount; i++)
+        for (int i = 0; i < _hand.Length; i++)
         {
             if (_drawPile.Count == 0)
                 break;
@@ -51,9 +44,10 @@ public class CardManager : ICardContainer, ICardPiles
         }
     }
 
-    public void AddToDrawPile(Card card) => _drawPile.Add(card);
+    public void AddToDrawPile(CardInstance card) =>
+        _drawPile.Add(card);
 
-    public bool AddToHand(Card card)
+    public bool AddToHand(CardInstance card)
     {
         for (int i = 0; i < _hand.Length; i++)
         {
@@ -63,10 +57,11 @@ public class CardManager : ICardContainer, ICardPiles
                 return true;
             }
         }
+
         return false;
     }
 
-    public Card DrawCard()
+    public CardInstance DrawCard()
     {
         int emptySlot = FindEmptyHandSlot();
 
@@ -76,7 +71,7 @@ public class CardManager : ICardContainer, ICardPiles
         if (_drawPile.Count == 0)
             throw new InvalidOperationException("Cannot draw card: no cards available.");
 
-        Card drawnCard = _drawPile[0];
+        CardInstance drawnCard = _drawPile[0];
         _drawPile.RemoveAt(0);
 
         _hand[emptySlot] = drawnCard;
@@ -85,23 +80,14 @@ public class CardManager : ICardContainer, ICardPiles
         return drawnCard;
     }
 
-    private int FindEmptyHandSlot()
-    {
-        return Array.FindIndex(_hand, card => card == null);
-    }
+    public IReadOnlyList<CardDefinition> DrawPile =>
+        _drawPile.Select(card => card.Definition).ToArray();
 
-    public void DiscardCardInHand(int index)
-    {
-        if (_hand[index] == null)
-            throw new InvalidOperationException("No card to discard.");
+    public IReadOnlyList<CardDefinition> DiscardPile =>
+        _discard.Select(card => card.Definition).ToArray();
 
-        _discard.Add(_hand[index]);
-        OnCardRemoved?.Invoke(index, _hand[index]);
-        _hand[index] = null;
-
-        if (IsHandEmpty)
-            ResetHand();
-    }
+    private int FindEmptyHandSlot() =>
+        Array.FindIndex(_hand, card => card == null);
 
     private void ResetHand()
     {
@@ -112,26 +98,62 @@ public class CardManager : ICardContainer, ICardPiles
         DrawHand();
     }
 
-    public bool TryGetCardAtIndex(int index, out Card card)
+    public void DiscardPlayedCard()
     {
-        if (index >= 0 && index < _hand.Length && _hand[index] != null)
+        if (_playedIndex < 0)
+        {
+            Debug.LogError($"Invalid discard call with index {_playedIndex}");
+            return;
+        }
+
+        if (_playedIndex >= _hand.Length)
+        {
+            Debug.LogError(
+                $"Invalid discard index {_playedIndex}, hand length {_hand.Length}");
+            return;
+        }
+
+        CardInstance card = _hand[_playedIndex];
+
+        if (card == null)
+        {
+            Debug.LogError(
+                $"Discard target slot {_playedIndex} is already empty");
+            return;
+        }
+
+        _discard.Add(card);
+        _hand[_playedIndex] = null;
+
+        OnCardRemoved?.Invoke(_playedIndex, card);
+
+        if (IsHandEmpty)
+            ResetHand();
+    }
+
+    public bool TryGetCardAtIndex(int index, out CardInstance card)
+    {
+        if (index >= 0 && index < _hand.Length)
         {
             card = _hand[index];
-            return true;
+
+            if (card != null)
+                _playedIndex = index;
+
+            return card != null;
         }
 
         card = null;
         return false;
     }
 
-
     private void ShuffleDrawPile()
     {
         for (int i = _drawPile.Count - 1; i > 0; i--)
         {
-            int j = _random.Next(i + 1);
-
-            (_drawPile[i], _drawPile[j]) = (_drawPile[j], _drawPile[i]);
+            int j = UnityEngine.Random.Range(0, i + 1);
+            (_drawPile[i], _drawPile[j]) =
+                (_drawPile[j], _drawPile[i]);
         }
     }
 }

@@ -2,22 +2,22 @@
 
 public class AreaDegenComponent : CardComponent
 {
-    public AreaOverlapComponent Overlap { get; }
+    public AreaOverlapComponent Overlap { get; private set; }
 
-    private readonly DurationDamageComponent _degen;
+    private DurationDamageComponent _degen;
 
-    public override bool IsTicking => _degen.IsTicking;
 
-    public AreaDegenComponent(
-        float radius,
+    public void Configure(
+        AreaOverlapComponent overlap,
         GameTag damageConversion,
         float effectiveness,
         float duration,
         int maxStacks)
     {
-        Overlap = new AreaOverlapComponent(radius);
+        Overlap = overlap;
 
-        _degen = new DurationDamageComponent(
+        
+        _degen.Configure(
             damageConversion,
             effectiveness,
             duration,
@@ -27,16 +27,15 @@ public class AreaDegenComponent : CardComponent
         Overlap.OnEntityExited += OnExited;
     }
 
-    public override void Initialize(Card card, IEntity owner)
+    public override void Initialize(CardRuntime card, IEntity owner)
     {
         base.Initialize(card, owner);
-        Overlap.Initialize(card, owner);
+        _degen = Card.AddCardComponent<DurationDamageComponent>();
         _degen.Initialize(card, owner);
     }
 
     protected override void OnActivate()
     {
-        Overlap.Activate();
         _degen.Activate();
     }
 
@@ -50,14 +49,10 @@ public class AreaDegenComponent : CardComponent
         _degen.StopDegen(target);
     }
 
-    public override void Tick(float deltaTime)
-    {
-        _degen.Tick(deltaTime);
-    }
 
     protected override void OnCancel()
     {
-        Overlap.Cancel();
         _degen.Cancel();
+        Overlap.Cancel();
     }
 }

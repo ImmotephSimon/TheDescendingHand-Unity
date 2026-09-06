@@ -7,6 +7,8 @@ public class ServerPlayerRegistration : NetworkBehaviour
 {
     [SerializeField] private CardRegistry cardRegistry;
 
+    public CardRegistry CardRegistry => cardRegistry.Cards.Count > 0 ? cardRegistry : CardRegistry.Instance;
+
     private Player player;
 
     public override void OnStartServer()
@@ -32,5 +34,12 @@ public class ServerPlayerRegistration : NetworkBehaviour
         cardController.InitializeServer(
             player,
             cardRegistry);
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+
+        ClientBridge.Instance.SetCardRegistry(CardRegistry);
     }
 }

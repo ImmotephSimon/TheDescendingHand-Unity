@@ -6,9 +6,7 @@ public class FractureComponent : MonoBehaviour
     private Rigidbody _rootRb;
     private Collider[] _debrisColliders;
     private Rigidbody[] _debrisRbs;
-    private PhysicsCollisionNotifier _notifier;
 
-    // Declare without initializing here
     private int _debrisLayer;
 
     private void Awake()
@@ -18,7 +16,6 @@ public class FractureComponent : MonoBehaviour
 
     public void Initialize()
     {
-        // Safe to call Unity C++ layer APIs here
         _debrisLayer = LayerMask.NameToLayer("Debris");
 
         _rootCollider = GetComponent<Collider>();
@@ -37,30 +34,17 @@ public class FractureComponent : MonoBehaviour
         );
 
         foreach (var col in _debrisColliders)
-        {
             col.gameObject.layer = _debrisLayer;
-        }
 
         SetState(isShattered: false);
-
-        if (!TryGetComponent(out _notifier))
-        {
-            _notifier = gameObject.AddComponent<PhysicsCollisionNotifier>();
-        }
-
-        //_notifier.OnCollision += HandleImpact;
     }
 
-    private void HandleImpact(Vector3 impactPoint)
-    {
-        if (_notifier != null)
-        {
-            _notifier.OnCollision -= HandleImpact;
-        }
-        Break(impactPoint);
-    }
 
-    public void Break(Vector3 hitPoint, float force = 2f, float radius = 0.5f, float upwardModifier = 0f)
+    public void Break(
+        Vector3 hitPoint,
+        float force = 2f,
+        float radius = 0.5f,
+        float upwardModifier = 0f)
     {
         SetState(true);
 
@@ -68,7 +52,12 @@ public class FractureComponent : MonoBehaviour
         {
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
-            rb.AddExplosionForce(force, hitPoint, radius, upwardModifier, ForceMode.Impulse);
+            rb.AddExplosionForce(
+                force,
+                hitPoint,
+                radius,
+                upwardModifier,
+                ForceMode.Impulse);
         }
     }
 
@@ -83,23 +72,9 @@ public class FractureComponent : MonoBehaviour
         if (_rootRb) _rootRb.isKinematic = isShattered;
 
         foreach (var col in _debrisColliders)
-        {
-            if (col == _rootCollider) continue;
             col.enabled = isShattered;
-        }
 
         foreach (var rb in _debrisRbs)
-        {
-            if (rb == _rootRb) continue;
             rb.isKinematic = !isShattered;
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (_notifier != null)
-        {
-            _notifier.OnCollision -= HandleImpact;
-        }
     }
 }

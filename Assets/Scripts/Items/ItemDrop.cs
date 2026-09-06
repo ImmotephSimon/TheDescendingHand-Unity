@@ -1,14 +1,15 @@
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using System;
 using UnityEngine;
 
 public class ItemDrop : WorldDrop
 {
-    private readonly SyncVar<string> _definitionId = new SyncVar<string>();
+    private readonly SyncVar<Guid> _definitionId = new SyncVar<Guid>();
 
     private static readonly System.Random Seed = new System.Random();
     private ItemDefinition _definition;
-    public ItemInstance Instance { get; set; }
+    public ItemDropInstance Instance { get; set; }
 
     public ItemDefinition Definition => _definition;
 
@@ -20,7 +21,7 @@ public class ItemDrop : WorldDrop
     public void Initialize(ItemDefinition definition, Rarity rarity)
     {
         int misfortune = Mathf.Clamp(20 - DropLevel / 10, 1, 999);
-        Instance = new ItemInstance(
+        Instance = new ItemDropInstance(
             definition,
             rarity,
             AffixGenerator.Generate(definition, rarity, Seed, misfortune)
@@ -28,15 +29,15 @@ public class ItemDrop : WorldDrop
 
 
 
-        _definitionId.Value = definition.ID;
+        _definitionId.Value = definition.Id;
         ApplyRarityVisualsRpc(rarity.DisplayColor, rarity.LightIntensity, rarity.LightRange);
     }
 
-    private void OnDefinitionIdChanged(string prev, string next, bool asServer)
+    private void OnDefinitionIdChanged(Guid prev, Guid next, bool asServer)
     {
-        if (asServer || (string.IsNullOrEmpty(next))) return;
+        if (asServer || next == Guid.Empty) return;
 
-        if (ItemRegistry.Instance.TryGet(next, out var def))
+        if (ItemRegistry.Instance.TryGetDefinition(next, out var def))
         {
             _definition = def;
 
@@ -52,7 +53,7 @@ public class ItemDrop : WorldDrop
 
             if (def.Appearance?.WorldModel == null)
             {
-                Debug.LogError($"Item '{def.ID}' has no WorldModel assigned.");
+                Debug.LogError($"Item '{def.Id}' has no WorldModel assigned.");
                 return;
             }
             var spawnedMesh = Instantiate(def.Appearance.WorldModel, transform);

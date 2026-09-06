@@ -49,7 +49,7 @@ MonoBehaviour:
   - Stat:
       TagId: Mod.Stat.Movement
     Op: 1
-    Value: 4
+    Value: 2
     RequiredTags:
       MatchAll: 0
       Tags:

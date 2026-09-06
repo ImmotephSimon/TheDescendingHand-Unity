@@ -20,7 +20,7 @@ public class BaseInventory : MonoBehaviour, IInventory
         occupancyGrid = new IInventoryItem[Rows, Columns];
     }
 
-    public IReadOnlyDictionary<IInventoryItem, Vector2Int> GetPlacedItems()
+    public IReadOnlyDictionary<IInventoryItem, Vector2Int> GetItemPositions()
     {
         return itemPositions;
     }
@@ -157,7 +157,7 @@ public class BaseInventory : MonoBehaviour, IInventory
     {
         foreach (var entry in itemPositions)
         {
-            if (entry.Key.Id == id)
+            if (entry.Key.InventoryId == id)
             {
                 item = entry.Key;
                 return true;

@@ -11,26 +11,32 @@ public class ExplosiveArrowDefinition : CardDefinition
     [SerializeField] private float channelTickInterval;
     [SerializeField] private float maxChannelDuration;
 
-    public override void Construct(CardInitContext context, Card card)
+    public override void Construct(CardInitContext context, CardRuntime card)
     {
-
-        var damage = new DirectDamageComponent(
+        var damage = card.AddCardComponent<DirectDamageComponent>();
+        damage.Configure(
             effectiveness,
             damageConversion);
 
-        var projectile = new ProjectileComponent(
+        var projectile = card.AddCardComponent<ProjectileComponent>();
+        projectile.Configure(
             projectileInfo,
             context.ServerSpawn);
 
-        var channel = new ChannelingComponent(
+        var channel = card.AddCardComponent<ChannelingComponent>();
+        channel.Configure(
             channelTickInterval,
             maxChannelDuration);
 
-        var delay = new DelayedComponent(detonationDelay);
-        var damageAcc = new DamageAccComponent(effectiveness);
+        var delay = card.AddCardComponent<DelayedComponent>();
+        delay.Configure(detonationDelay);
+
+        var damageAcc = card.AddCardComponent<DamageAccComponent>();
+        damageAcc.Configure(effectiveness);
 
         // Wire events
         channel.OnTick += projectile.Activate;
+
         damageAcc.OnReleased += (hits, scalar) =>
         {
             foreach (var hit in hits)
@@ -48,16 +54,10 @@ public class ExplosiveArrowDefinition : CardDefinition
                 context.ClientSpawn(this, new VfxSpawnParams(hit.Position));
             }
         };
+
         delay.OnCompleted += () =>
         {
             damageAcc.Release();
         };
-
-        // Register components
-        card.AddComponent(channel);
-        card.AddComponent(projectile);
-        card.AddComponent(damage);
-        card.AddComponent(damageAcc);
-        card.AddComponent(delay);
     }
 }

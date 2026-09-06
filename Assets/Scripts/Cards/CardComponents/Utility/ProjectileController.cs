@@ -218,7 +218,6 @@ public class ProjectileController : NetworkBehaviour
     public override void OnStartClient()
     {
         VfxRegistry.Instance.TryGetPrefab(_vfxId.Value, out _visual);
-        Debug.Log($"OnStartClient() Visuals: {_visual.name}");
         ClientBridge.Instance.VFXView.AttachAbilityVisual(_visual, transform);
     }
 
