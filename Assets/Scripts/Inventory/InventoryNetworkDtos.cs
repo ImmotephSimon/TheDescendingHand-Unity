@@ -44,9 +44,7 @@ public struct AffixState
     {
         return new AffixState
         {
-            DisplayName = instance.Definition.NameOverride.Length > 0
-                ? instance.Definition.NameOverride
-                : string.Empty,
+            DisplayName = instance.Definition.NameOverride ?? string.Empty,
             Tier = instance.Tier,
             RolledValue = instance.Value,
             Modifier = instance.Definition.Modifier,

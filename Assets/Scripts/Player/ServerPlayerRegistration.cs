@@ -5,10 +5,7 @@ using UnityEngine;
 
 public class ServerPlayerRegistration : NetworkBehaviour
 {
-    [SerializeField] private CardRegistry cardRegistry;
-
-    public CardRegistry CardRegistry => cardRegistry.Cards.Count > 0 ? cardRegistry : CardRegistry.Instance;
-
+    
     private Player player;
 
     public override void OnStartServer()
@@ -31,15 +28,7 @@ public class ServerPlayerRegistration : NetworkBehaviour
 
         var networkActions = GetComponent<PlayerNetworkActions>();
 
-        cardController.InitializeServer(
-            player,
-            cardRegistry);
+        cardController.InitializeServer(player);
     }
 
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
-
-        ClientBridge.Instance.SetCardRegistry(CardRegistry);
-    }
 }

@@ -12,7 +12,7 @@ public class CardItemInstance : IInventoryItem
 
     public Vector2Int Size => new Vector2Int(1, 1);
 
-    public Sprite Icon => Definition.Visuals.Art;
+    public Sprite Icon => Definition.Visuals.Icon;
 
 
     // Optional: Components list if cards share right-click/use logic with items

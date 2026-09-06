@@ -75,7 +75,7 @@ public class Enemy : Entity, IExperienceSource
         base.Start();
         if (definition.EnemyType == EnemyType.Unique)
         {
-            ClientBridge.Instance.OnClientPlayerReady += BindBossHealthBar;
+            _healthBar = ClientBridge.Instance.PlayerHUD.BindBossHealthBar(this);
         }
         else
         {
@@ -85,11 +85,6 @@ public class Enemy : Entity, IExperienceSource
         }
     }
 
-    private void BindBossHealthBar(ClientPlayer _)
-    {
-        ClientBridge.Instance.OnClientPlayerReady -= BindBossHealthBar;
-        _healthBar = ClientBridge.Instance.PlayerHUD.BindBossHealthBar(this);
-    }
 
     private void AttachAttacks(List<EnemyAttackDefinition> attackDefinitions)
     {
@@ -147,7 +142,10 @@ public class Enemy : Entity, IExperienceSource
 
         foreach (var col in GetComponentsInChildren<Collider>())
             col.enabled = false;
-        if (_healthBar is Component healthBarComponent) 
+
+        if (definition.EnemyType == EnemyType.Unique)
+            ClientBridge.Instance.PlayerHUD.UnbindBossHealthBar(this);
+        else if (_healthBar is Component healthBarComponent)
             Destroy(healthBarComponent.gameObject);
 
         GetComponent<DropsComponent>().DropFromEnemy(transform.position);

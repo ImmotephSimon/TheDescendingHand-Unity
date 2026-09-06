@@ -11,9 +11,11 @@ public class PlayerItemsSync : NetworkBehaviour
 
 
 
-    private readonly SyncList<InventoryItemDto> _inventoryItems = new();
+
     private PlayerInventory _inventory;
     private Loadout _loadout;
+    private readonly SyncList<InventoryItemDto> _inventoryItems = new();
+
     private readonly SyncList<ItemTooltipDto> _equippedItems = new();
 
     public event Action InventoryChanged;
@@ -32,7 +34,7 @@ public class PlayerItemsSync : NetworkBehaviour
     public override void OnStartServer()
     {
         base.OnStartServer();
-        
+
         _inventory = GetComponent<PlayerInventory>();
         _inventoryRows.Value = _inventory.Rows;
         _inventoryColumns.Value = _inventory.Columns;
@@ -71,13 +73,16 @@ public class PlayerItemsSync : NetworkBehaviour
         foreach (var entry in _inventory.GetItemPositions())
         {
             IInventoryItem item = entry.Key;
+            Vector2Int position = entry.Value;
 
-            _inventoryItems.Add(new InventoryItemDto
+            InventoryItemDto dto = new InventoryItemDto
             {
                 ItemId = item.InventoryId,
-                Position = entry.Value,
+                Position = position,
                 Size = item.Size
-            });
+            };
+
+            _inventoryItems.Add(dto);
         }
     }
 
@@ -86,14 +91,14 @@ public class PlayerItemsSync : NetworkBehaviour
         int index,
         InventoryItemDto oldItem,
         InventoryItemDto newItem,
-        bool asServer)
-    {
+        bool asServer) 
+    { 
         if (!asServer)
             InventoryChanged?.Invoke();
     }
 
 
-    
+
 
     /// <summary>
     /// recently refactored, so keep
@@ -107,18 +112,16 @@ public class PlayerItemsSync : NetworkBehaviour
         int column,
         out InventoryItemDto item)
     {
-        foreach (InventoryItemDto dto in _inventoryItems)
+        foreach (var dto in _inventoryItems)
         {
-            Vector2Int origin = dto.Position;
-            Vector2Int size = dto.Size;
+            var origin = dto.Position;
+            var size = dto.Size;
 
             if (column < origin.x ||
                 column >= origin.x + size.x ||
                 row < origin.y ||
                 row >= origin.y + size.y)
-            {
                 continue;
-            }
 
             item = dto;
             return true;
@@ -128,45 +131,7 @@ public class PlayerItemsSync : NetworkBehaviour
         return false;
     }
 
-    
-    
-    //public ItemDropInstance ReconstructItem(ItemTooltipDto dto)
-    //{
-    //    if (!ItemRegistry.Instance.TryGetDefinition(dto.BaseTypeId, out var baseType))
-    //        return null;
 
-    //    var equip = baseType.Components
-    //        .OfType<EquipComponentDefinition>()
-    //        .FirstOrDefault();
-
-    //    if (equip.EquipmentType.ModifierPool.Entries == null)
-    //        return null;
-
-    //    var affixes = dto.Explicits
-    //        .Select(state =>
-    //        {
-    //            var entry = equip.EquipmentType.ModifierPool.Entries
-    //                .FirstOrDefault(x =>
-    //                    x.Definition != null &&
-    //                    x.Definition.Id == state.DefinitionId);
-
-    //            if (entry?.Definition == null)
-    //                return null;
-
-    //            return new AffixInstance
-    //            {
-    //                Definition = entry.Definition,
-    //                Tier = state.Tier
-    //            };
-    //        })
-    //        .Where(x => x != null)
-    //        .ToList();
-
-    //    var rarity = ItemRegistry.Instance.Rarities
-    //        .FirstOrDefault(x => x.Id == dto.RarityId);
-
-    //    return new ItemDropInstance(baseType, rarity, affixes);
-    //}
 
 
     [ServerRpc]

@@ -19,6 +19,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d6ff9afb257168b4182f67c3c79369b1, type: 2}
   - {fileID: 11400000, guid: 85b4a1c90d9558549935a3360db8372d, type: 2}
   - {fileID: 11400000, guid: e644bb2a6ae4ea84fb1c10194b1232c4, type: 2}
+  cardRegistry: {fileID: 11400000, guid: dbc5fdb1cbf049e43a5b28ed6e176ee2, type: 2}
+  testCardRegistry: {fileID: 11400000, guid: d10fb8c24588bbd4198011091344e1b8, type: 2}
   Items:
   - {fileID: 11400000, guid: b25f7aad10707834d91a1ab44fcb7e26, type: 2}
   - {fileID: 11400000, guid: 03ad957ae97c36e4eb634533f492b6fc, type: 2}
+  - {fileID: 11400000, guid: 7081d82d5e99d7645bfedc5f90ef6a7c, type: 2}
+  - {fileID: 11400000, guid: 61d54c498dbf1cc4080a4d7767e84417, type: 2}
+  - {fileID: 11400000, guid: 15cd08c82b3717a4a922dc437dbebdb2, type: 2}
+  - {fileID: 11400000, guid: ac8dfc47c768fad4eadbcfd5016b0155, type: 2}
+  - {fileID: 11400000, guid: 46d8aee5e29508546bae3e69ad43986f, type: 2}

@@ -11,22 +11,22 @@ public class CardRegistry : ScriptableObject
 
     public List<CardDefinition> Cards => cards;
 
-    private static CardRegistry _instance;
-    public static CardRegistry Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = Resources.Load<CardRegistry>("CardRegistry");
-                if (_instance == null)
-                {
-                    Debug.LogError("No CardRegistry asset found in Resources folder!");
-                }
-            }
-            return _instance;
-        }
-    }
+    //private static CardRegistry _instance;
+    //public static CardRegistry Instance
+    //{
+    //    get
+    //    {
+    //        if (_instance == null)
+    //        {
+    //            _instance = Resources.Load<CardRegistry>("CardRegistry");
+    //            if (_instance == null)
+    //            {
+    //                Debug.LogError("No CardRegistry asset found in Resources folder!");
+    //            }
+    //        }
+    //        return _instance;
+    //    }
+    //}
 
     [ContextMenu("Log Card IDs")]
     private void LogCardIds()

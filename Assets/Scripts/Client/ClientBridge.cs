@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class ClientBridge : MonoBehaviour
 {
-    private CardRegistry _cardRegistry; 
-
 
     public static ClientBridge Instance { get; private set; }
     public VFXView VFXView { get; private set; }
@@ -19,7 +17,7 @@ public class ClientBridge : MonoBehaviour
     public EquipmentVisuals EquipmentVisuals { get; private set; }
     public PlayerStatsSync Stats { get; private set; }
     public VfxRegistry VfxRegistry => VfxRegistry.Instance;
-    public CardRegistry CardRegistry => _cardRegistry;
+    public CardRegistry CardRegistry => ItemRegistry.Instance.CardRegistry;
 
     public event Action<ClientPlayer> OnClientPlayerReady;
 
@@ -56,8 +54,4 @@ public class ClientBridge : MonoBehaviour
         OnClientPlayerReady?.Invoke(client);
     }
 
-    public void SetCardRegistry(CardRegistry cardRegistry)
-    {
-        _cardRegistry = cardRegistry;
-    }
 }

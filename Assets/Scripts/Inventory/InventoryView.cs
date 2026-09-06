@@ -120,16 +120,16 @@ public class InventoryView : MonoBehaviour
             ? itemContainer
             : transform;
 
-        foreach (InventoryItemDto entry in _items.InventoryItems)
+        foreach (var entry in _items.InventoryItems)
         {
-            if (!ItemRegistry.Instance.TryGetDefinition(entry.ItemId, out var definition))
+            if (!ItemRegistry.Instance.TryGetIcon(entry.ItemId, out Sprite icon))
             {
-                return;
+                continue;
             }
             Vector2Int origin = entry.Position;
 
-            ItemIconView icon = Instantiate(itemIconPrefab, parent);
-            spawnedIcons.Add(icon);
+            ItemIconView iconView = Instantiate(itemIconPrefab, parent);
+            spawnedIcons.Add(iconView);
 
             Vector2 position = GetLocalPosition(origin.x, origin.y);
             Vector2Int size = entry.Size;
@@ -139,7 +139,7 @@ public class InventoryView : MonoBehaviour
                 size.y * cellSize.y + (size.y - 1) * spacing.y
             );
 
-            icon.Render(definition.Appearance.Icon, position, pixelSize);
+            iconView.Render(icon, position, pixelSize);
         }
     }
 

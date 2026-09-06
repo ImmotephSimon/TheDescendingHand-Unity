@@ -25,12 +25,12 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     private IStatContainer stats;
     private CardManager _cardManager;
     private IEntity _owner;
-    private CardRegistry _registry;
     private (CardRuntime Card, int HandIndex, Coroutine Handle)? _pendingCast;
 
     private Action _onActiveCardCompleted;
     private Action _onActiveCardInterrupted;
     private IAnimationHandler _animationHandler;
+    private CardRegistry _cardRegistry;
 
     public void InitializeClientObservers(IAnimationHandler animationHandler)
     {
@@ -48,14 +48,13 @@ public class CardController : NetworkBehaviour, IAbilitySystem
         Debug.Assert(stats != null, "CardController requires an IStatContainer");
     }
 
-    public void InitializeServer(IEntity owner, CardRegistry registry)
+    public void InitializeServer(IEntity owner)
     {
         _owner = owner;
-        _registry = registry;
-
+        _cardRegistry = ItemRegistry.Instance.CardRegistry;
         List<CardInstance> cards = new();
 
-        foreach (CardDefinition definition in _registry.Cards)
+        foreach (CardDefinition definition in ItemRegistry.Instance.CardRegistry.Cards)
         {
             cards.Add(new CardInstance(
                 Guid.NewGuid(),
@@ -251,7 +250,8 @@ public class CardController : NetworkBehaviour, IAbilitySystem
 
         foreach (var id in ids)
         {
-            if (_registry.TryGet(id, out var definition))
+            _cardRegistry = ItemRegistry.Instance.CardRegistry;
+            if (_cardRegistry.TryGet(id, out var definition))
                 cards.Add(definition);
             else
                 Debug.LogError($"Unknown CardDefinition ID '{id}'.");

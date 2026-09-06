@@ -49,19 +49,18 @@ public class PlayerHUD : MonoBehaviour
 
     public IHealthBar BindBossHealthBar(IEntity enemy)
     {
-        BossHealthBar bar = HUD.GetComponentInChildren<BossHealthBar>();
-        enemy.Died += UnbindBossHealthBar;
+        BossHealthBar bar = HUD.GetComponentInChildren<BossHealthBar>(includeInactive: true);
 
-        bar.enabled = true;
+        bar.gameObject.SetActive(true);
         bar.Bind(enemy.Transform.GetComponent<IHealth>());
         return bar;
     }
 
-    private void UnbindBossHealthBar(IEntity enemy)
+    public void UnbindBossHealthBar(IEntity enemy)
     {
         enemy.Died -= UnbindBossHealthBar;
-        BossHealthBar bar = HUD.GetComponentInChildren<BossHealthBar>();
-        bar.enabled = false;
+        BossHealthBar bar = HUD.GetComponentInChildren<BossHealthBar>(includeInactive: true);
+        bar.gameObject.SetActive(false);
         bar.Unbind();
     }
 }

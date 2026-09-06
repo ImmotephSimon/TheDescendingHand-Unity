@@ -8,6 +8,13 @@ public class ItemRegistry : ScriptableObject
     [SerializeField] private GameObject itemPrefab;
     [SerializeField] private List<Rarity> rarities = new();
 
+    [SerializeField] private CardRegistry cardRegistry;
+    [SerializeField] private CardRegistry testCardRegistry;
+
+    public CardRegistry CardRegistry =>
+        testCardRegistry != null && testCardRegistry.Cards.Count > 0
+            ? testCardRegistry
+            : cardRegistry;
     public List<ItemDefinition> Items = new();
     public GameObject ItemPrefab => itemPrefab;
     public List<Rarity> Rarities => rarities;
@@ -49,6 +56,27 @@ public class ItemRegistry : ScriptableObject
             }
         }
 
+    }
+
+    public bool TryGetIcon(Guid id, out Sprite icon)
+    {
+        Initialize();
+
+        if (_lookup.TryGetValue(id, out var itemDef))
+        {
+            icon = itemDef.Appearance.Icon;
+            return true;
+        }
+
+        if (CardRegistry.TryGet(id, out var cardDef))
+        {
+            icon = cardDef.Visuals.Icon;
+            return true;
+        }
+
+        Debug.LogError($"Invalid id for TryGetInventoryItem (id: {id})");
+        icon = null;
+        return false;
     }
 
     public bool TryGetDefinition(Guid id, out ItemDefinition definition)
