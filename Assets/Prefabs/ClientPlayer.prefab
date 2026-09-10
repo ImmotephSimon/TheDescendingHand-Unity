@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 8811871346479937663}
   - component: {fileID: 8253357654123827305}
   - component: {fileID: 3821502092884268848}
+  - component: {fileID: 3164139398785937512}
   m_Layer: 8
   m_Name: ClientPlayer
   m_TagString: Player
@@ -308,6 +309,22 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 927076904386195409}
   _networkObjectCache: {fileID: 0}
+--- !u!114 &3164139398785937512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673506913013919535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 052db42f0cc9bc64aa95acc111157738, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 927076904386195409}
+  _networkObjectCache: {fileID: 0}
+  _data: {fileID: 11400000, guid: 770d43bc901ed154ca717f4ceca71d66, type: 2}
 --- !u!1 &1023503492681108299
 GameObject:
   m_ObjectHideFlags: 0

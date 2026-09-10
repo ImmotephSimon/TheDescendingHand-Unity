@@ -37,6 +37,7 @@ Mod.Utility.Cost
 Mod.Utility.Duration
 Mod.Utility.ItemRarity
 Mod.Utility.TimeDilation
+Mod.Special.DamageTypeLockout
 Mod.Special.ColdDamageCanIgnite
 Mod.Special.PoisonDamageCanFreeze
 
@@ -67,6 +68,14 @@ Type.Defensive
 Type.DoT
 Type.Melee
 Type.Projectile
+
+Condition.FullMana
+Condition.FullHealth
+Condition.LowHealth
+Condition.FullEnergy
+
+Keystone.Inoculation
+
 
 // Server Entity / Prefab identifiers 
 Prefab.Projectile

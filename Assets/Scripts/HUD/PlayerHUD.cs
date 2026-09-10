@@ -10,7 +10,7 @@ public class PlayerHUD : MonoBehaviour
     [SerializeField] private GameObject hudPrefab;
     private InventoryView _inventoryView;
     private LoadoutView _loadoutView;
-    
+    private PassiveTreeView _passiveTreeView;
 
     public HUD HUD { get; private set; }
     public CursorItem CursorItem { get; private set; }
@@ -24,14 +24,17 @@ public class PlayerHUD : MonoBehaviour
     {
         var instance = Instantiate(hudPrefab);
         HUD = instance.GetComponent<HUD>();
-        _inventoryView = HUD.GetComponentInChildren<InventoryView>();
-        _loadoutView = HUD.GetComponentInChildren<LoadoutView>();
+        _inventoryView = HUD.GetComponentInChildren<InventoryView>(true);
+        _loadoutView = HUD.GetComponentInChildren<LoadoutView>(true);
+        _passiveTreeView = HUD.GetComponentInChildren<PassiveTreeView>(true);
+
 
         HUD.Bind(synchedStats.GetComponent<LevelComponent>());
         HUD.Bind(synchedStats.GetComponent<IHealth>());
         HUD.Bind(synchedStats.GetComponent<IMana>());
         _inventoryView.Bind(synchedItems);
         _loadoutView.Bind(synchedItems);
+        
 
         ClientBridge.Instance.OnClientPlayerReady += OnClientPlayerReady;
     }
@@ -45,6 +48,11 @@ public class PlayerHUD : MonoBehaviour
     public void ToggleInventory()
     {
         _inventoryView.ToggleVisibility();
+    }
+
+    public void TogglePassiveTree()
+    {
+        _passiveTreeView.SetVisible(!_passiveTreeView.IsVisible);
     }
 
     public IHealthBar BindBossHealthBar(IEntity enemy)

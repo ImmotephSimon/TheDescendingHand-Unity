@@ -62,3 +62,11 @@ MonoBehaviour:
       MatchAll: 0
       Tags:
         Tags: []
+  - Stat:
+      TagId: Keystone.Inoculation
+    Op: 0
+    Value: 1
+    RequiredTags:
+      MatchAll: 0
+      Tags:
+        Tags: []

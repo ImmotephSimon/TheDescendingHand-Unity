@@ -181,6 +181,15 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PassiveTree"",
+                    ""type"": ""Button"",
+                    ""id"": ""9f5f98ab-86e8-4ef1-b298-4e62507c4ea1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -337,6 +346,17 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""action"": ""Dodgeroll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1ada4e0e-2234-4a7e-b4ba-606415db8452"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PassiveTree"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -355,6 +375,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Player_Inventory = m_Player.FindAction("Inventory", throwIfNotFound: true);
         m_Player_LeftClick = m_Player.FindAction("LeftClick", throwIfNotFound: true);
         m_Player_Dodgeroll = m_Player.FindAction("Dodgeroll", throwIfNotFound: true);
+        m_Player_PassiveTree = m_Player.FindAction("PassiveTree", throwIfNotFound: true);
     }
 
     ~@GameInput()
@@ -445,6 +466,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Inventory;
     private readonly InputAction m_Player_LeftClick;
     private readonly InputAction m_Player_Dodgeroll;
+    private readonly InputAction m_Player_PassiveTree;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -496,6 +518,10 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Dodgeroll".
         /// </summary>
         public InputAction @Dodgeroll => m_Wrapper.m_Player_Dodgeroll;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/PassiveTree".
+        /// </summary>
+        public InputAction @PassiveTree => m_Wrapper.m_Player_PassiveTree;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -552,6 +578,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @Dodgeroll.started += instance.OnDodgeroll;
             @Dodgeroll.performed += instance.OnDodgeroll;
             @Dodgeroll.canceled += instance.OnDodgeroll;
+            @PassiveTree.started += instance.OnPassiveTree;
+            @PassiveTree.performed += instance.OnPassiveTree;
+            @PassiveTree.canceled += instance.OnPassiveTree;
         }
 
         /// <summary>
@@ -593,6 +622,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @Dodgeroll.started -= instance.OnDodgeroll;
             @Dodgeroll.performed -= instance.OnDodgeroll;
             @Dodgeroll.canceled -= instance.OnDodgeroll;
+            @PassiveTree.started -= instance.OnPassiveTree;
+            @PassiveTree.performed -= instance.OnPassiveTree;
+            @PassiveTree.canceled -= instance.OnPassiveTree;
         }
 
         /// <summary>
@@ -703,5 +735,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDodgeroll(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "PassiveTree" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPassiveTree(InputAction.CallbackContext context);
     }
 }

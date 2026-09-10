@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public interface IEntity
@@ -21,5 +22,7 @@ public interface IEntity
     abstract int AttackLayer { get; }
 
     Vector3 CursorPosition { get; }
+    List<(StatModifier, float)> OnHitStats { get; }
+
     void Die(IEntity killer);
 }

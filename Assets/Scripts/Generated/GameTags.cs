@@ -39,6 +39,7 @@ public static class GameTags
     public static readonly GameTag ModUtilityDuration = new("Mod.Utility.Duration");
     public static readonly GameTag ModUtilityItemRarity = new("Mod.Utility.ItemRarity");
     public static readonly GameTag ModUtilityTimeDilation = new("Mod.Utility.TimeDilation");
+    public static readonly GameTag ModSpecialDamageTypeLockout = new("Mod.Special.DamageTypeLockout");
     public static readonly GameTag ModSpecialColdDamageCanIgnite = new("Mod.Special.ColdDamageCanIgnite");
     public static readonly GameTag ModSpecialPoisonDamageCanFreeze = new("Mod.Special.PoisonDamageCanFreeze");
     public static readonly GameTag ReqMods2 = new("Req.Mods.2");
@@ -62,6 +63,11 @@ public static class GameTags
     public static readonly GameTag TypeDoT = new("Type.DoT");
     public static readonly GameTag TypeMelee = new("Type.Melee");
     public static readonly GameTag TypeProjectile = new("Type.Projectile");
+    public static readonly GameTag ConditionFullMana = new("Condition.FullMana");
+    public static readonly GameTag ConditionFullHealth = new("Condition.FullHealth");
+    public static readonly GameTag ConditionLowHealth = new("Condition.LowHealth");
+    public static readonly GameTag ConditionFullEnergy = new("Condition.FullEnergy");
+    public static readonly GameTag KeystoneInoculation = new("Keystone.Inoculation");
     public static readonly GameTag PrefabProjectile = new("Prefab.Projectile");
     public static readonly GameTag PrefabCard = new("Prefab.Card");
     public static readonly GameTag PrefabCardWall = new("Prefab.CardWall");

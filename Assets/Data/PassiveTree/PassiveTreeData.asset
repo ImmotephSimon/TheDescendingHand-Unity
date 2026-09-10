@@ -1,0 +1,829 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c36fb2a0b5e129d47a9c73913f6dd900, type: 3}
+  m_Name: PassiveTreeData
+  m_EditorClassIdentifier: 
+  Nodes:
+  - Name: node_0
+    Type: Life
+    Position: {x: -258.5382, y: -239.422}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: A
+    Requirement: []
+  - Name: node_1
+    Type: Life
+    Position: {x: -120.16211, y: -321.2849}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: A
+    Requirement: []
+  - Name: node_17
+    Type: Life
+    Position: {x: -220.16211, y: -321.2849}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: A
+    Requirement: []
+  - Name: node_2
+    Type: Armour
+    Position: {x: 79.83789, y: -223.6849}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: D
+    Requirement: []
+  - Name: node_11
+    Type: Physical_Damage
+    Position: {x: 285.6848, y: -295.61}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: D
+    Requirement: []
+  - Name: node_12
+    Type: Physical_Damage
+    Position: {x: 165.2102, y: -320.63672}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: D
+    Requirement: []
+  - Name: node_18
+    Type: Physical_Damage
+    Position: {x: 279.8379, y: -221.28491}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: D
+    Requirement: []
+  - Name: node_19
+    Type: Critical
+    Position: {x: 353.2102, y: -363.03674}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Instinct
+    Cluster: H
+    Requirement: []
+  - Name: node_13
+    Type: Fire_Damage
+    Position: {x: 529.8379, y: 28.715088}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: D
+    Requirement: []
+  - Name: node_14
+    Type: Fire_Damage
+    Position: {x: 629.8379, y: 28.715088}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: D
+    Requirement: []
+  - Name: node_20
+    Type: Fire_Damage
+    Position: {x: 579.8379, y: 128.71509}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: D
+    Requirement: []
+  - Name: node_21
+    Type: Fire_Damage
+    Position: {x: 679.8379, y: 128.71509}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: D
+    Requirement: []
+  - Name: node_3
+    Type: Mana
+    Position: {x: -370.1621, y: -221.28491}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: M
+    Requirement: []
+  - Name: node_4
+    Type: Mana
+    Position: {x: -470.1621, y: -171.28491}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: M
+    Requirement: []
+  - Name: node_5
+    Type: Mana
+    Position: {x: -570.1621, y: -221.28491}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: M
+    Requirement: []
+  - Name: node_29
+    Type: Cast_Speed
+    Position: {x: -470.1621, y: -71.28491}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: M
+    Requirement: []
+  - Name: node_30
+    Type: Mana
+    Position: {x: -570.1621, y: -121.28491}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: M
+    Requirement: []
+  - Name: node_6
+    Type: Movement
+    Position: {x: -320.1621, y: -421.2849}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Instinct
+    Cluster: R
+    Requirement: []
+  - Name: node_7
+    Type: Movement
+    Position: {x: -420.1621, y: -521.2849}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Instinct
+    Cluster: R
+    Requirement: []
+  - Name: node_8
+    Type: Movement
+    Position: {x: -603.6157, y: -537.1666}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Instinct
+    Cluster: R
+    Requirement: []
+  - Name: node_9
+    Type: Evasion
+    Position: {x: -470.1621, y: -621.2849}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Instinct
+    Cluster: R
+    Requirement: []
+  - Name: node_10
+    Type: Mana
+    Position: {x: -370.1621, y: -321.2849}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: V
+    Requirement: []
+  - Name: node_28
+    Type: Movement
+    Position: {x: -270.1621, y: -521.2849}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Instinct
+    Cluster: W
+    Requirement: []
+  - Name: node_15
+    Type: Armour
+    Position: {x: 29.83789, y: -471.2849}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: D
+    Requirement: []
+  - Name: node_16
+    Type: Instinct
+    Position: {x: 54.93152, y: -622.36084}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Instinct
+    Cluster: Y
+    Requirement: []
+  - Name: node_25
+    Type: Life
+    Position: {x: 229.83789, y: -471.2849}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: D
+    Requirement: []
+  - Name: node_26
+    Type: Armour
+    Position: {x: 279.8379, y: -571.2849}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: D
+    Requirement: []
+  - Name: node_27
+    Type: Life
+    Position: {x: 358.10327, y: -472.01}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: D
+    Requirement: []
+  - Name: node_22
+    Type: Cold_Damage
+    Position: {x: 429.8379, y: -571.2849}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Instinct
+    Cluster: c
+    Requirement: []
+  - Name: node_23
+    Type: Cold_Damage
+    Position: {x: 529.8379, y: -571.2849}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Instinct
+    Cluster: c
+    Requirement: []
+  - Name: node_24
+    Type: Cold_Damage
+    Position: {x: 479.8379, y: -671.2849}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Instinct
+    Cluster: c
+    Requirement: []
+  - Name: node_31
+    Type: Strength
+    Position: {x: -136.35266, y: -86.46765}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: D
+    Requirement: []
+  - Name: node_32
+    Type: Lightning_Damage
+    Position: {x: 44.007324, y: 90.128174}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: M
+    Requirement: []
+  - Name: node_33
+    Type: Lightning_Damage
+    Position: {x: -41.19275, y: 152.67078}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: M
+    Requirement: []
+  - Name: node_34
+    Type: Mana
+    Position: {x: -39.15796, y: 78.87134}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: M
+    Requirement: []
+  - Name: node_35
+    Type: Lightning_Damage
+    Position: {x: 73.85437, y: 207.20276}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: M
+    Requirement: []
+  - Name: node_36
+    Type: Willpower
+    Position: {x: -726.5519, y: -270.40662}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: M
+    Requirement: []
+  - Name: node_37
+    Type: Mana
+    Position: {x: -141.57202, y: 410.90503}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: M
+    Requirement: []
+  - Name: node_38
+    Type: Mana
+    Position: {x: -227.20166, y: 275.6748}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: M
+    Requirement: []
+  - Name: node_39
+    Type: Projectile_Time_Dilation
+    Position: {x: -4.54895, y: 401.781}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: M
+    Requirement: []
+  - Name: node_40
+    Type: Projectile_Time_Dilation
+    Position: {x: 175.05664, y: 534.89136}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: M
+    Requirement: []
+  - Name: node_41
+    Type: Reduced_Projectile_Time_Dilation
+    Position: {x: -148.7721, y: 530.905}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: M
+    Requirement: []
+  - Name: node_42
+    Type: Reduced_Projectile_Time_Dilation
+    Position: {x: 6.7929688, y: 671.2849}
+    Role: 0
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    Cluster: M
+    Requirement: []
+  - Name: node_43
+    Type: Flammability
+    Position: {x: 726.552, y: -151.6222}
+    Role: 2
+    Cost:
+    - Amount: 3
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: D
+    Requirement:
+    - Amount: 15
+      Attribute:
+        TagId: Mod.Stat.Strength
+  - Name: node_44
+    Type: Buffering
+    Position: {x: -507.28284, y: -352.35657}
+    Role: 2
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: s
+    Requirement:
+    - Amount: 5
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    - Amount: 5
+      Attribute:
+        TagId: Mod.Stat.Strength
+  - Name: Inoculation
+    Type: Inoculation
+    Position: {x: -622.1, y: 68.44342}
+    Role: 2
+    Cost:
+    - Amount: 1
+      Attribute:
+        TagId: Mod.Stat.Strength
+    Cluster: s
+    Requirement:
+    - Amount: 5
+      Attribute:
+        TagId: Mod.Stat.Willpower
+    - Amount: 5
+      Attribute:
+        TagId: Mod.Stat.Strength
+  NodeTypes:
+  - Name: Strength
+    Modifiers:
+    - Stat:
+        TagId: Mod.Stat.Strength
+      Op: 0
+      Value: 2
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: 4bdb7164db541c34490e8e8b7de1570d, type: 3}
+  - Name: Willpower
+    Modifiers:
+    - Stat:
+        TagId: Mod.Stat.Willpower
+      Op: 0
+      Value: 2
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: fd3800b9481707c4fac4a13db3648538, type: 3}
+  - Name: Instinct
+    Modifiers:
+    - Stat:
+        TagId: Mod.Stat.Instinct
+      Op: 0
+      Value: 2
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: 36d7f984b8bb624488a52e5a9f0b2794, type: 3}
+  - Name: Life
+    Modifiers:
+    - Stat:
+        TagId: Mod.Stat.Life
+      Op: 1
+      Value: 0.02
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: 2b0f66aff0f507a40ac16e7ab7feda5b, type: 3}
+  - Name: Mana
+    Modifiers:
+    - Stat:
+        TagId: Mod.Stat.Mana
+      Op: 0
+      Value: 2
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: 8c6dcad2df99d504793767e5be8a1c82, type: 3}
+  - Name: Armour
+    Modifiers:
+    - Stat:
+        TagId: Mod.Stat.Armour
+      Op: 1
+      Value: 0.1
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: e5aefcb8744dcf44caaa3f2890a54ed7, type: 3}
+  - Name: Evasion
+    Modifiers:
+    - Stat:
+        TagId: Mod.Stat.Evasion
+      Op: 1
+      Value: 0.1
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: 15f2205e07820f5429b15a165e95736f, type: 3}
+  - Name: Physical_Damage
+    Modifiers:
+    - Stat:
+        TagId: Mod.Offense.Damage
+      Op: 1
+      Value: 0.1
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: 4cbc10b732b7bc54aaf231c0911c7911, type: 3}
+  - Name: Fire_Damage
+    Modifiers:
+    - Stat:
+        TagId: Mod.Offense.Damage
+      Op: 1
+      Value: 0.1
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: 0f8116ed8558cf341b9fe99993a7ffa9, type: 3}
+  - Name: Cold_Damage
+    Modifiers:
+    - Stat:
+        TagId: Mod.Offense.Damage
+      Op: 1
+      Value: 0.1
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: 9f1aa0b94cd1d2044ac6dd7cd4b564bc, type: 3}
+  - Name: Lightning_Damage
+    Modifiers:
+    - Stat:
+        TagId: Mod.Offense.Damage
+      Op: 1
+      Value: 0.1
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: e5adc0f4c1bfd1444824d86d8b52cd30, type: 3}
+  - Name: Chaos_Damage
+    Modifiers:
+    - Stat:
+        TagId: Mod.Offense.Damage
+      Op: 1
+      Value: 0.1
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: 588987c30830b294591e80a1ea495add, type: 3}
+  - Name: Cast_Speed
+    Modifiers:
+    - Stat:
+        TagId: Mod.Offense.CastSpeed
+      Op: 1
+      Value: 0.05
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: 0555ba942e1bfd0438cf1d1961b276e2, type: 3}
+  - Name: Critical
+    Modifiers:
+    - Stat:
+        TagId: Mod.Offense.Critical
+      Op: 1
+      Value: 0.05
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: 7cd7cc569ac2f6e49a505c696cdff97d, type: 3}
+  - Name: Movement
+    Modifiers:
+    - Stat:
+        TagId: Mod.Stat.Movement
+      Op: 1
+      Value: 0.03
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: 6641aff502687044da9c38d17519616a, type: 3}
+  - Name: Chaos_Duration
+    Modifiers:
+    - Stat:
+        TagId: Mod.Utility.Duration
+      Op: 1
+      Value: 0.05
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: 9a4a405dc1d40d24d960ea92df517879, type: 3}
+  - Name: Projectile_Time_Dilation
+    Modifiers:
+    - Stat:
+        TagId: Mod.Utility.TimeDilation
+      Op: 1
+      Value: 0.1
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: 42e72a64041623a40ab3420019e34601, type: 3}
+  - Name: Reduced_Projectile_Time_Dilation
+    Modifiers:
+    - Stat:
+        TagId: Mod.Utility.TimeDilation
+      Op: 1
+      Value: -0.1
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: 42e72a64041623a40ab3420019e34601, type: 3}
+  - Name: Flammability
+    Modifiers: []
+    Texture: {fileID: 21300000, guid: f5474e74dc1a92c40b4347b762db4a3c, type: 3}
+  - Name: Buffering
+    Modifiers: []
+    Texture: {fileID: 21300000, guid: 59412152f4560744392c93ff38c1bd15, type: 3}
+  - Name: Inoculation
+    Modifiers:
+    - Stat:
+        TagId: Keystone.Inoculation
+      Op: 0
+      Value: 1
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    - Stat:
+        TagId: Mod.Offense.Damage
+      Op: 2
+      Value: 1.3
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    Texture: {fileID: 21300000, guid: 03e3857258ae22d41b39df061023d612, type: 3}
+  Connections:
+  - A: node_0
+    B: node_1
+  - A: node_0
+    B: node_17
+  - A: node_0
+    B: node_3
+  - A: node_0
+    B: node_10
+  - A: node_1
+    B: node_17
+  - A: node_17
+    B: node_6
+  - A: node_2
+    B: node_11
+  - A: node_2
+    B: node_12
+  - A: node_2
+    B: node_13
+  - A: node_2
+    B: node_15
+  - A: node_2
+    B: node_34
+  - A: node_2
+    B: node_31
+  - A: node_11
+    B: node_12
+  - A: node_11
+    B: node_18
+  - A: node_11
+    B: node_19
+  - A: node_12
+    B: node_19
+  - A: node_18
+    B: node_19
+  - A: node_13
+    B: node_14
+  - A: node_13
+    B: node_20
+  - A: node_13
+    B: node_21
+  - A: node_13
+    B: node_23
+  - A: node_14
+    B: node_21
+  - A: node_14
+    B: node_43
+  - A: node_20
+    B: node_21
+  - A: node_3
+    B: node_4
+  - A: node_3
+    B: node_29
+  - A: node_4
+    B: node_5
+  - A: node_5
+    B: node_30
+  - A: node_5
+    B: node_36
+  - A: node_29
+    B: node_30
+  - A: node_29
+    B: node_34
+  - A: node_6
+    B: node_7
+  - A: node_7
+    B: node_8
+  - A: node_7
+    B: node_9
+  - A: node_8
+    B: node_9
+  - A: node_10
+    B: node_28
+  - A: node_10
+    B: node_44
+  - A: node_28
+    B: node_15
+  - A: node_15
+    B: node_25
+  - A: node_15
+    B: node_16
+  - A: node_25
+    B: node_26
+  - A: node_25
+    B: node_27
+  - A: node_26
+    B: node_27
+  - A: node_22
+    B: node_23
+  - A: node_22
+    B: node_24
+  - A: node_23
+    B: node_24
+  - A: node_34
+    B: node_33
+  - A: node_34
+    B: node_38
+  - A: node_34
+    B: node_32
+  - A: node_33
+    B: node_35
+  - A: node_35
+    B: node_32
+  - A: node_37
+    B: node_39
+  - A: node_37
+    B: node_41
+  - A: node_37
+    B: node_38
+  - A: node_39
+    B: node_40
+  - A: node_41
+    B: node_42
+  - A: node_29
+    B: Inoculation

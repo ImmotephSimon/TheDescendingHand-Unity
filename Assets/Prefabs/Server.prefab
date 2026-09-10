@@ -33,6 +33,14 @@ PrefabInstance:
       value: 16440284569816532753
       objectReference: {fileID: 0}
     - target: {fileID: 927076904386195409, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: 'NetworkBehaviours.Array.data[2]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 927076904386195409, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: 'NetworkBehaviours.Array.data[3]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 927076904386195409, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: 'NetworkBehaviours.Array.data[4]'
       value: 
       objectReference: {fileID: 8209563107947128616}
@@ -52,6 +60,18 @@ PrefabInstance:
       propertyPath: SerializedTransformProperties.Position.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 927076904386195409, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: InitializedNestedNetworkObjects.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2244051218531089864, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: _networkObjectCache
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2244051218531089864, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: _componentIndexCache
+      value: 255
+      objectReference: {fileID: 0}
     - target: {fileID: 2244051218531089864, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: standardCastAnimation
       value: 
@@ -59,6 +79,22 @@ PrefabInstance:
     - target: {fileID: 2353634765356765508, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3164139398785937512, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: _networkObjectCache
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3164139398785937512, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: _componentIndexCache
+      value: 255
+      objectReference: {fileID: 0}
+    - target: {fileID: 3821502092884268848, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: _networkObjectCache
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3821502092884268848, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: _componentIndexCache
+      value: 255
       objectReference: {fileID: 0}
     - target: {fileID: 5036442494900270532, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: _cardPrefab
@@ -112,6 +148,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8253357654123827305, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: _networkObjectCache
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8253357654123827305, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
+      propertyPath: _componentIndexCache
+      value: 255
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -122,9 +166,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 673506913013919535, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       insertIndex: -1
       addedObject: {fileID: -806286591428101174}
-    - targetCorrespondingSourceObject: {fileID: 673506913013919535, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5233917360083698993}
     - targetCorrespondingSourceObject: {fileID: 673506913013919535, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       insertIndex: -1
       addedObject: {fileID: -6148730536891947176}
@@ -140,9 +181,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 673506913013919535, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       insertIndex: -1
       addedObject: {fileID: -8415644373969226660}
-    - targetCorrespondingSourceObject: {fileID: 673506913013919535, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8371837318812353100}
     - targetCorrespondingSourceObject: {fileID: 673506913013919535, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2665028667581486525}
@@ -192,18 +230,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7275eb417b7d7ef40aee2db0975e8cb9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5233917360083698993
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5602002082113953591}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07f0d32fba5204f47b518ed442df331e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &-6148730536891947176
@@ -274,19 +300,6 @@ MonoBehaviour:
   _componentIndexCache: 6
   _addedNetworkObject: {fileID: 5204800278082625481}
   _networkObjectCache: {fileID: 5204800278082625481}
-  cardRegistry: {fileID: 11400000, guid: d10fb8c24588bbd4198011091344e1b8, type: 2}
---- !u!114 &8371837318812353100
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5602002082113953591}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a96d3b6a4fdefdd479a26e94f178e805, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2665028667581486525
 MonoBehaviour:
   m_ObjectHideFlags: 0

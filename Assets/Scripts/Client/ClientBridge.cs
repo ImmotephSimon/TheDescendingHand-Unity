@@ -16,6 +16,9 @@ public class ClientBridge : MonoBehaviour
     public PlayerNetworkActions PlayerNetwork { get; private set; }
     public EquipmentVisuals EquipmentVisuals { get; private set; }
     public PlayerStatsSync Stats { get; private set; }
+
+    private PassiveTreeComponent _passiveTreeComponent;
+
     public VfxRegistry VfxRegistry => VfxRegistry.Instance;
     public CardRegistry CardRegistry => ItemRegistry.Instance.CardRegistry;
 
@@ -24,8 +27,8 @@ public class ClientBridge : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        VFXView = GetComponentInChildren<VFXView>();
-        GlobePositioner = Camera.main.GetComponentInChildren<GlobePositioner>();
+        VFXView = GetComponentInChildren<VFXView>(true);
+        GlobePositioner = Camera.main.GetComponentInChildren<GlobePositioner>(true);
 
         if (GlobePositioner == null)
             Debug.LogError("Failed to find GlobePositioner");
@@ -38,8 +41,8 @@ public class ClientBridge : MonoBehaviour
         Movement = client.GetComponent<IPlayerMovement>();
         AbilitySystem = client.GetComponent<IAbilitySystem>();
         PlayerHUD = client.GetComponent<PlayerHUD>();
-        EquipmentVisuals = client.GetComponentInChildren<EquipmentVisuals>();
-        CardHandController = Camera.main.GetComponentInChildren<CardHandController>();
+        EquipmentVisuals = client.GetComponentInChildren<EquipmentVisuals>(true);
+        CardHandController = Camera.main.GetComponentInChildren<CardHandController>(true);
         PlayerNetwork = client.GetComponent<PlayerNetworkActions>();
         Stats = client.GetComponent<PlayerStatsSync>();
 

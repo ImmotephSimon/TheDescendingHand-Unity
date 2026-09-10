@@ -32,6 +32,7 @@ public class PlayerInputController : MonoBehaviour
         _gameInput.Player.LeftClick.performed += OnLeftClick;
         _gameInput.Player.Interact.performed += OnLoot;
         _gameInput.Player.Inventory.performed += OnOpenInventory;
+        _gameInput.Player.PassiveTree.performed += OnTogglePassiveTree;
 
         _gameInput.Player.Dodgeroll.performed += DodgeRoll;
 
@@ -95,6 +96,11 @@ public class PlayerInputController : MonoBehaviour
     private void OnOpenInventory(InputAction.CallbackContext context)
     {
         ClientBridge.Instance.PlayerHUD.ToggleInventory();
+    }
+
+    private void OnTogglePassiveTree(InputAction.CallbackContext context)
+    {
+        ClientBridge.Instance.PlayerHUD.TogglePassiveTree();
     }
 
     private void OnDestroy()

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public struct DamageInfo
+public class DamageInfo
 {
-    public readonly Dictionary<GameTag, float> DamageMap;
+    public Dictionary<GameTag, float> DamageMap;
     public IEntity Source;
     public Vector3 HitPosition;
 

@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: TagReactions
   m_EditorClassIdentifier: 
   Reactions:
-  - Tag:
-      TagId: Status.Hex.Frailty
-    Reaction: {fileID: 11400000, guid: 60824d7b59d4dd24ead446ca278e98fa, type: 2}
+  - {fileID: 11400000, guid: 60824d7b59d4dd24ead446ca278e98fa, type: 2}
+  - {fileID: 11400000, guid: 888a0c6131802464ea848ae5cfe8d2cf, type: 2}

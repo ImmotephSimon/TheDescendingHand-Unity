@@ -26,14 +26,16 @@ public class AilmentComponent : MonoBehaviour, IAilmentHandler
             _stunImmunityTimer -= Time.deltaTime;
     }
 
-    public void ApplyAilments(DamageInfo info, float mitigatedDamage)
+    public void ApplyAilments(DamageInfo info)
     {
-        CalcStun(mitigatedDamage);
-        ApplyDamageAilments(info, mitigatedDamage);
+        CalcStun(info);
+        ApplyDamageAilments(info);
     }
 
-    private void CalcStun(float damage)
+    private void CalcStun(DamageInfo info)
     {
+        info.DamageMap.TryGetValue(GameTags.RestrictionPhysical, out float damage);
+
         _poise += damage;
 
         float maxHealth = _stats.GetStat(GameTags.ModStatHealth);
@@ -63,21 +65,21 @@ public class AilmentComponent : MonoBehaviour, IAilmentHandler
         _stunnable.ApplyStun(StunDuration);
     }
 
-    private void ApplyDamageAilments(DamageInfo info, float mitigatedDamage)
+    private void ApplyDamageAilments(DamageInfo info)
     {
         if (info.Tags.HasTag(GameTags.ModSpecialColdDamageCanIgnite))
-            ApplyIgnite(info, mitigatedDamage);
+            ApplyIgnite(info);
 
         if (info.Tags.HasTag(GameTags.ModSpecialPoisonDamageCanFreeze))
-            ApplyFreeze(info, mitigatedDamage);
+            ApplyFreeze(info);
     }
 
-    private void ApplyFreeze(DamageInfo info, float mitigatedDamage)
+    private void ApplyFreeze(DamageInfo info)
     {
         throw new NotImplementedException();
     }
 
-    private void ApplyIgnite(DamageInfo info, float mitigatedDamage)
+    private void ApplyIgnite(DamageInfo info)
     {
         throw new NotImplementedException();
     }

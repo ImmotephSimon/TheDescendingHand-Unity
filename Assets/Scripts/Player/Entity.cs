@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
@@ -9,11 +10,11 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
     protected IAnimationHandler _animationHandler;
     protected IStatContainer _stats;
     protected DegenComponent _degen;
-    private MitigationLayer _mitigationLayer;
     private Coroutine _stunRoutine;
     private IHealth _healthHandler;
     private IAilmentHandler _ailmentHandler;
     private ModifierHandle _stunStatHandle;
+    private DamagePipelineComponent _damagePipeline;
 
     public int HostileLayer => TeamLayer == LayerMask.NameToLayer("Player")
     ? LayerMask.NameToLayer("Enemy")
@@ -32,24 +33,26 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
 
     public virtual Vector3 CursorPosition { get; protected set; }
 
+    public List<(StatModifier, float)> OnHitStats { get; } = new();
 
     public event Action<IEntity> Died;
 
     protected virtual void Awake()
     {
-        _mitigationLayer = GetComponent<MitigationLayer>();
         _stats = GetComponent<IStatContainer>();
         _healthHandler = GetComponent<IHealth>();
         _ailmentHandler = GetComponent<IAilmentHandler>();
-        _degen = GetComponent<DegenComponent>();
-        Debug.Assert(_mitigationLayer != null, $"{name} missing MitigationLayer");
         Debug.Assert(_stats != null, $"{name} missing stats");
         Debug.Assert(_ailmentHandler != null, $"{name} missing ailment handler");
-        Debug.Assert(_degen != null, $"{name} missing DegenComponent");
         Debug.Assert(tagReactions != null, $"{name} missing TagReactions");
 
+        _degen = gameObject.AddComponent<DegenComponent>();
+        Debug.Assert(GetComponents<DegenComponent>().Length == 1, $"{name} has problems regarding DegenComponent");
+        _damagePipeline = gameObject.AddComponent<DamagePipelineComponent>();
+        Debug.Assert(GetComponents<DamagePipelineComponent>().Length == 1, $"{name} has problems regarding DamagePipeline");
+
         foreach (var reaction in tagReactions.Reactions)
-            reaction.Reaction.StartListening(this);
+            reaction.StartListening(this);
     }
     protected virtual void Start()
     {
@@ -93,13 +96,21 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
 
     public virtual void TakeDamage(DamageInfo info)
     {
-        if (info.Source != null && info.Source.HostileLayer != TeamLayer)
+        foreach ((StatModifier stat, float duration) in info.Source.OnHitStats)
+        {
+            _stats.AddModifier(stat, duration);
+        }
+
+        if (!_damagePipeline.RunPreProcess(this, info, out float finalDamage))
+        {
+            Debug.Log($"[Entity:TakeDamage] Something logical prevented damage application.");
             return;
+        }
 
+        _healthHandler.AdjustHealth(-finalDamage, info.Source);
 
-        var mitigatedDamage = _mitigationLayer.CalculateMitigation(info);
-        _ailmentHandler.ApplyAilments(info, mitigatedDamage);
-        _healthHandler.AdjustHealth(-mitigatedDamage, info.Source);
+        _ailmentHandler.ApplyAilments(info);
+        _damagePipeline.RunPostProcess(this, info, finalDamage);
     }
 
     public virtual void ApplyStun(float duration)
@@ -135,7 +146,15 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
 
     public virtual void ApplyDegen(DegenInfo degenInfo)
     {
-        degenInfo.Damage = _mitigationLayer.CalculateMitigation(degenInfo.Damage);
+        var damageInfo = new DamageInfo(degenInfo.Damage, degenInfo.Source, degenInfo.Position);
+
+        if (!_damagePipeline.RunPreProcess(this, damageInfo, out float finalDamage))
+        {
+            Debug.Log($"[Entity:TakeDamage] Something logical prevented damage application.");
+            return;
+        }
+
+        degenInfo.Damage = damageInfo.DamageMap;
         _degen.Apply(degenInfo);
     }
 
