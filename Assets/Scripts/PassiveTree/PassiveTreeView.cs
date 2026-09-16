@@ -80,7 +80,7 @@ public class PassiveTreeView : MonoBehaviour, IDragHandler, IScrollHandler
         {
             _nodes.Add(node.Name, node);
             PassiveNodeView instance = Instantiate(_nodePrefab, _container);
-            instance.SetNode(node, _nodeTypes[node.Type], OnNodeSelected);
+            instance.SetNode(node, _nodeTypes[node.Type], OnNodeClicked);
 
             instance.HoverEnter += nodeView => _tooltipInstance.Show(
                 BuildTooltipData(nodeView.NodeData, nodeView.NodeType),
@@ -95,14 +95,12 @@ public class PassiveTreeView : MonoBehaviour, IDragHandler, IScrollHandler
             CreateConnection(connection);
     }
 
-    // Call from UI Button: "Allocate"
     public void RequestAllocateSelected()
     {
         if (_targetComponent == null || _selectedNodeView == null) return;
         _targetComponent.AllocateNodeServerRpc(_selectedNodeView.NodeData.Name);
     }
 
-    // Call from UI Button: "Refund"
     public void RequestRefundSelected()
     {
         if (_targetComponent == null || _selectedNodeView == null) return;
@@ -128,13 +126,16 @@ public class PassiveTreeView : MonoBehaviour, IDragHandler, IScrollHandler
         }
     }
 
-    private void OnNodeSelected(PassiveNodeView nodeView)
+    private void OnNodeClicked(PassiveNodeView nodeView, PointerEventData.InputButton button)
     {
         if (_selectedNodeView != null)
             _selectedNodeView.SetHighlight(false);
 
+
         _selectedNodeView = nodeView;
         _selectedNodeView.SetHighlight(true);
+
+        RequestAllocateSelected();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -192,35 +193,50 @@ public class PassiveTreeView : MonoBehaviour, IDragHandler, IScrollHandler
 
     private PassiveTooltipData BuildTooltipData(PassiveNode node, PassiveNodeType type)
     {
-        var body = new StringBuilder();
+        string description;
 
-        if (node.Role != PassiveNodeRole.Unset)
-            body.AppendLine($"<{node.Role}>");
-
-        if (type.Modifiers.Count > 0)
+        if (!string.IsNullOrEmpty(type.DescriptionOverride))
         {
-            foreach (var mod in type.Modifiers)
-                body.AppendLine(mod.ToString());
+            description = type.DescriptionOverride;
+        }
+        else
+        {
+            var modifiers = new StringBuilder();
+            foreach (StatModifier mod in type.Modifiers)
+                modifiers.AppendLine(mod.ToDescription());
+
+            description = modifiers.ToString();
         }
 
+        var cost = new StringBuilder();
         if (node.Cost.Count > 0)
         {
-            body.AppendLine("Cost:");
+            cost.AppendLine("Cost:");
             foreach (var c in node.Cost)
-                body.AppendLine($"  {c.Amount} {c.Attribute}");
+                cost.AppendLine($"  {c.Amount} {c.Attribute}");
         }
 
+        var requirement = new StringBuilder();
         if (node.Requirement.Count > 0)
         {
-            body.AppendLine("Requires:");
+            requirement.AppendLine("Requires:");
             foreach (var r in node.Requirement)
-                body.AppendLine($"  {r.Amount} {r.Attribute}");
+                requirement.AppendLine($"  {r.Amount} {r.Attribute}");
         }
 
         return new PassiveTooltipData
         {
-            Title = node.Name,
-            Body = body.ToString().TrimEnd()
+            Title = node.Role == PassiveNodeRole.Keystone
+                ? node.Name
+                : string.Join(" & ", type.Modifiers.Select(x => x.Stat)),
+
+            RoleText = node.Role == PassiveNodeRole.Keystone
+                ? "Keystone"
+                : "",
+
+            DescriptionText = description,
+            CostText = cost.ToString().TrimEnd(),
+            RequirementText = requirement.ToString().TrimEnd(),
         };
     }
 }

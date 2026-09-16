@@ -13,13 +13,20 @@ MonoBehaviour:
   m_Name: Miti3
   m_EditorClassIdentifier: 
   id: 362abea7-5fb9-4bf1-9ec7-fff62708e785
-  DisplayName: 
-  BaseValue: 60
-  Modifier:
-    TagId: Mod.Defense.Mitigation
-  MathOp: 0
-  TagRequirement:
+  NameOverride: 
+  Mods:
+  - Stat:
+      TagId: Mod.Defense.Mitigation
+    Op: 0
+    Value: 60
+    RequiredTags:
+      MatchAll: 0
+      Tags:
+        Tags:
+        - TagId: Restriction.Element.Cold
+  ContextRequirement:
     MatchAll: 0
     Tags:
-      Tags:
-      - TagId: Restriction.Element.Cold
+      Tags: []
+  Prerequisites: []
+  Tags: []

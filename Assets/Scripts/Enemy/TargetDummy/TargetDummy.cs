@@ -36,7 +36,7 @@ public class TargetDummy : Entity
 
     private void HandleTargetDummyHit()
     {
-        GetComponent<DropsComponent>().DropFromEnemy(transform.position);
+
     }
 
     public override void ApplyDegen(DegenInfo degenInfo)

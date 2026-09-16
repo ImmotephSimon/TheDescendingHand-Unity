@@ -22,15 +22,17 @@ MonoBehaviour:
   Tags:
     Tags: []
   Implicits:
-  - Stat:
-      TagId: Mod.Defense.Mitigation
-    Op: 0
-    Value: 5
-    RequiredTags:
-      MatchAll: 0
-      Tags:
+  - Modifier:
+      Stat:
+        TagId: Mod.Defense.Mitigation
+      Op: 0
+      Value: 5
+      RequiredTags:
+        MatchAll: 0
         Tags:
-        - TagId: Restriction.Physical
+          Tags:
+          - TagId: Restriction.Physical
+    IsScalable: 1
   Components:
   - rid: 7617656363769921681
   references:

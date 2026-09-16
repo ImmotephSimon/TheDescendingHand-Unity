@@ -147,34 +147,6 @@ public class PlayerItemsSync : NetworkBehaviour
     }
 
 
-    //private void HandleLoadoutChanged()
-    //{
-    //    if (IsServerStarted)
-    //    {
-    //        _equippedItems.Clear();
-
-    //        foreach (var entry in _loadout.Equipped)
-    //        {
-    //            var item = entry.Value;
-
-    //            _equippedItems.Add(new ItemTooltipDto
-    //            {
-    //                EquipmentTypeId = entry.Key.ID,
-    //                BaseTypeId = item.BaseType.ID,
-    //                RarityId = item.Rarity.Id,
-    //                Explicits = item.Explicits
-    //                    .Select(affix => new AffixState
-    //                    {
-    //                        DefinitionId = affix.Definition.Id,
-    //                        Tier = affix.Tier
-    //                    })
-    //                    .ToList()
-    //            });
-    //        }
-    //    }
-
-    //    LoadoutChanged?.Invoke();
-    //}
     private void HandleLoadoutChanged()
     {
         if (IsServerStarted)
@@ -238,12 +210,12 @@ public class PlayerItemsSync : NetworkBehaviour
             BaseTypeId = item.BaseType.Id,
             RarityId = item.Rarity.Id,
 
-            Implicits = item.BaseType.Implicits
+            Implicits = item.BaseType.Implicits.Select(x => x.Modifier)
                 .Select(AffixState.FromModifier)
                 .ToList(),
 
             Explicits = item.Explicits
-                .Select(AffixState.FromInstance)
+                .Select(affix => AffixState.FromInstance(affix, item.BaseType.Implicits))
                 .ToList()
         };
     }

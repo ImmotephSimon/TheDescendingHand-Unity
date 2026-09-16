@@ -5,10 +5,12 @@ using UnityEngine;
 
 public class HUD : MonoBehaviour
 {
-    [SerializeField] private ExperienceBar experienceBar;
+    [SerializeField] private ProgressBarComponent experienceBar;
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private TMP_Text manaText;
     [SerializeField] private GameObject speechBubble;
+    [SerializeField] private TMP_Text zoneText;
+
 
     private const float DisplayDuration = 0.2f;
 
@@ -22,6 +24,17 @@ public class HUD : MonoBehaviour
     private float _maxMana;
     private float _manaTimer;
     private Coroutine _speechCoroutine;
+
+    public Action<int> GetZoneUpdateHandler() => UpdateZoneText;
+
+    private void Awake()
+    {
+        // Inside your HUD component or initialization setup:
+        DungeonManager.Instance.OnZoneLevelChanged += UpdateZoneText;
+
+        // Push initial state immediately
+        UpdateZoneText(DungeonManager.Instance.ZoneLevel);
+    }
 
     public void Bind(LevelComponent comp)
     {
@@ -100,6 +113,12 @@ public class HUD : MonoBehaviour
 
             UpdateManaText();
         }
+    }
+
+    private void UpdateZoneText(int zoneLevel)
+    {
+        zoneText.SetText(
+            $"Monster level: {zoneLevel}");
     }
 
     private void UpdateHealthText()

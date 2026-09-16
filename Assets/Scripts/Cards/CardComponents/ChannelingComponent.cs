@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum ChannelInputMode
@@ -18,6 +19,9 @@ public class ChannelingComponent : CardComponent
     private float _tickTimer;
     private bool _isInputHeld = true;
     private bool _isChanneling = false;
+    private List<Vector3> _tracePoints = new();
+    public IReadOnlyList<Vector3> TracePoints => _tracePoints;
+
 
     public event Action OnTick;
     public event Action OnCompleted;
@@ -43,6 +47,7 @@ public class ChannelingComponent : CardComponent
         _tickTimer = 0f;
         _isInputHeld = true;
         _isChanneling = true;
+        _tracePoints.Clear();
     }
 
 
@@ -72,6 +77,8 @@ public class ChannelingComponent : CardComponent
             OnCompleted?.Invoke();
             return;
         }
+
+        _tracePoints.Add(transform.position);
 
         if (_tickInterval > 0f && _tickTimer >= _tickInterval)
         {

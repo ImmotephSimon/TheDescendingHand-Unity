@@ -90,6 +90,6 @@ public class DropsComponent : MonoBehaviour
         definition.Initialize(drop, rarity);
 
         Debug.Log(
-            $"Dropping {definition.Prefab.name} ({rarity.name})");
+            $"Dropping {definition.Prefab.name}[{rarity.name}]");
     }
 }

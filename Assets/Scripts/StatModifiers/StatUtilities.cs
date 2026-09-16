@@ -90,4 +90,38 @@ public struct StatModifier
 
         return $"{requirement}{statName}: {Mathf.RoundToInt(Value)}";
     }
+
+    public string ToDescription()
+    {
+        string statName = Stat != null ? Stat.ToString() : "Unknown";
+        string reqStr = RequiredTags.IsElemental
+            ? "Elemental"
+            : !RequiredTags.IsEmpty
+                ? RequiredTags.ToString()
+                : "";
+
+        string requirement = !string.IsNullOrEmpty(reqStr) ? $"{reqStr} " : "";
+
+        if (Op == MathOp.Added)
+        {
+            int roundVal = Mathf.RoundToInt(Value);
+            return $"{requirement}{(roundVal >= 0 ? "+" : "-")}{Mathf.Abs(roundVal)} to {statName}";
+        }
+
+        if (Op == MathOp.Additive)
+        {
+            int roundVal = Mathf.RoundToInt(Value * 100f);
+            string prefix = roundVal >= 0 ? "increased" : "decreased";
+            return $"{Mathf.Abs(roundVal)}% {prefix} {requirement}{statName}";
+        }
+
+        if (Op == MathOp.Multiplicative)
+        {
+            int roundVal = Mathf.RoundToInt((Value - 1f) * 100f);
+            string prefix = roundVal >= 0 ? "more" : "less";
+            return $"{Mathf.Abs(roundVal)}% {prefix} {requirement}{statName}";
+        }
+
+        return $"{requirement}{statName}: {Mathf.RoundToInt(Value)}";
+    }
 }

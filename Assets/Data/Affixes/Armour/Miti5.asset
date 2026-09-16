@@ -13,13 +13,19 @@ MonoBehaviour:
   m_Name: Miti5
   m_EditorClassIdentifier: 
   id: 2208a74e-7cef-415e-9ee6-87a44d21aa44
-  DisplayName: 
-  BaseValue: 60
-  Modifier:
-    TagId: Mod.Defense.Mitigation
-  MathOp: 0
-  TagRequirement:
+  NameOverride: 
+  Mods:
+  - Stat:
+      TagId: Mod.Utility.Duration
+    Op: 2
+    Value: 0.9
+    RequiredTags:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  ContextRequirement:
     MatchAll: 0
     Tags:
-      Tags:
-      - TagId: Restriction.Chaos
+      Tags: []
+  Prerequisites: []
+  Tags: []

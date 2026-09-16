@@ -42,6 +42,7 @@ public class PassiveNodeType
     public string Name;
     public List<StatModifier> Modifiers = new();
     public Sprite Texture;
+    public string DescriptionOverride;
 }
 
 

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DiamondRing
   m_EditorClassIdentifier: 
   DisplayName: Diamond Ring
-  InventorySize: {x: 2, y: 2}
+  InventorySize: {x: 1, y: 1}
   Appearance:
     WorldModel: {fileID: 919132149155446097, guid: 5dabcd0974f9098449183d2b966a1ec6, type: 3}
     Icon: {fileID: 21300000, guid: 5c43af9fc8739294f87141681bbafcb3, type: 3}
@@ -22,17 +22,17 @@ MonoBehaviour:
   Tags:
     Tags: []
   Implicits:
-  - Stat:
-      TagId: Mod.Defense.Mitigation
-    Op: 0
-    Value: 5
-    RequiredTags:
-      MatchAll: 1
-      Tags:
+  - Modifier:
+      Stat:
+        TagId: Mod.Defense.Mitigation
+      Op: 0
+      Value: 5
+      RequiredTags:
+        MatchAll: 0
         Tags:
-        - TagId: Restriction.Element.Fire
-        - TagId: Restriction.Element.Cold
-        - TagId: Restriction.Element.Lightning
+          Tags:
+          - TagId: Restriction.Physical
+    IsScalable: 1
   Components:
   - rid: 7617656363769921681
   references:

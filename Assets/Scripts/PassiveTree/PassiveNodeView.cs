@@ -22,13 +22,13 @@ public class PassiveNodeView : MonoBehaviour, IPointerClickHandler, IPointerEnte
     public event Action<PassiveNodeView> HoverExit;
 
     private RectTransform _rectTransform;
-    private Action<PassiveNodeView> _onSelected;
+    Action<PassiveNodeView, PointerEventData.InputButton> _onClicked;
 
-    public void SetNode(PassiveNode node, PassiveNodeType type, Action<PassiveNodeView> onSelected)
+    public void SetNode(PassiveNode node, PassiveNodeType type, Action<PassiveNodeView, PointerEventData.InputButton> onClick)
     {
         NodeData = node;
         NodeType = type; // stash this — tooltip needs it and shouldn't have to re-look it up
-        _onSelected = onSelected;
+        _onClicked = onClick;
 
         _rectTransform = (RectTransform)transform;
         _rectTransform.anchoredPosition = node.Position;
@@ -40,12 +40,15 @@ public class PassiveNodeView : MonoBehaviour, IPointerClickHandler, IPointerEnte
         SetAllocated(false);
     }
 
+
     public void OnPointerClick(PointerEventData eventData)
     {
-        _onSelected?.Invoke(this);
+        _onClicked.Invoke(this, eventData.button);
     }
 
-    public void OnPointerEnter(PointerEventData eventData) => HoverEnter?.Invoke(this);
+
+
+public void OnPointerEnter(PointerEventData eventData) => HoverEnter?.Invoke(this);
     public void OnPointerExit(PointerEventData eventData) => HoverExit?.Invoke(this);
 
     public void SetHighlight(bool isSelected)

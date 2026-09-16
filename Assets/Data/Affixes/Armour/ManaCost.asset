@@ -13,13 +13,20 @@ MonoBehaviour:
   m_Name: ManaCost
   m_EditorClassIdentifier: 
   id: a0c3ab5e-4dd4-422e-963e-1dcd5edc4697
-  DisplayName: 
-  BaseValue: -0.01
-  Modifier:
-    TagId: Mod.Utility.Cost
-  MathOp: 1
-  TagRequirement:
+  NameOverride: 
+  Mods:
+  - Stat:
+      TagId: Mod.Utility.Cost
+    Op: 1
+    Value: -0.01
+    RequiredTags:
+      MatchAll: 0
+      Tags:
+        Tags:
+        - TagId: Mod.Stat.Mana
+  ContextRequirement:
     MatchAll: 0
     Tags:
-      Tags:
-      - TagId: Mod.Stat.Mana
+      Tags: []
+  Prerequisites: []
+  Tags: []

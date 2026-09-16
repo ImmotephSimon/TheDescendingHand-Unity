@@ -13,13 +13,20 @@ MonoBehaviour:
   m_Name: FireFlat
   m_EditorClassIdentifier: 
   id: 5c34b123-ff47-46ed-b360-ab32fc6a7796
-  DisplayName: 
-  BaseValue: 40
-  Modifier:
-    TagId: Mod.Offense.Damage
-  MathOp: 0
-  TagRequirement:
+  NameOverride: 
+  Mods:
+  - Stat:
+      TagId: Mod.Implicit
+    Op: 0
+    Value: 40
+    RequiredTags:
+      MatchAll: 0
+      Tags:
+        Tags:
+        - TagId: Restriction.Element.Fire
+  ContextRequirement:
     MatchAll: 0
     Tags:
-      Tags:
-      - TagId: Restriction.Element.Fire
+      Tags: []
+  Prerequisites: []
+  Tags: []

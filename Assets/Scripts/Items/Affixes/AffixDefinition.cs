@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewAffixDefinition", menuName = "Items/Affix Definition")]
@@ -7,12 +8,11 @@ public class AffixDefinition : ScriptableObject
     [SerializeField, HideInInspector]
     private string id;
     public string NameOverride;
-    public float BaseValue;
-    public GameTag Modifier;
-    public MathOp MathOp;
+    public List<StatModifier> Mods;
     [SerializeField]
-    public TagRequirement TagRequirement;
-
+    public TagRequirement ContextRequirement;
+    public List<GameTag> Prerequisites;
+    public List<GameTag> Tags;
     public AffixSlot Slot { get; set; }
 
     public string Id => id;

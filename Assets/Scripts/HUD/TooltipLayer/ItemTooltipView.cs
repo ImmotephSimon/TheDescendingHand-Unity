@@ -113,8 +113,13 @@ public class ItemTooltipView : MonoBehaviour
 
         foreach (var affix in item.Implicits)
         {
-            if (!IsDisplayedAsWeaponStat(affix.Modifier))
-                lines.Add(new StatModifier(affix.Modifier, affix.MathOp, affix.RolledValue, affix.TagRequirement).ToString());
+            if (affix.ResolvedMods == null) continue;
+
+            foreach (var mod in affix.ResolvedMods)
+            {
+                if (!IsDisplayedAsWeaponStat(mod.Stat))
+                    lines.Add(mod.ToString());
+            }
         }
 
         return string.Join("\n", lines);
@@ -193,13 +198,21 @@ public class ItemTooltipView : MonoBehaviour
         if (item.Implicits != null)
         {
             foreach (var affix in item.Implicits)
-                AddModifier(affix.Modifier, affix.MathOp, affix.TagRequirement, affix.RolledValue);
+            {
+                if (affix.ResolvedMods == null) continue;
+                foreach (var mod in affix.ResolvedMods)
+                    AddModifier(mod.Stat, mod.Op, mod.RequiredTags, mod.Value);
+            }
         }
 
         if (item.Explicits != null)
         {
             foreach (var affix in item.Explicits)
-                AddModifier(affix.Modifier, affix.MathOp, affix.TagRequirement, affix.RolledValue);
+            {
+                if (affix.ResolvedMods == null) continue;
+                foreach (var mod in affix.ResolvedMods)
+                    AddModifier(mod.Stat, mod.Op, mod.RequiredTags, mod.Value);
+            }
         }
 
         void ApplyMultiplier(GameTag stat, TagRequirement tags, float value)
@@ -227,8 +240,12 @@ public class ItemTooltipView : MonoBehaviour
         {
             foreach (var affix in item.Implicits)
             {
-                if (affix.MathOp == MathOp.Multiplicative)
-                    ApplyMultiplier(affix.Modifier, affix.TagRequirement, affix.RolledValue);
+                if (affix.ResolvedMods == null) continue;
+                foreach (var mod in affix.ResolvedMods)
+                {
+                    if (mod.Op == MathOp.Multiplicative)
+                        ApplyMultiplier(mod.Stat, mod.RequiredTags, mod.Value);
+                }
             }
         }
 
@@ -236,8 +253,12 @@ public class ItemTooltipView : MonoBehaviour
         {
             foreach (var affix in item.Explicits)
             {
-                if (affix.MathOp == MathOp.Multiplicative)
-                    ApplyMultiplier(affix.Modifier, affix.TagRequirement, affix.RolledValue);
+                if (affix.ResolvedMods == null) continue;
+                foreach (var mod in affix.ResolvedMods)
+                {
+                    if (mod.Op == MathOp.Multiplicative)
+                        ApplyMultiplier(mod.Stat, mod.RequiredTags, mod.Value);
+                }
             }
         }
 
@@ -279,13 +300,21 @@ public class ItemTooltipView : MonoBehaviour
         if (item.Implicits != null)
         {
             foreach (var affix in item.Implicits)
-                ProcessAffix(affix.Modifier, affix.MathOp, affix.RolledValue);
+            {
+                if (affix.ResolvedMods == null) continue;
+                foreach (var mod in affix.ResolvedMods)
+                    ProcessAffix(mod.Stat, mod.Op, mod.Value);
+            }
         }
 
         if (item.Explicits != null)
         {
             foreach (var affix in item.Explicits)
-                ProcessAffix(affix.Modifier, affix.MathOp, affix.RolledValue);
+            {
+                if (affix.ResolvedMods == null) continue;
+                foreach (var mod in affix.ResolvedMods)
+                    ProcessAffix(mod.Stat, mod.Op, mod.Value);
+            }
         }
 
         if (baseCrit <= 0f) return string.Empty;
@@ -303,11 +332,18 @@ public class ItemTooltipView : MonoBehaviour
         {
             foreach (var affix in item.Implicits)
             {
-                if (affix.Modifier != GameTags.ModOffenseCastSpeed) continue;
+                if (affix.ResolvedMods == null) continue;
 
-                castSpeed = affix.RolledValue;
-                found = true;
-                break;
+                foreach (var mod in affix.ResolvedMods)
+                {
+                    if (mod.Stat != GameTags.ModOffenseCastSpeed) continue;
+
+                    castSpeed = mod.Value;
+                    found = true;
+                    break;
+                }
+
+                if (found) break;
             }
         }
 
@@ -317,9 +353,14 @@ public class ItemTooltipView : MonoBehaviour
         {
             foreach (var affix in item.Explicits)
             {
-                if (affix.Modifier != GameTags.ModOffenseCastSpeed) continue;
+                if (affix.ResolvedMods == null) continue;
 
-                castSpeed *= 1f + NormalizePercent(affix.RolledValue);
+                foreach (var mod in affix.ResolvedMods)
+                {
+                    if (mod.Stat != GameTags.ModOffenseCastSpeed) continue;
+
+                    castSpeed *= 1f + NormalizePercent(mod.Value);
+                }
             }
         }
 
@@ -352,7 +393,9 @@ public class ItemTooltipView : MonoBehaviour
     private string AffixesToString(List<AffixState> states)
     {
         if (states == null || states.Count == 0) return string.Empty;
-        return string.Join("\n", states.Select(s =>
-            new StatModifier(s.Modifier, s.MathOp, s.RolledValue, s.TagRequirement).ToString()));
+        return string.Join("\n", states
+            .Where(s => s.ResolvedMods != null)
+            .SelectMany(s => s.ResolvedMods)
+            .Select(m => m.ToString()));
     }
 }

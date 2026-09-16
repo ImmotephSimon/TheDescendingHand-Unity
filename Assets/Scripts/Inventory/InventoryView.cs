@@ -15,6 +15,8 @@ public class InventoryView : MonoBehaviour
     private readonly Vector2 spacing = new(2f, 2f);
     private readonly List<ItemIconView> spawnedIcons = new();
 
+    internal void ToggleVisibility() => SetVisibility(!panelRoot.activeSelf);
+
     private PlayerItemsSync _items;
     private InventorySlotView[,] slots;
 
@@ -35,7 +37,7 @@ public class InventoryView : MonoBehaviour
     {
         InitializeGrid();
         Refresh();
-        ToggleVisibility();
+        SetVisibility(false);
     }
 
     private void OnDestroy()
@@ -151,16 +153,11 @@ public class InventoryView : MonoBehaviour
         return new Vector2(x, y);
     }
 
-    internal void ToggleVisibility()
+    public void SetVisibility(bool visible)
     {
-        if (panelRoot.activeSelf)
-        {
-            panelRoot.SetActive(false);
+        panelRoot.SetActive(visible);
+
+        if (!visible)
             TooltipController.Instance.Hide();
-        }
-        else
-        {
-            panelRoot.SetActive(true);
-        }
     }
 }

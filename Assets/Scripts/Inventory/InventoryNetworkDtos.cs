@@ -35,21 +35,17 @@ public struct AffixState
 {
     public string DisplayName;
     public float Tier;
-    public float RolledValue;
-    public GameTag Modifier;
-    public MathOp MathOp;
+    public List<StatModifier> ResolvedMods;
     public TagRequirement TagRequirement;
 
-    public static AffixState FromInstance(AffixInstance instance)
+    public static AffixState FromInstance(AffixInstance instance, List<ItemImplicit> itemImplicits)
     {
         return new AffixState
         {
             DisplayName = instance.Definition.NameOverride ?? string.Empty,
             Tier = instance.Tier,
-            RolledValue = instance.Value,
-            Modifier = instance.Definition.Modifier,
-            MathOp = instance.Definition.MathOp,
-            TagRequirement = instance.Definition.TagRequirement
+            ResolvedMods = instance.ToStatModifiers(itemImplicits),
+            TagRequirement = instance.Definition.ContextRequirement
         };
     }
 
@@ -57,9 +53,9 @@ public struct AffixState
     {
         return new AffixState
         {
-            RolledValue = modifier.Value,
-            Modifier = modifier.Stat,
-            MathOp = modifier.Op,
+            DisplayName = string.Empty,
+            Tier = 1f,
+            ResolvedMods = new List<StatModifier> { modifier },
             TagRequirement = modifier.RequiredTags
         };
     }

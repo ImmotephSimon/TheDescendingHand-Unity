@@ -13,13 +13,20 @@ MonoBehaviour:
   m_Name: LifeCost
   m_EditorClassIdentifier: 
   id: 964d78b8-9e44-4826-ac91-5417cae5be1f
-  DisplayName: 
-  BaseValue: -0.3
-  Modifier:
-    TagId: Mod.Utility.Cost
-  MathOp: 1
-  TagRequirement:
+  NameOverride: 
+  Mods:
+  - Stat:
+      TagId: Mod.Utility.Cost
+    Op: 1
+    Value: -0.3
+    RequiredTags:
+      MatchAll: 0
+      Tags:
+        Tags:
+        - TagId: Mod.Stat.Health
+  ContextRequirement:
     MatchAll: 0
     Tags:
-      Tags:
-      - TagId: Mod.Stat.Health
+      Tags: []
+  Prerequisites: []
+  Tags: []

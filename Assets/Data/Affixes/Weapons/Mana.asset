@@ -13,12 +13,19 @@ MonoBehaviour:
   m_Name: Mana
   m_EditorClassIdentifier: 
   id: 512eb66b-1031-4b82-b17b-7719b1223ea9
-  DisplayName: 
-  BaseValue: 40
-  Modifier:
-    TagId: Mod.Stat.Mana
-  MathOp: 0
-  TagRequirement:
+  NameOverride: 
+  Mods:
+  - Stat:
+      TagId: Mana
+    Op: 0
+    Value: 40
+    RequiredTags:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  ContextRequirement:
     MatchAll: 0
     Tags:
       Tags: []
+  Prerequisites: []
+  Tags: []

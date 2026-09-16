@@ -253,10 +253,10 @@ MonoBehaviour:
         TagId: Mod.Stat.Strength
     Cluster: D
     Requirement: []
-  - Name: node_16
+  - Name: start_instinct
     Type: Instinct
     Position: {x: 54.93152, y: -622.36084}
-    Role: 0
+    Role: 1
     Cost:
     - Amount: 1
       Attribute:
@@ -323,10 +323,10 @@ MonoBehaviour:
         TagId: Mod.Stat.Instinct
     Cluster: c
     Requirement: []
-  - Name: node_31
+  - Name: start_str
     Type: Strength
     Position: {x: -136.35266, y: -86.46765}
-    Role: 0
+    Role: 1
     Cost:
     - Amount: 1
       Attribute:
@@ -373,10 +373,10 @@ MonoBehaviour:
         TagId: Mod.Stat.Willpower
     Cluster: M
     Requirement: []
-  - Name: node_36
+  - Name: start_willpower
     Type: Willpower
     Position: {x: -726.5519, y: -270.40662}
-    Role: 0
+    Role: 1
     Cost:
     - Amount: 1
       Attribute:
@@ -443,7 +443,7 @@ MonoBehaviour:
         TagId: Mod.Stat.Willpower
     Cluster: M
     Requirement: []
-  - Name: node_43
+  - Name: Flammability
     Type: Flammability
     Position: {x: 726.552, y: -151.6222}
     Role: 2
@@ -456,9 +456,9 @@ MonoBehaviour:
     - Amount: 15
       Attribute:
         TagId: Mod.Stat.Strength
-  - Name: node_44
+  - Name: Buffering
     Type: Buffering
-    Position: {x: -507.28284, y: -352.35657}
+    Position: {x: -507.28284, y: -354.75656}
     Role: 2
     Cost:
     - Amount: 1
@@ -500,6 +500,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: 4bdb7164db541c34490e8e8b7de1570d, type: 3}
+    DescriptionOverride: 
   - Name: Willpower
     Modifiers:
     - Stat:
@@ -511,6 +512,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: fd3800b9481707c4fac4a13db3648538, type: 3}
+    DescriptionOverride: 
   - Name: Instinct
     Modifiers:
     - Stat:
@@ -522,6 +524,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: 36d7f984b8bb624488a52e5a9f0b2794, type: 3}
+    DescriptionOverride: 
   - Name: Life
     Modifiers:
     - Stat:
@@ -533,6 +536,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: 2b0f66aff0f507a40ac16e7ab7feda5b, type: 3}
+    DescriptionOverride: 
   - Name: Mana
     Modifiers:
     - Stat:
@@ -544,6 +548,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: 8c6dcad2df99d504793767e5be8a1c82, type: 3}
+    DescriptionOverride: 
   - Name: Armour
     Modifiers:
     - Stat:
@@ -555,6 +560,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: e5aefcb8744dcf44caaa3f2890a54ed7, type: 3}
+    DescriptionOverride: 
   - Name: Evasion
     Modifiers:
     - Stat:
@@ -566,6 +572,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: 15f2205e07820f5429b15a165e95736f, type: 3}
+    DescriptionOverride: 
   - Name: Physical_Damage
     Modifiers:
     - Stat:
@@ -577,6 +584,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: 4cbc10b732b7bc54aaf231c0911c7911, type: 3}
+    DescriptionOverride: 
   - Name: Fire_Damage
     Modifiers:
     - Stat:
@@ -588,6 +596,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: 0f8116ed8558cf341b9fe99993a7ffa9, type: 3}
+    DescriptionOverride: 
   - Name: Cold_Damage
     Modifiers:
     - Stat:
@@ -599,6 +608,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: 9f1aa0b94cd1d2044ac6dd7cd4b564bc, type: 3}
+    DescriptionOverride: 
   - Name: Lightning_Damage
     Modifiers:
     - Stat:
@@ -610,6 +620,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: e5adc0f4c1bfd1444824d86d8b52cd30, type: 3}
+    DescriptionOverride: 
   - Name: Chaos_Damage
     Modifiers:
     - Stat:
@@ -621,6 +632,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: 588987c30830b294591e80a1ea495add, type: 3}
+    DescriptionOverride: 
   - Name: Cast_Speed
     Modifiers:
     - Stat:
@@ -632,6 +644,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: 0555ba942e1bfd0438cf1d1961b276e2, type: 3}
+    DescriptionOverride: 
   - Name: Critical
     Modifiers:
     - Stat:
@@ -643,6 +656,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: 7cd7cc569ac2f6e49a505c696cdff97d, type: 3}
+    DescriptionOverride: 
   - Name: Movement
     Modifiers:
     - Stat:
@@ -654,6 +668,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: 6641aff502687044da9c38d17519616a, type: 3}
+    DescriptionOverride: 
   - Name: Chaos_Duration
     Modifiers:
     - Stat:
@@ -665,6 +680,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: 9a4a405dc1d40d24d960ea92df517879, type: 3}
+    DescriptionOverride: 
   - Name: Projectile_Time_Dilation
     Modifiers:
     - Stat:
@@ -676,6 +692,7 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: 42e72a64041623a40ab3420019e34601, type: 3}
+    DescriptionOverride: 
   - Name: Reduced_Projectile_Time_Dilation
     Modifiers:
     - Stat:
@@ -687,12 +704,16 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: 42e72a64041623a40ab3420019e34601, type: 3}
+    DescriptionOverride: 
   - Name: Flammability
     Modifiers: []
     Texture: {fileID: 21300000, guid: f5474e74dc1a92c40b4347b762db4a3c, type: 3}
+    DescriptionOverride: 10% Less damage. \nBuild up Flammabiltiy instead of dealing
+      Fire damage.
   - Name: Buffering
     Modifiers: []
     Texture: {fileID: 21300000, guid: 59412152f4560744392c93ff38c1bd15, type: 3}
+    DescriptionOverride: Can't remember what this thing does.
   - Name: Inoculation
     Modifiers:
     - Stat:
@@ -712,6 +733,8 @@ MonoBehaviour:
         Tags:
           Tags: []
     Texture: {fileID: 21300000, guid: 03e3857258ae22d41b39df061023d612, type: 3}
+    DescriptionOverride: 30% More damage. \nEnemies become immune to the last damage
+      type you dealt.
   Connections:
   - A: node_0
     B: node_1
@@ -736,7 +759,7 @@ MonoBehaviour:
   - A: node_2
     B: node_34
   - A: node_2
-    B: node_31
+    B: start_str
   - A: node_11
     B: node_12
   - A: node_11
@@ -758,7 +781,7 @@ MonoBehaviour:
   - A: node_14
     B: node_21
   - A: node_14
-    B: node_43
+    B: Flammability
   - A: node_20
     B: node_21
   - A: node_3
@@ -770,7 +793,7 @@ MonoBehaviour:
   - A: node_5
     B: node_30
   - A: node_5
-    B: node_36
+    B: start_willpower
   - A: node_29
     B: node_30
   - A: node_29
@@ -786,13 +809,13 @@ MonoBehaviour:
   - A: node_10
     B: node_28
   - A: node_10
-    B: node_44
+    B: Buffering
   - A: node_28
     B: node_15
   - A: node_15
     B: node_25
   - A: node_15
-    B: node_16
+    B: start_instinct
   - A: node_25
     B: node_26
   - A: node_25

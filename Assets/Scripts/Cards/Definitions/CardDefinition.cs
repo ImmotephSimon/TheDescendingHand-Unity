@@ -40,10 +40,9 @@ public struct VfxSpawnParams
     public Quaternion Rotation;
     public Vector3 Scale;
     public float Duration;
+    public bool Attach;
 
-    
-
-    public VfxSpawnParams(Vector3 position, int vfxIndex = 0, float duration = 0f)
+    public VfxSpawnParams(Vector3 position, int vfxIndex = 0, float duration = 0f, bool attach = false)
     {
         InstanceId = Guid.NewGuid();
         VfxIndex = vfxIndex;
@@ -51,6 +50,7 @@ public struct VfxSpawnParams
         Duration = duration;
         Rotation = Quaternion.identity;
         Scale = Vector3.one;
+        Attach = attach;
     }
 }
 

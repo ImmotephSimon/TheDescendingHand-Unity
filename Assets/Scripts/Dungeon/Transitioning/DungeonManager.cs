@@ -21,6 +21,9 @@ public class DungeonManager : MonoBehaviour
 
     public DungeonGenerator ActiveDungeon => IsOverworld ? null : dungeonStack.Peek();
     public bool IsOverworld => dungeonStack.Count == 0;
+
+    public Action<int> OnZoneLevelChanged { get; internal set; }
+
     private Stack<DungeonGenerator> dungeonStack = new();
 
     private GameObject stairs;
@@ -81,6 +84,7 @@ public class DungeonManager : MonoBehaviour
             activeDungeon = null;
             overworld.SetActive(true);
             if (directionalLight != null) directionalLight.enabled = true;
+            OnZoneLevelChanged?.Invoke(0);
         }
         else
         {
@@ -93,6 +97,8 @@ public class DungeonManager : MonoBehaviour
         activeDungeon = dungeon;
         if (directionalLight != null) directionalLight.enabled = IsOverworld;
         SetCurrentVisible(true);
+
+        OnZoneLevelChanged?.Invoke(ZoneLevel);
     }
 
     private void SetCurrentVisible(bool visible)
@@ -128,10 +134,12 @@ public class DungeonManager : MonoBehaviour
         handler = () =>
         {
             hingeController.PlayerInteracted -= handler;
-            _drops.DropFromChest(
-                hingeController.transform.position,
-                hingeController.transform.forward
-            );
+            for (int i = 0; i < 5; i++) { 
+                _drops.DropFromChest(
+                    hingeController.transform.position,
+                    hingeController.transform.forward
+                );
+            }
         };
 
         hingeController.PlayerInteracted += handler;

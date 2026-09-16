@@ -58,7 +58,10 @@ public abstract class NetworkActionBase : NetworkBehaviour
             return;
 
         GameObject vfx = def.Visuals.Vfx[vfxParams.VfxIndex];
-        GameObject instance = Instantiate(vfx, vfxParams.Position, vfxParams.Rotation);
+        GameObject instance;
+        instance = vfxParams.Attach
+            ? Instantiate(vfx, transform, false)
+            : Instantiate(vfx, vfxParams.Position, vfxParams.Rotation);
         instance.transform.localScale = vfxParams.Scale;
 
         var controller = instance.GetComponentInChildren<IVfx>();
@@ -74,8 +77,7 @@ public abstract class NetworkActionBase : NetworkBehaviour
     [ObserversRpc]
     private void StopClientVfxObserversRpc(Guid instanceId)
     {
-        if (!_activeClientVfx.Remove(instanceId, out GameObject instance))
-            return;
+        if (!_activeClientVfx.Remove(instanceId, out GameObject instance)) return;
 
         var vfx = instance.GetComponentInChildren<IVfx>();
         vfx?.Stop();
@@ -85,8 +87,7 @@ public abstract class NetworkActionBase : NetworkBehaviour
     {
         InstanceFinder.ServerManager.Spawn(go);
 
-        if (!go.TryGetComponent(out NetworkObject nob))
-            return go;
+        if (!go.TryGetComponent(out NetworkObject nob)) return go;
 
         _spawnedObjects.Enqueue(nob);
 

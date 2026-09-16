@@ -10,6 +10,7 @@ public static class AffixGenerator
         var results = new List<AffixInstance>();
 
         int targetCount = RollAffixCountForRarity(rarity, seed);
+        Debug.Log($"Rarity: {rarity.name} | Min: {rarity.MinAffixes} | Max: {rarity.MaxAffixes} | TargetCount: {targetCount}");
         var selectedDefinitions = RollWeightedAffixDefinitions(item, targetCount, seed);
 
         foreach (var def in selectedDefinitions)
@@ -23,7 +24,7 @@ public static class AffixGenerator
 
             results.Add(instance);
         }
-
+        Debug.Log($"Generated affixes: {string.Join(", ", results.Select(x => $"{x.GetDisplayText(item.Implicits)})"))}");
         return results;
     }
 
@@ -34,9 +35,7 @@ public static class AffixGenerator
     {
         var results = new List<AffixDefinition>();
 
-        // 1. Fetch EquipmentComponent to get the pool
         var equipComp = item.Components.OfType<EquipComponentDefinition>().FirstOrDefault();
-
         if (equipComp == null || equipComp.EquipmentType == null)
             return results;
 
@@ -44,10 +43,10 @@ public static class AffixGenerator
         if (pool == null || pool.Entries == null || pool.Entries.Count == 0)
             return results;
 
-        // 2. Clone entries to prevent duplicate affixes on a single roll
-        var available = new List<ModifierPoolEntry>(pool.Entries);
+        SplitAffixPool(pool, out List<ModifierPoolEntry> available, out List<ModifierPoolEntry> locked);
 
-        // 3. Roll weighted entries
+        var tagPool = new HashSet<GameTag>();
+
         for (int i = 0; i < count && available.Count > 0; i++)
         {
             float totalWeight = 0f;
@@ -56,7 +55,6 @@ public static class AffixGenerator
 
             if (totalWeight <= 0f) break;
 
-            // System.Random uses NextDouble() for floating-point weights
             double roll = rng.NextDouble() * totalWeight;
             float currentWeight = 0f;
 
@@ -65,18 +63,50 @@ public static class AffixGenerator
                 currentWeight += available[j].Weight;
                 if (roll < currentWeight)
                 {
-                    if (available[j].Definition != null)
+                    var chosen = available[j].Definition;
+                    if (chosen != null)
                     {
-                        results.Add(available[j].Definition);
+                        results.Add(chosen);
+
+                        if (chosen.Tags != null)
+                            foreach (var tag in chosen.Tags)
+                                tagPool.Add(tag);
                     }
 
                     available.RemoveAt(j);
                     break;
                 }
             }
+
+            UpdateLockedAffixes(available, locked, tagPool);
         }
 
         return results;
+    }
+
+    private static void SplitAffixPool(ModifierPool pool, out List<ModifierPoolEntry> available, out List<ModifierPoolEntry> locked)
+    {
+        available = new List<ModifierPoolEntry>();
+        locked = new List<ModifierPoolEntry>();
+        foreach (var entry in pool.Entries)
+        {
+            if (entry.Definition != null && entry.Definition.Prerequisites != null && entry.Definition.Prerequisites.Count > 0)
+                locked.Add(entry);
+            else
+                available.Add(entry);
+        }
+    }
+
+    private static void UpdateLockedAffixes(List<ModifierPoolEntry> pool, List<ModifierPoolEntry> locked, HashSet<GameTag> tagPool)
+    {
+        for (int k = locked.Count - 1; k >= 0; k--)
+        {
+            if (locked[k].Definition.Prerequisites.All(t => tagPool.Contains(t)))
+            {
+                pool.Add(locked[k]);
+                locked.RemoveAt(k);
+            }
+        }
     }
 
     private static AffixInstance CreateAffixInstanceWithRolledValue(
@@ -94,6 +124,7 @@ public static class AffixGenerator
             Tier = tier
         };
     }
+
 
     private static bool RollsPositiveForMutationChance(System.Random rng)
     {

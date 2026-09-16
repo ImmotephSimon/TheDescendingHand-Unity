@@ -13,13 +13,20 @@ MonoBehaviour:
   m_Name: PhysInc
   m_EditorClassIdentifier: 
   id: 53bdbc32-500b-4fb0-b70c-479af43d80ba
-  DisplayName: 
-  BaseValue: 0.2
-  Modifier:
-    TagId: Mod.Offense.Damage
-  MathOp: 1
-  TagRequirement:
+  NameOverride: 
+  Mods:
+  - Stat:
+      TagId: Mod.Offense.Damage
+    Op: 1
+    Value: 0.2
+    RequiredTags:
+      MatchAll: 0
+      Tags:
+        Tags:
+        - TagId: Restriction.Physical
+  ContextRequirement:
     MatchAll: 0
     Tags:
-      Tags:
-      - TagId: Restriction.Physical
+      Tags: []
+  Prerequisites: []
+  Tags: []

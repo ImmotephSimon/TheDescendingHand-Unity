@@ -13,12 +13,19 @@ MonoBehaviour:
   m_Name: BaseMult
   m_EditorClassIdentifier: 
   id: c905cb57-01fb-4e60-96d2-ee1ece8a752e
-  DisplayName: 
-  BaseValue: 3
-  Modifier:
-    TagId: Mod.Offense.Damage
-  MathOp: 2
-  TagRequirement:
+  NameOverride: 
+  Mods:
+  - Stat:
+      TagId: Mod.Implicit
+    Op: 2
+    Value: 3
+    RequiredTags:
+      MatchAll: 0
+      Tags:
+        Tags: []
+  ContextRequirement:
     MatchAll: 0
     Tags:
       Tags: []
+  Prerequisites: []
+  Tags: []

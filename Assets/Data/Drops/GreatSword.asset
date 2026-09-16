@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35d546714e5600244bf9148235d56df9, type: 3}
   m_Name: GreatSword
   m_EditorClassIdentifier: 
-  ID: great_sword
   DisplayName: Great Sword
   InventorySize: {x: 1, y: 3}
   Appearance:
@@ -23,30 +22,36 @@ MonoBehaviour:
   Tags:
     Tags: []
   Implicits:
-  - Stat:
-      TagId: Mod.Offense.Damage
-    Op: 0
-    Value: 3
-    RequiredTags:
-      MatchAll: 0
-      Tags:
-        Tags: []
-  - Stat:
-      TagId: Mod.Offense.Critical
-    Op: 0
-    Value: 10
-    RequiredTags:
-      MatchAll: 0
-      Tags:
-        Tags: []
-  - Stat:
-      TagId: Mod.Offense.CastSpeed
-    Op: 2
-    Value: 0.9
-    RequiredTags:
-      MatchAll: 0
-      Tags:
-        Tags: []
+  - Modifier:
+      Stat:
+        TagId: Mod.Offense.Damage
+      Op: 0
+      Value: 3
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    IsScalable: 1
+  - Modifier:
+      Stat:
+        TagId: Mod.Offense.Critical
+      Op: 0
+      Value: 10
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    IsScalable: 0
+  - Modifier:
+      Stat:
+        TagId: Mod.Offense.CastSpeed
+      Op: 2
+      Value: 0.9
+      RequiredTags:
+        MatchAll: 0
+        Tags:
+          Tags: []
+    IsScalable: 0
   Components:
   - rid: 7617656363769921682
   references:

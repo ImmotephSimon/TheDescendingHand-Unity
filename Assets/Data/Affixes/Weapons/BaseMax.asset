@@ -13,12 +13,20 @@ MonoBehaviour:
   m_Name: BaseMax
   m_EditorClassIdentifier: 
   id: a80e9a93-3bc5-4ad7-8e1d-7bb6c8b0ca88
-  DisplayName: 
-  BaseValue: 40
-  Modifier:
-    TagId: Mod.Offense.Damage.Max
-  MathOp: 0
-  TagRequirement:
+  NameOverride: 
+  Mods:
+  - Stat:
+      TagId: Mod.Implicit
+    Op: 0
+    Value: 40
+    RequiredTags:
+      MatchAll: 0
+      Tags:
+        Tags:
+        - TagId: Mod.Offense.Damage.Max
+  ContextRequirement:
     MatchAll: 0
     Tags:
       Tags: []
+  Prerequisites: []
+  Tags: []

@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35d546714e5600244bf9148235d56df9, type: 3}
   m_Name: PlateHelmet
   m_EditorClassIdentifier: 
-  ID: plate_helmet
   DisplayName: Plate Helmet
   InventorySize: {x: 2, y: 2}
   Appearance:
@@ -23,15 +22,17 @@ MonoBehaviour:
   Tags:
     Tags: []
   Implicits:
-  - Stat:
-      TagId: Mod.Defense.Mitigation
-    Op: 0
-    Value: 5
-    RequiredTags:
-      MatchAll: 0
-      Tags:
+  - Modifier:
+      Stat:
+        TagId: Mod.Defense.Mitigation
+      Op: 0
+      Value: 5
+      RequiredTags:
+        MatchAll: 0
         Tags:
-        - TagId: Restriction.Physical
+          Tags:
+          - TagId: Restriction.Physical
+    IsScalable: 1
   Components:
   - rid: 7617656363769921681
   references:

@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
+[Serializable]
+public struct ItemImplicit
+{
+    public StatModifier Modifier;
+    public bool IsScalable;
+}
+
 [CreateAssetMenu(fileName = "NewItemDefinition", menuName = "Items/Item Definition")]
 public class ItemDefinition : ScriptableObject
 {
@@ -15,7 +22,7 @@ public class ItemDefinition : ScriptableObject
     public int RequiredLevel;
     public string Lore;
     public TagContainer Tags;
-    public List<StatModifier> Implicits;
+    public List<ItemImplicit> Implicits = new();
 
     [SerializeReference, SerializeReferenceDropdown]
     public List<ItemComponentDefinition> Components = new();

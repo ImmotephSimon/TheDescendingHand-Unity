@@ -10,7 +10,7 @@ public class ItemDropInstance : IInventoryItem
     public ItemDefinition BaseType { get; }
     public Rarity Rarity { get; }
     public List<AffixInstance> Explicits { get; }
-    public Dictionary<AffixInstance, ModifierHandle> ActiveExplicits { get; } = new();
+    public Dictionary<AffixInstance, List<ModifierHandle>> ActiveExplicits { get; } = new();
     public List<ModifierHandle> ActiveImplicits { get; } = new();
 
     public List<ItemUseComponent> Components { get; } = new();
@@ -33,31 +33,29 @@ public class ItemDropInstance : IInventoryItem
     {
         foreach (var affix in BaseType.Implicits)
         {
-            var handle = owner.Stats.AddModifier(affix);
+            var handle = owner.Stats.AddModifier(affix.Modifier);
             ActiveImplicits.Add(handle);
         }
 
-
         foreach (var affix in Explicits)
         {
-            var handle = owner.Stats.AddModifier(affix.ToStatModifier());
-            ActiveExplicits.Add(affix, handle);
+            var handles = new List<ModifierHandle>();
+            foreach (var mod in affix.ToStatModifiers(BaseType.Implicits))
+                handles.Add(owner.Stats.AddModifier(mod));
+
+            ActiveExplicits.Add(affix, handles);
         }
     }
 
     public void ClearModifiers(IEntity owner)
     {
         foreach (var handle in ActiveImplicits)
-        {
             owner.Stats.RemoveModifier(handle);
-        }
         ActiveImplicits.Clear();
 
-
-        foreach (var handle in ActiveExplicits.Values)
-        {
-            owner.Stats.RemoveModifier(handle);
-        }
+        foreach (var handles in ActiveExplicits.Values)
+            foreach (var handle in handles)
+                owner.Stats.RemoveModifier(handle);
 
         ActiveExplicits.Clear();
     }

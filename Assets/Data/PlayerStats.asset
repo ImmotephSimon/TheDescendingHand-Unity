@@ -63,9 +63,9 @@ MonoBehaviour:
       Tags:
         Tags: []
   - Stat:
-      TagId: Keystone.Inoculation
+      TagId: Mod.Stat.Strength
     Op: 0
-    Value: 1
+    Value: 4
     RequiredTags:
       MatchAll: 0
       Tags:

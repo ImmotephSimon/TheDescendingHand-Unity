@@ -13,13 +13,20 @@ MonoBehaviour:
   m_Name: ColdFlat
   m_EditorClassIdentifier: 
   id: ad48fab7-9ac0-481f-94ed-a794a90c35ad
-  DisplayName: 
-  BaseValue: 40
-  Modifier:
-    TagId: Mod.Offense.Damage
-  MathOp: 0
-  TagRequirement:
+  NameOverride: 
+  Mods:
+  - Stat:
+      TagId: Mod.Implicit
+    Op: 0
+    Value: 40
+    RequiredTags:
+      MatchAll: 0
+      Tags:
+        Tags:
+        - TagId: Restriction.Element.Cold
+  ContextRequirement:
     MatchAll: 0
     Tags:
-      Tags:
-      - TagId: Restriction.Element.Cold
+      Tags: []
+  Prerequisites: []
+  Tags: []
