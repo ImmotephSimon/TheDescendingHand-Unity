@@ -2,23 +2,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class InventoryView : MonoBehaviour
 {
     [SerializeField] private GameObject panelRoot;
     [SerializeField] private InventorySlotView slotPrefab;
     [SerializeField] private ItemIconView itemIconPrefab;
-    [SerializeField] private Transform itemContainer;
-    [SerializeField] private Vector2 cellSize = new(64f, 64f);
+    [SerializeField] private RectTransform itemContainer; // the box that shrinks
 
-    private readonly Vector2 spacing = new(2f, 2f);
     private readonly List<ItemIconView> spawnedIcons = new();
-
-    internal void ToggleVisibility() => SetVisibility(!panelRoot.activeSelf);
 
     private PlayerItemsSync _items;
     private InventorySlotView[,] slots;
+    private RectTransform grid;
+    private Vector2 lastBoxSize = new(-1f, -1f);
+
+    internal void ToggleVisibility() => SetVisibility(!panelRoot.activeSelf);
 
     public void Bind(PlayerItemsSync items)
     {
@@ -35,6 +34,7 @@ public class InventoryView : MonoBehaviour
 
     public void Initialize()
     {
+        CreateGridRoot();
         InitializeGrid();
         Refresh();
         SetVisibility(false);
@@ -44,6 +44,51 @@ public class InventoryView : MonoBehaviour
     {
         if (_items != null)
             _items.InventoryChanged -= Refresh;
+    }
+
+    // Slots and icons both live in this child, so they always line up.
+    private void CreateGridRoot()
+    {
+        if (grid != null)
+            return;
+
+        var go = new GameObject("Grid", typeof(RectTransform));
+        grid = (RectTransform)go.transform;
+        grid.SetParent(itemContainer, false);
+        grid.anchorMin = grid.anchorMax = grid.pivot = new Vector2(0.5f, 0.5f);
+        grid.anchoredPosition = Vector2.zero;
+    }
+
+    private void LateUpdate()
+    {
+        if (_items == null || slots == null || grid == null)
+            return;
+
+        Vector2 size = itemContainer.rect.size;
+        if (size == lastBoxSize)
+            return;
+
+        lastBoxSize = size;
+        FitToBox(size);
+    }
+
+    // cell = min(width / columns, height / rows): the tighter axis caps the size.
+    private void FitToBox(Vector2 box)
+    {
+        int rows = _items.InventoryRows;
+        int columns = _items.InventoryColumns;
+
+        float cell = Mathf.Max(0f, Mathf.Min(box.x / columns, box.y / rows));
+        grid.sizeDelta = new Vector2(cell * columns, cell * rows);
+    }
+
+    // Places a rect at (column,row) spanning (w,h) cells, as fractions of its parent.
+    private static void SetCellAnchors(RectTransform rt, int column, int row, int w, int h, int columns, int rows)
+    {
+        rt.anchorMin = new Vector2((float)column / columns, 1f - (float)(row + h) / rows);
+        rt.anchorMax = new Vector2((float)(column + w) / columns, 1f - (float)row / rows);
+        rt.offsetMin = Vector2.zero;
+        rt.offsetMax = Vector2.zero;
     }
 
     private void InitializeGrid()
@@ -60,22 +105,15 @@ public class InventoryView : MonoBehaviour
         int rows = _items.InventoryRows;
         int columns = _items.InventoryColumns;
 
-        if (TryGetComponent<GridLayoutGroup>(out var gridLayout))
-        {
-            gridLayout.cellSize = cellSize;
-            gridLayout.spacing = spacing;
-            gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-            gridLayout.constraintCount = columns;
-        }
-
         slots = new InventorySlotView[rows, columns];
 
         for (int row = 0; row < rows; row++)
         {
             for (int column = 0; column < columns; column++)
             {
-                var slot = Instantiate(slotPrefab, transform);
+                var slot = Instantiate(slotPrefab, grid);
                 slot.Initialize(row, column);
+                SetCellAnchors((RectTransform)slot.transform, column, row, 1, 1, columns, rows);
 
                 slot.OnSlotClicked += HandleSlotClicked;
                 slot.OnSlotRightClicked += HandleSlotRightClicked;
@@ -85,18 +123,16 @@ public class InventoryView : MonoBehaviour
                 slots[row, column] = slot;
             }
         }
+
+        lastBoxSize = new Vector2(-1f, -1f); // force a fit on the next LateUpdate
     }
 
-    private void HandleSlotClicked(
-        InventorySlotView slot,
-        PointerEventData eventData)
+    private void HandleSlotClicked(InventorySlotView slot, PointerEventData eventData)
     {
         _items.RequestInventorySlotClick(slot.Row, slot.Column);
     }
 
-    private void HandleSlotRightClicked(
-        InventorySlotView slot,
-        PointerEventData eventData)
+    private void HandleSlotRightClicked(InventorySlotView slot, PointerEventData eventData)
     {
         _items.RequestInventorySlotRightClick(slot.Row, slot.Column);
     }
@@ -118,39 +154,25 @@ public class InventoryView : MonoBehaviour
 
         spawnedIcons.Clear();
 
-        Transform parent = itemContainer != null
-            ? itemContainer
-            : transform;
+        int rows = _items.InventoryRows;
+        int columns = _items.InventoryColumns;
 
         foreach (var entry in _items.InventoryItems)
         {
             if (!ItemRegistry.Instance.TryGetIcon(entry.ItemId, out Sprite icon))
-            {
                 continue;
-            }
-            Vector2Int origin = entry.Position;
 
-            ItemIconView iconView = Instantiate(itemIconPrefab, parent);
+            ItemIconView iconView = Instantiate(itemIconPrefab, grid);
             spawnedIcons.Add(iconView);
 
-            Vector2 position = GetLocalPosition(origin.x, origin.y);
-            Vector2Int size = entry.Size;
+            SetCellAnchors(
+                (RectTransform)iconView.transform,
+                entry.Position.x, entry.Position.y,
+                entry.Size.x, entry.Size.y,
+                columns, rows);
 
-            Vector2 pixelSize = new(
-                size.x * cellSize.x + (size.x - 1) * spacing.x,
-                size.y * cellSize.y + (size.y - 1) * spacing.y
-            );
-
-            iconView.Render(icon, position, pixelSize);
+            iconView.GetComponentInChildren<Image>().sprite = icon;
         }
-    }
-
-    private Vector2 GetLocalPosition(int column, int row)
-    {
-        float x = column * (cellSize.x + spacing.x);
-        float y = -row * (cellSize.y + spacing.y);
-
-        return new Vector2(x, y);
     }
 
     public void SetVisibility(bool visible)

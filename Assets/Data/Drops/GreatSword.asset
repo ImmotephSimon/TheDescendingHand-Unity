@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GreatSword
   m_EditorClassIdentifier: 
   DisplayName: Great Sword
-  InventorySize: {x: 1, y: 3}
+  InventorySize: {x: 2, y: 3}
   Appearance:
     WorldModel: {fileID: 919132149155446097, guid: 00d7a23769fc07944a1a5477badd2caf, type: 3}
     Icon: {fileID: 21300000, guid: 7889127a7bdf7984f89d9e85cb7d35e6, type: 3}

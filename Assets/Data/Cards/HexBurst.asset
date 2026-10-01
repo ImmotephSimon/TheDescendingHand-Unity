@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51cc152e2d7861148baeded3a19dfa32, type: 3}
   m_Name: HexBurst
   m_EditorClassIdentifier: 
-  id: b5e63d63-e1f2-416f-99a7-db1bf531ec4f
+  idString: 35242003-c4f4-5e44-a8ed-f0e4f35d7707
   castTime: 1
   spawnAtCursor: 0
   visuals:
     Name: Hex Burst
     Description: Conditional
-    Art: {fileID: 21300000, guid: 21df9195ed43b004394e6d7913b03149, type: 3}
+    Icon: {fileID: 21300000, guid: 21df9195ed43b004394e6d7913b03149, type: 3}
     AnimationOverride: {fileID: 0}
     Vfx:
     - {fileID: 4422894025167180682, guid: b6bf06d8b658e41488f1c5621ef0269d, type: 3}

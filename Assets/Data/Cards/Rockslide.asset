@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4850475fc77982043a2c92eccd7f8e26, type: 3}
   m_Name: Rockslide
   m_EditorClassIdentifier: 
-  id: a186691a-a7ab-4264-9ce5-fe869c8008e5
+  idString: 110b1419-388f-c114-e9fd-e12c7dfe7c08
   castTime: 1
   spawnAtCursor: 1
   visuals:
     Name: Rockslide
     Description: 
-    Art: {fileID: 21300000, guid: 406984ac0d0fc2c4bbaf906048f7c43e, type: 3}
+    Icon: {fileID: 21300000, guid: 406984ac0d0fc2c4bbaf906048f7c43e, type: 3}
     AnimationOverride: {fileID: 0}
     Vfx: []
   DeckOverrides:

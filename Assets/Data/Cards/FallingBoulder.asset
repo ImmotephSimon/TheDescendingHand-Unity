@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14e5cc313ca53064fb2d70276a096fc1, type: 3}
   m_Name: FallingBoulder
   m_EditorClassIdentifier: 
-  id: 8f7def75-53f7-4a3f-a38a-d9b69d493398
+  idString: 94614cdd-c4bc-3aa4-cbe6-de0db41403c0
   castTime: 1
   spawnAtCursor: 1
   visuals:
     Name: Falling Boulder
     Description: Debris
-    Art: {fileID: 21300000, guid: 8a96b38c76be79946a150249547b07bc, type: 3}
+    Icon: {fileID: 21300000, guid: 8a96b38c76be79946a150249547b07bc, type: 3}
     AnimationOverride: {fileID: 0}
     Vfx: []
   DeckOverrides:

@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4371616eeba732146ae006219d721597, type: 3}
   m_Name: Electrify
   m_EditorClassIdentifier: 
-  id: 9e5bd61f-be00-4f2c-8b06-a986354d6a3d
+  idString: e2b7ad8f-1a06-9bc4-9848-34016914d041
   castTime: 1
   spawnAtCursor: 0
   visuals:
     Name: Electrify
     Description: Projectile\nChain
-    Art: {fileID: 21300000, guid: 2456dd2824f5ec540830760922f5bac6, type: 3}
+    Icon: {fileID: 21300000, guid: 2456dd2824f5ec540830760922f5bac6, type: 3}
     AnimationOverride: {fileID: 0}
     Vfx: []
   DeckOverrides:

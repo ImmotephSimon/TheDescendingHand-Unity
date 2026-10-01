@@ -12,25 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5711137fc2595904482e4d6a3f761933, type: 3}
   m_Name: Fireball
   m_EditorClassIdentifier: 
-  id: 28965096-8bcd-455e-b0af-c95d48a77579
+  idString: e790687b-550b-ebb4-89c4-d49bd9d1578a
   castTime: 1
   spawnAtCursor: 0
   visuals:
     Name: Fireball
     Description: 
-    Art: {fileID: 21300000, guid: dd3885098198d104888439be4c590aba, type: 3}
+    Icon: {fileID: 21300000, guid: dd3885098198d104888439be4c590aba, type: 3}
     AnimationOverride: {fileID: 0}
     Vfx: []
   DeckOverrides:
     addedDraws: 0
     addedDiscards: 0
   projectileInfo:
-    Speed: 3
+    Speed: 2
     Direction:
       Sideways: 0
-      Upward: 0.1
+      Upward: 0.3
       Forward: 1
-      Gravity: 0.3
+      Gravity: 0.2
     Visual: {fileID: 660952664026147940, guid: ab2560d8548d0bf4487d43ecf6771c10, type: 3}
     Count: 1
     Pierce: 10

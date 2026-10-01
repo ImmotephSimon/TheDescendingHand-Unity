@@ -31,6 +31,7 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     private Action _onActiveCardInterrupted;
     private IAnimationHandler _animationHandler;
     private CardRegistry _cardRegistry;
+    private Action animationCancelHandle;
 
     public void InitializeClientObservers(IAnimationHandler animationHandler)
     {
@@ -103,7 +104,7 @@ public class CardController : NetworkBehaviour, IAbilitySystem
             clip != null,
             $"[CardStartedObserversRpc] No animation clip handled for {clip}.");
 
-        _animationHandler?.PlayAnimation(clip, duration: animationDuration);
+        animationCancelHandle = _animationHandler?.PlayAnimation(clip, duration: animationDuration);
     }
 
 
@@ -142,6 +143,7 @@ public class CardController : NetworkBehaviour, IAbilitySystem
 
         _movementLockHandle = stats.AddModifier(
             new StatModifier(GameTags.ModStatMovement, MathOp.Multiplicative, 0));
+        
 
         CardRuntime runtime = CardFactory.CreateRuntime(card);
 
@@ -155,7 +157,12 @@ public class CardController : NetworkBehaviour, IAbilitySystem
                 runtime.Tags,
                 runtime.CastTime);
 
-        CardStartedObserversRpc(runtime.Definition.Id, castTime);
+
+        var channel = runtime.GetCardComponent<ChannelingComponent>();
+        var animationDuration = channel != null ? channel.TotalDuration : castTime;
+
+
+        CardStartedObserversRpc(runtime.Definition.Id, animationDuration);
 
         var castHandle = StartCoroutine(Server_CastTimeRoutine(runtime, castTime));
         _pendingCast = (runtime, handIndex, castHandle);
@@ -174,6 +181,12 @@ public class CardController : NetworkBehaviour, IAbilitySystem
 
             channel.OnCompleted += _onActiveCardCompleted;
             channel.OnInterrupted += _onActiveCardInterrupted;
+
+            stats.RemoveModifier(_movementLockHandle);
+            _movementLockHandle = stats.AddModifier(
+                new StatModifier(GameTags.ModStatMovement, MathOp.Multiplicative, card.Definition.CastMoveSpeed));
+            
+
         }
 
         card.ExecuteCastTimeDone();
@@ -210,8 +223,8 @@ public class CardController : NetworkBehaviour, IAbilitySystem
     {
         _owner.Stats.RemoveModifier(_movementLockHandle);
         _movementLockHandle = default;
-
-        // Animation shouldn't be handled here. 
+        animationCancelHandle?.Invoke();
+        animationCancelHandle = null;
     }
 
     private IEnumerator Server_CastTimeRoutine(CardRuntime card, float castTime)

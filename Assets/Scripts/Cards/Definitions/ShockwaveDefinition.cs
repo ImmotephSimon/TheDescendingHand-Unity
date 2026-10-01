@@ -27,7 +27,7 @@ public class ShockwaveDefinition : CardDefinition
         {
             Vector3 epicentre = card.TargetLocation;
 
-            context.ClientSpawn?.Invoke(this, new VfxSpawnParams
+            context.ClientSpawn(this, new VfxSpawnParams
             {
                 Position = epicentre,
                 Scale = Vector3.one * radius

@@ -20,7 +20,6 @@ public class ChannelingComponent : CardComponent
     private bool _isInputHeld = true;
     private bool _isChanneling = false;
     private List<Vector3> _tracePoints = new();
-    public IReadOnlyList<Vector3> TracePoints => _tracePoints;
 
 
     public event Action OnTick;
@@ -28,6 +27,7 @@ public class ChannelingComponent : CardComponent
     public event Action OnInterrupted;
 
     public override bool IsTicking => _isChanneling;
+    public float TotalDuration => _totalDuration;
 
     public void Configure(
         float tickInterval,
@@ -66,6 +66,8 @@ public class ChannelingComponent : CardComponent
         // Fixed: Properly stop channeling and notify listeners on key release
         if (_inputMode == ChannelInputMode.HoldToChannel && !_isInputHeld && _elapsedTime >= _minDuration)
         {
+            Debug.Log($"[{nameof(ChannelingComponent)}] Channel interrupted at {_elapsedTime:F2}s.");
+
             _isChanneling = false;
             OnInterrupted?.Invoke();
             return;
@@ -73,12 +75,12 @@ public class ChannelingComponent : CardComponent
 
         if (_totalDuration > 0f && _elapsedTime >= _totalDuration)
         {
+            Debug.Log($"[{nameof(ChannelingComponent)}] Channel completed at {_elapsedTime:F2}s.");
+
             _isChanneling = false;
             OnCompleted?.Invoke();
             return;
         }
-
-        _tracePoints.Add(transform.position);
 
         if (_tickInterval > 0f && _tickTimer >= _tickInterval)
         {

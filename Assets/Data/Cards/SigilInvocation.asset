@@ -9,26 +9,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed5c18a75f53355409b9bfbae7432355, type: 3}
-  m_Name: Shockwave
+  m_Script: {fileID: 11500000, guid: 06ac3927bd697cf4c9dbffea579741c6, type: 3}
+  m_Name: SigilInvocation
   m_EditorClassIdentifier: 
-  idString: d51ed67e-f05b-5f24-ab7c-bf72ade460e3
+  idString: 16bdcfc3-57ad-ccc4-6bd8-55a85335e703
   castTime: 1
   spawnAtCursor: 0
   visuals:
-    Name: Shockwave
-    Description: Debris
-    Icon: {fileID: 21300000, guid: 14a0f66a7be165c4ba476e3d7c40e390, type: 3}
+    Name: Sigil Invocation
+    Description: 'Corners: 3'
+    Icon: {fileID: 21300000, guid: 26838ad032bf91e438955a8de1e01bea, type: 3}
     AnimationOverride: {fileID: 0}
     Vfx:
+    - {fileID: 2607803137352215680, guid: f3cb59e40f071724cbe15c59f5fef672, type: 3}
     - {fileID: 1007127540951276732, guid: 3ace37360f306cb4aac03640550fa9ef, type: 3}
   DeckOverrides:
     addedDraws: 0
     addedDiscards: 0
-  radius: 8
-  force: 20
-  upwardModifier: 0
-  effectiveness: 1
+  effectiveness: 4
   damageConversion:
-    TagId: Restriction.Physical
-  delayDuration: 1
+    TagId: 
+  expectedShape: 0
+  minSize: 1
+  area: 2
+  tickInterval: 0.1
+  totalDuration: 5
+  minDuration: 0.25

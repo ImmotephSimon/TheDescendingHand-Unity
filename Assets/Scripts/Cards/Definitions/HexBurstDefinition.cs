@@ -26,7 +26,7 @@ public class HexBurstDefinition : CardDefinition
                         info,
                         effectiveness);
                     entity.Stats.RemoveModifier(hex);
-                    context.ClientSpawn.Invoke(this, new VfxSpawnParams(entity.Transform.position));
+                    context.ClientSpawn(this, new VfxSpawnParams(entity.Transform.position));
                 }
             }
         };

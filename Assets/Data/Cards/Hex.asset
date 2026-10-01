@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b32f82ba0ab3374bb288258070cfd43, type: 3}
   m_Name: Hex
   m_EditorClassIdentifier: 
-  id: 54e3456a-cc7f-4f51-8078-96146076f287
+  idString: 3667736c-b390-c0e4-49cc-dcd1fc9d4331
   castTime: 1
   spawnAtCursor: 1
   visuals:
     Name: Curse
     Description: ???
-    Art: {fileID: 21300000, guid: e691198d56e3a1848b5009e1ff94dbb5, type: 3}
+    Icon: {fileID: 21300000, guid: e691198d56e3a1848b5009e1ff94dbb5, type: 3}
     AnimationOverride: {fileID: 0}
     Vfx:
     - {fileID: 660952664026147940, guid: c4ef8773d78968641a566da97d2ab368, type: 3}

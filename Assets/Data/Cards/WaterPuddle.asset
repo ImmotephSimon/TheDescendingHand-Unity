@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84cdc03f97566e14f83697153feefd6d, type: 3}
   m_Name: WaterPuddle
   m_EditorClassIdentifier: 
-  id: 94bc2bad-a989-4d49-8b2c-004dee33db49
+  idString: 8cad8e3c-2146-f054-8ac2-064e6f08acfe
   castTime: 1
   spawnAtCursor: 0
   visuals:
     Name: Water Puddle
     Description: Wet
-    Art: {fileID: 21300000, guid: 2bccd332882fcd14b9e4c377e432c587, type: 3}
+    Icon: {fileID: 21300000, guid: 2bccd332882fcd14b9e4c377e432c587, type: 3}
     AnimationOverride: {fileID: 0}
     Vfx:
     - {fileID: 4422894025167180682, guid: 2667054c4967f2940b00d415a7edb12a, type: 3}

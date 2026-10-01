@@ -3,7 +3,7 @@ using FishNet;
 using FishNet.Transporting;
 using System.Linq;
 
-public static class ClientBootstrapper
+public static class NetworkBootstrapper
 {
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Initialize()
@@ -36,20 +36,25 @@ public static class ClientBootstrapper
         switch (mode)
         {
             case NetworkMode.Client:
+                InstanceFinder.ClientManager.OnClientConnectionState += OnClientStateChanged;
                 InstanceFinder.ClientManager.StartConnection();
                 break;
 
             case NetworkMode.Server:
+                InstanceFinder.ServerManager.OnServerConnectionState += OnServerStateChanged;
                 InstanceFinder.ServerManager.StartConnection();
                 break;
 
             case NetworkMode.Host:
+                InstanceFinder.ServerManager.OnServerConnectionState += OnServerStateChanged;
                 InstanceFinder.ServerManager.StartConnection();
+
+                InstanceFinder.ClientManager.OnClientConnectionState += OnClientStateChanged;
                 InstanceFinder.ClientManager.StartConnection();
                 break;
         }
-
-        InstanceFinder.ClientManager.OnClientConnectionState += OnClientStateChanged;
+        
+        
     }
 
     private static NetworkMode GetNetworkMode(string[] args)
@@ -80,6 +85,16 @@ public static class ClientBootstrapper
         return NetworkMode.Client;
 #endif
     }
+
+    private static void OnServerStateChanged(ServerConnectionStateArgs args)
+    {
+        if (args.ConnectionState != LocalConnectionState.Started) return;
+
+        var prefab = Resources.Load<GameObject>("NetworkManager");
+        var go = Object.Instantiate(prefab);
+        InstanceFinder.ServerManager.Spawn(go);
+    }
+
     private static void OnClientStateChanged(ClientConnectionStateArgs args)
     {
     }

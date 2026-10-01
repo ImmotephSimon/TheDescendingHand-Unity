@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerInventory : BaseInventory, ITargetable
 {
-    public override int Rows => 6;
+    public override int Rows => 5;
     public override int Columns => 8;
 
     private Loadout _loadout;

@@ -6,7 +6,8 @@ using System;
 public class LoadoutSlotView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     [SerializeField] private EquipmentType slotType;
-    [SerializeField] private Image icon;
+    private Image icon;
+    [SerializeField] private Sprite emptySprite;
 
     public event Action<EquipmentType> OnSlotRightClicked;
     public event Action<EquipmentType> OnSlotHoverEnter;
@@ -14,10 +15,23 @@ public class LoadoutSlotView : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public EquipmentType SlotType => slotType;
 
-    public void UpdateSlot(Sprite itemIcon, Sprite emptySprite)
+    private void Awake()
     {
-        icon.sprite = itemIcon != null ? itemIcon : emptySprite;
-        icon.enabled = icon.sprite != null;
+        icon = GetComponentInChildren<Image>();
+    }
+
+    public void UpdateSlot(Sprite itemIcon)
+    {
+        if (itemIcon != null)
+        {
+            icon.sprite = itemIcon;
+            icon.color = new Color(1f, 1f, 1f, 1f);
+        }
+        else
+        {
+            icon.sprite = emptySprite;
+            icon.color = new Color(0.3f, 0.3f, 0.3f, 0.7f); // darkened
+        } 
     }
 
     public void OnPointerClick(PointerEventData eventData)

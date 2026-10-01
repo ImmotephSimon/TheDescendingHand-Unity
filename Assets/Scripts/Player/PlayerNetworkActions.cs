@@ -1,10 +1,9 @@
 ﻿using FishNet.Connection;
 using FishNet.Object;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerNetworkActions : NetworkActionBase
+public class PlayerNetworkActions : NetworkBehaviour
 {
 
     [ServerRpc]

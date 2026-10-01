@@ -7,7 +7,6 @@ using static PlayerItemsSync;
 public class LoadoutView : MonoBehaviour
 {
     [SerializeField] private List<LoadoutSlotView> slots;
-    [SerializeField] private Sprite emptySlotSprite;
 
     private PlayerItemsSync _items;
 
@@ -68,18 +67,18 @@ public class LoadoutView : MonoBehaviour
 
             if (dto.Equals(default(ItemTooltipDto)))
             {
-                slot.UpdateSlot(null, emptySlotSprite);
+                slot.UpdateSlot(null);
                 continue;
             }
             ItemRegistry.Instance.TryGetDefinition(dto.BaseTypeId, out ItemDefinition def);
 
-            slot.UpdateSlot(def.Appearance.Icon, emptySlotSprite);
+            slot.UpdateSlot(def.Appearance.Icon);
         }
     }
 
     private void ClearView()
     {
         foreach (var slot in slots)
-            slot.UpdateSlot(null, emptySlotSprite);
+            slot.UpdateSlot(null);
     }
 }

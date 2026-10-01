@@ -32,7 +32,7 @@ public class FirewallDefinition : CardDefinition
 
         card.OnActivated += () =>
         {
-            context.ClientSpawn.Invoke(this, new VfxSpawnParams(card.TargetLocation, 0, duration));
+            context.ClientSpawn(this, new VfxSpawnParams(card.TargetLocation, 0, duration));
         };
     }
 }

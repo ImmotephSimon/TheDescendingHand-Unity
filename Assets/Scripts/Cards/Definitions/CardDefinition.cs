@@ -3,18 +3,17 @@ using UnityEngine;
 
 public abstract class CardDefinition : ScriptableObject
 {
-    [SerializeField, HideInInspector]
-    private Guid id;
+    [SerializeField, HideInInspector] private string idString;
+    public Guid Id => Guid.Parse(idString);
 
     [SerializeField]
     private float castTime = 1f;
     [SerializeField] private bool spawnAtCursor = false;
     [SerializeField]
     public CardVisuals visuals = new();
-    public Guid Id => id;
     public float CastTime => castTime;
     public bool SpawnAtCursor => spawnAtCursor;
-
+    public virtual float CastMoveSpeed => 0f;
     public CardVisuals Visuals => visuals; 
     public DeckOverrides DeckOverrides; 
     public abstract void Construct(CardInitContext context, CardRuntime card);
@@ -23,10 +22,14 @@ public abstract class CardDefinition : ScriptableObject
     private void OnValidate()
     {
         string path = UnityEditor.AssetDatabase.GetAssetPath(this);
-        if (!string.IsNullOrEmpty(path))
+        if (string.IsNullOrEmpty(path)) return;
+
+        string hex = UnityEditor.AssetDatabase.AssetPathToGUID(path);
+        string value = Guid.Parse(hex).ToString();
+        if (idString != value)
         {
-            string hex = UnityEditor.AssetDatabase.AssetPathToGUID(path);
-            id = System.Guid.Parse(hex);
+            idString = value;
+            UnityEditor.EditorUtility.SetDirty(this);
         }
     }
 #endif
@@ -58,21 +61,20 @@ public readonly struct CardInitContext
 {
     public readonly Guid InstanceId;
     public readonly IEntity Owner;
-    public readonly Func<GameObject, GameObject> ServerSpawn;
-    public readonly Func<CardDefinition, VfxSpawnParams, Action> ClientSpawn;
 
-    public CardInitContext(
-        Guid instanceId,
-        IEntity owner,
-        Func<GameObject, GameObject> serverNetworkSpawn,
-        Func<CardDefinition, VfxSpawnParams, Action> clientNetworkSpawn)
+    public CardInitContext(Guid instanceId, IEntity owner)
     {
         InstanceId = instanceId;
         Owner = owner;
-        ServerSpawn = serverNetworkSpawn;
-        ClientSpawn = clientNetworkSpawn;
     }
+
+    public GameObject ServerSpawn(GameObject go) =>
+        NetworkManager.Instance.SpawnCapped(go);
+
+    public Action ClientSpawn(CardDefinition def, VfxSpawnParams p) =>
+        NetworkManager.Instance.SpawnClientVfx(Owner, def, p);
 }
+
 [Serializable]
 public class DeckOverrides
 {
