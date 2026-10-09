@@ -21,7 +21,7 @@ public class ExplosiveArrowDefinition : CardDefinition
         var projectile = card.AddCardComponent<ProjectileComponent>();
         projectile.Configure(
             projectileInfo,
-            context.ServerSpawn);
+            context);
 
         var channel = card.AddCardComponent<ChannelingComponent>();
         channel.Configure(

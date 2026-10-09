@@ -2,7 +2,6 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ProjectileController : NetworkBehaviour
@@ -33,11 +32,11 @@ public class ProjectileController : NetworkBehaviour
             EnvironmentMask = LayerMask.GetMask("Wall", "Default", "Floor");
     }
 
-    public void Initialize(ProjectileInfo info, IEntity owner)
+    public void Initialize(ProjectileInfo info, IEntity owner, Transform frame = null)
     {
         _info = info;
         _owner = owner;
-        _velocity = _info.GetLaunchVelocity(_owner);
+        _velocity = _info.GetLaunchVelocity(frame != null ? frame : owner.Transform);
         _initialized = true;
     }
 

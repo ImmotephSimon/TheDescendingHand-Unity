@@ -60,8 +60,5 @@ public class ItemDropInstance : IInventoryItem
         ActiveExplicits.Clear();
     }
 
-    public void Display()
-    {
-        throw new NotImplementedException();
-    }
+    public TooltipDto Display() => ItemTooltipBuilder.Build(this);
 }

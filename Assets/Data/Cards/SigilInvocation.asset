@@ -17,7 +17,7 @@ MonoBehaviour:
   spawnAtCursor: 0
   visuals:
     Name: Sigil Invocation
-    Description: 'Corners: 3'
+    Description: 'Trace: Triad (1)'
     Icon: {fileID: 21300000, guid: 26838ad032bf91e438955a8de1e01bea, type: 3}
     AnimationOverride: {fileID: 0}
     Vfx:
@@ -29,7 +29,6 @@ MonoBehaviour:
   effectiveness: 4
   damageConversion:
     TagId: 
-  expectedShape: 0
   minSize: 1
   area: 2
   tickInterval: 0.1

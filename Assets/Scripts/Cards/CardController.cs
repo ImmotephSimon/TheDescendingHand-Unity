@@ -189,7 +189,7 @@ public class CardController : NetworkBehaviour, IAbilitySystem
 
         }
 
-        card.ExecuteCastTimeDone();
+        card.Cast();
 
         if (channel != null)
             channel.SetInputHeld(_isInputHeld);

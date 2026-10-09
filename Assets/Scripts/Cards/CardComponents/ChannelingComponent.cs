@@ -89,6 +89,13 @@ public class ChannelingComponent : CardComponent
         }
     }
 
+    public void Complete()
+    {
+        if (!_isChanneling) return;
+        _isChanneling = false;
+        OnCompleted?.Invoke();
+    }
+
     protected override void OnCancel()
     {
         if (!_isChanneling) return;

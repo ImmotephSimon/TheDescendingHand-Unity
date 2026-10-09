@@ -13,12 +13,6 @@ public struct InventoryItemDto
     public Vector2Int Size;
 }
 
-[Serializable]
-public struct CardTooltipDto
-{
-    public string CardId;
-    // Add any dynamic card state (e.g., Level, Foil, XP)
-}
 
 [Serializable]
 public struct ItemTooltipDto

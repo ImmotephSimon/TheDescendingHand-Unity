@@ -1,6 +1,4 @@
 using System;
-using Unity.AppUI.UI;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Cards/Sigil Invocation")]
@@ -11,7 +9,6 @@ public class SigilInvocationDefinition : CardDefinition
     [SerializeField] private GameTag damageConversion;
 
     [Header("Sigil")]
-    [SerializeField] private TracedShape expectedShape;
     [SerializeField] private float minSize = 1f;
     [SerializeField] private float area = 2f;
 
@@ -20,7 +17,7 @@ public class SigilInvocationDefinition : CardDefinition
     [SerializeField] private float totalDuration = 5f;
     [SerializeField] private float minDuration = 0.25f;
     private Action vfxCancelHandle;
-    
+
 
     public override float CastMoveSpeed => 0.5f;
 
@@ -31,18 +28,18 @@ public class SigilInvocationDefinition : CardDefinition
         var damage = card.AddCardComponent<DirectDamageComponent>();
         damage.Configure(effectiveness, damageConversion);
 
-        trace.Configure(expectedShape, minSize);
+        trace.Configure(TracedShape.Triangle, minSize, TraceMatchMode.Lenient);
         channel.Configure(
             tickInterval,
             totalDuration,
             ChannelInputMode.Automatic,
             minDuration);
 
-        card.OnActivated += () => 
+        card.OnActivated += () =>
         {
             vfxCancelHandle = context.ClientSpawn(
                 this,
-                new VfxSpawnParams(card.TargetLocation, attach: true)
+                new VfxSpawnParams(card.TargetLocation, vfxIndex: 0, attach: true)
             );
         };
 
@@ -64,7 +61,7 @@ public class SigilInvocationDefinition : CardDefinition
                     {
                         Scale = Vector3.one * area
                     });
-                }
+            }
             int targetMask = 1 << card.Owner.HostileLayer;
             foreach (var collider in Physics.OverlapBox(res.Center, res.HalfExtents, Quaternion.identity, targetMask))
             {

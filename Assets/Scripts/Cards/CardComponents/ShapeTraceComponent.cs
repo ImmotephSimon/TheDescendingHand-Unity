@@ -9,57 +9,117 @@ public enum TracedShape
     Square
 }
 
+public enum TraceMatchMode { Exact, Lenient }
+
 public class ShapeTraceComponent : CardComponent
 {
-    [Header("Detection tuning")]
-    [SerializeField] private float _cornerAngleThreshold = 35f;   // degrees; direction change needed to count as a corner
-    [SerializeField] private int _smoothingWindow = 3;            // compare point[i-w] to point[i+w] instead of neighbours, to reduce jitter
-    [SerializeField] private float _cornerMergeDistance = 0.75f;  // corners closer than this (world units) get collapsed into one
-    [SerializeField] private float _closureTolerancePct = 0.35f;  // end point must be within this % of shape size from start point
-    [SerializeField] private float _minTraceDistance = 0.05f;
+    private float _closureTolerancePct = 0.35f;  // end point must be within this % of shape size from start point
+    private float _minTraceDistance = 0.05f;
+    private static float _roundnessTolerance = 0.3f;
 
+    private float _cornerAngleThreshold;   // degrees; direction change needed to count as a corner
     private readonly List<Vector3> _tracePoints = new();
     private bool _isTracing;
     private const int ResampleCount = 72;
     private TracedShape _expectedShape;
     private float _minSize;
+    private TraceMatchMode _traceMode;
     private Vector3 _lastTracePoint;
+
     public event Action OnTraceStarted;
     public event Action<ShapeTraceResult> OnTraceEvaluated;
 
-    public void Configure(TracedShape expectedShape, float minSize)
+    public void Configure(TracedShape expectedShape, float minSize, TraceMatchMode mode, float cornerAngle = 35f)
     {
         _expectedShape = expectedShape;
         _minSize = minSize;
+        _traceMode = mode;
+        _cornerAngleThreshold = cornerAngle;
     }
 
     protected override void OnActivate()
     {
         base.OnActivate();
 
+        base.OnActivate();
+        BeginTrace();
+        OnTraceStarted?.Invoke();
+    }
+
+    public void BeginTrace()
+    {
         Debug.Log($"[{nameof(ShapeTraceComponent)}] Started tracing. Expected: {_expectedShape}");
 
+        _lastTracePoint = Owner.Transform.position;
         _tracePoints.Clear();
         _isTracing = true;
-        OnTraceStarted?.Invoke();
     }
 
     public void EndTrace()
     {
         _isTracing = false;
+        var res = Evaluate();
+        if (!res.Matched)
+            Debug.Log($"[{nameof(ShapeTraceComponent)}] No match for {_expectedShape} at end of trace");
+        OnTraceEvaluated?.Invoke(res);
+    }
 
-        if (_tracePoints.Count < 4)
+    public ShapeTraceResult Evaluate()
+    {
+        if (_tracePoints.Count < 4) return default;
+
+        List<Vector3> points = _tracePoints;
+        bool matched;
+
+        if (_traceMode == TraceMatchMode.Lenient)
         {
-            OnTraceEvaluated?.Invoke(default); // Matched = false, Outline = null -> check before use
-            return;
+            matched = TryFindSlice(out var slice);
+            if (matched) points = slice;
+        }
+        else
+        {
+            matched = Matches(_tracePoints, _expectedShape, _minSize);
         }
 
-        bool matched = Matches(_tracePoints, _expectedShape, _minSize);
-        Vector2[] outline = Resample(ToXZ(_tracePoints), ResampleCount).ToArray(); // using System.Linq
-        Vector3 center = BoundingCenter(_tracePoints);
+        Vector2[] outline = Resample(ToXZ(points), ResampleCount).ToArray();
+        Vector3 center = BoundingCenter(points);
 
-        OnTraceEvaluated?.Invoke(new ShapeTraceResult(matched, _expectedShape, center, outline, center.y));
+        if (matched)
+            Debug.Log($"[{nameof(ShapeTraceComponent)}] Matched {_expectedShape} ({_traceMode}), {points.Count} points");
+
+
+        return new ShapeTraceResult(matched, _expectedShape, center, outline, center.y);
     }
+
+    // Shortest sub-path anywhere in the trace that passes the normal checks
+    private bool TryFindSlice(out List<Vector3> slice)
+    {
+        int n = _tracePoints.Count;
+        int stride = Mathf.Max(1, n / 40); // caps candidates at ~40 points
+
+        for (int len = 4 * stride; len < n; len += stride)
+        {
+            for (int start = 0; start + len < n; start += stride)
+            {
+                var candidate = _tracePoints.GetRange(start, len + 1);
+                if (Matches(candidate, _expectedShape, _minSize))
+                {
+                    slice = candidate;
+                    return true;
+                }
+            }
+        }
+
+        // also try the whole path
+        slice = null;
+        if (Matches(_tracePoints, _expectedShape, _minSize))
+        {
+            slice = _tracePoints;
+            return true;
+        }
+        return false;
+    }
+
 
     private static Vector3 BoundingCenter(IReadOnlyList<Vector3> points)
     {
@@ -122,11 +182,32 @@ public class ShapeTraceComponent : CardComponent
 
         return expected switch
         {
-            TracedShape.Circle => cornerCount <= 1,
+            TracedShape.Circle => IsRound(path),
             TracedShape.Triangle => cornerCount == 3,
             TracedShape.Square => cornerCount == 4,
             _ => false
         };
+    }
+
+    private bool IsRound(List<Vector2> path)
+    {
+        var p = Resample(path, ResampleCount);
+        Vector2 c = Vector2.zero;
+        foreach (var v in p) c += v;
+        c /= p.Count;
+
+        float sum = 0f;
+        foreach (var v in p) sum += Vector2.Distance(v, c);
+        float avg = sum / p.Count;
+        if (avg < 1e-4f) return false;
+
+        float maxDev = 0f;
+        foreach (var v in p)
+            maxDev = Mathf.Max(maxDev, Mathf.Abs(Vector2.Distance(v, c) - avg));
+
+        float ratio = maxDev / avg;
+        Debug.Log($"[{nameof(ShapeTraceComponent)}] Roundness deviation: {ratio:F2} (tolerance {_roundnessTolerance})");
+        return ratio <= _roundnessTolerance;
     }
 
     private static List<Vector2> ToXZ(List<Vector3> points)
@@ -154,7 +235,7 @@ public class ShapeTraceComponent : CardComponent
         return closeDist <= size * _closureTolerancePct;
     }
 
-    
+
 
     private int CountCorners(List<Vector2> path)
     {

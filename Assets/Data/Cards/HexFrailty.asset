@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b32f82ba0ab3374bb288258070cfd43, type: 3}
-  m_Name: Hex
+  m_Name: HexFrailty
   m_EditorClassIdentifier: 
   idString: 3667736c-b390-c0e4-49cc-dcd1fc9d4331
   castTime: 1
   spawnAtCursor: 1
   visuals:
-    Name: Curse
-    Description: ???
+    Name: 'Hex: Frailty'
+    Description: Hex
     Icon: {fileID: 21300000, guid: e691198d56e3a1848b5009e1ff94dbb5, type: 3}
     AnimationOverride: {fileID: 0}
     Vfx:

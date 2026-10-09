@@ -1,5 +1,4 @@
-﻿using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(menuName = "Cards/Fireball")]
 public class FireballDefinition : CardDefinition
@@ -10,10 +9,12 @@ public class FireballDefinition : CardDefinition
     [SerializeField] private float duration;
     [SerializeField] private float radius;
 
+    public ProjectileInfo ProjectileInfo { get { return projectileInfo; } }
+
     public override void Construct(CardInitContext context, CardRuntime card)
     {
         var projectile = card.AddCardComponent<ProjectileComponent>();
-        projectile.Configure(projectileInfo, context.ServerSpawn);
+        projectile.Configure(projectileInfo, context);
 
         var overlap = card.AddSphereOverlap(radius);
 

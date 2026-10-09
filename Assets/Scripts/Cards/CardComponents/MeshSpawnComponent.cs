@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class MeshSpawnComponent : CardComponent
 {
@@ -30,7 +29,7 @@ public class MeshSpawnComponent : CardComponent
     {
         Vector3 position = Card.TargetLocation + _offset;
 
-        GameObject spawned = UnityEngine.Object.Instantiate(
+        GameObject spawned = Instantiate(
             _prefab,
             position,
             Owner.Transform.rotation);

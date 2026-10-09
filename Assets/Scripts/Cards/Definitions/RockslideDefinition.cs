@@ -59,7 +59,7 @@ public class RockslideDefinition : CardDefinition
 
                 area.OnEntityEntered += target =>
                 {
-                    damage?.TriggerDamage(
+                    damage.TriggerDamage(
                         new HitInfo(
                             target,
                             card.Owner,

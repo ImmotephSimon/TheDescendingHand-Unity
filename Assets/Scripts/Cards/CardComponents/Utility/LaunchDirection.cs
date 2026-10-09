@@ -19,11 +19,11 @@ public class LaunchDirection
         Forward = forward;
     }
 
-    public Vector3 GetDirection(IEntity owner)
+    public Vector3 GetDirection(Transform frame)
     {
         return
-            owner.Transform.right * Sideways +
-            owner.Transform.forward * Forward +
-            owner.Transform.up * Upward;
+            frame.right * Sideways +
+            frame.forward * Forward +
+            frame.up * Upward;
     }
 }

@@ -14,12 +14,10 @@ public class SequenceComponent : CardComponent
         _delay = delay;
     }
 
-    public override void Initialize(CardRuntime card, IEntity owner)
+    protected override void OnActivate()
     {
-        base.Initialize(card, owner);
-        OnBeginRoutine();
+        StartCoroutine(OnBeginRoutine());
     }
-
 
     protected IEnumerator OnBeginRoutine()
     {

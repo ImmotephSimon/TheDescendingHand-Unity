@@ -48,7 +48,7 @@ public class EnemyCardAttack : EnemyAttack
 
     public override void OnAnimationFinish()
     {
-        _runtime?.ExecuteCastTimeDone();
+        _runtime?.Cast();
     }
 
 

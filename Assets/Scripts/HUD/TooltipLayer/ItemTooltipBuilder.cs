@@ -1,110 +1,70 @@
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class ItemTooltipView : MonoBehaviour
+public static class ItemTooltipBuilder
 {
-    [SerializeField] private TextMeshProUGUI nameText;
-    [SerializeField] private TextMeshProUGUI baseTypeText;
-    [SerializeField] private TextMeshProUGUI implicitsText;
-    [SerializeField] private TextMeshProUGUI explicitsText;
-    [SerializeField] private TextMeshProUGUI loreText;
-
-    [Header("Optional Section Wrappers")]
-    [SerializeField] private GameObject bottomSection;
-
-    private RectTransform rectTransform;
-
-    private void Awake()
+    public static TooltipDto Build(ItemDropInstance item)
     {
-        rectTransform = GetComponent<RectTransform>();
-    }
+        var equipComp = GetEquipComponent(item.BaseType);
 
-    public void SetItem(ItemTooltipDto item)
-    {
-        ItemRegistry.Instance.TryGetDefinition(item.BaseTypeId, out ItemDefinition definition);
-        ItemRegistry.Instance.TryGetRarity(item.RarityId, out Rarity rarity);
+        var data = new ItemTooltipDto
+        {
+            EquipmentTypeId = equipComp != null ? equipComp.EquipmentType.ID : default,
+            BaseTypeId = item.BaseType.Id,
+            RarityId = item.Rarity.Id,
 
-        SetTextSection(nameText, definition.DisplayName, rarity.DisplayColor);
+            Implicits = item.BaseType.Implicits.Select(x => x.Modifier)
+                .Select(AffixState.FromModifier)
+                .ToList(),
 
-        var equipComp = GetEquipComponent(definition);
+            Explicits = item.Explicits
+                .Select(affix => AffixState.FromInstance(affix, item.BaseType.Implicits))
+                .ToList()
+        };
+
+        // Title = name (rarity colored) + base type on a second line
+        string colorHex = ColorUtility.ToHtmlStringRGB(item.Rarity.DisplayColor);
+        string title = $"<color=#{colorHex}>{item.BaseType.DisplayName}</color>";
+
         if (equipComp != null)
-        {
-            SetTextSection(baseTypeText, equipComp.EquipmentType.name);
-        }
+            title += $"\n<size=70%>{equipComp.EquipmentType.name}</size>";
 
-        SetTextSection(implicitsText, BuildImplicits(item));
-        SetTextSection(explicitsText, AffixesToString(item.Explicits));
+        var header = new List<string>();
+        AddIfNotEmpty(header, GetDamageText(data));
+        AddIfNotEmpty(header, GetRawImplicitText(data));
+        AddIfNotEmpty(header, GetCritText(data));
+        AddIfNotEmpty(header, GetSpeedText(data));
 
-        bool hasLore = !string.IsNullOrEmpty(definition.Lore);
-        if (bottomSection != null)
-        {
-            bottomSection.SetActive(hasLore);
-        }
+        var body = new List<string>();
+        AddIfNotEmpty(body, AffixesToString(data.Explicits));
 
-        SetTextSection(loreText, definition.Lore);
+        var footer = new List<string>();
+        AddIfNotEmpty(footer, item.BaseType.Lore);
 
-        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+        return new TooltipDto(
+            id: item.BaseType.Id,
+            layout: TooltipLayout.Equipment,
+            title: title,
+            header: header,
+            body: body,
+            footer: footer);
     }
 
-    public EquipComponentDefinition GetEquipComponent(ItemDefinition definition)
+    private static void AddIfNotEmpty(List<string> list, string text)
+    {
+        if (!string.IsNullOrEmpty(text))
+            list.Add(text);
+    }
+
+    public static EquipComponentDefinition GetEquipComponent(ItemDefinition definition)
     {
         return definition.Components
             .OfType<EquipComponentDefinition>()
             .FirstOrDefault();
     }
 
-    private void SetTextSection(TextMeshProUGUI field, string content)
-    {
-        if (field == null) return;
-
-        bool hasContent = !string.IsNullOrEmpty(content);
-        field.gameObject.SetActive(hasContent);
-
-        if (hasContent)
-            field.text = content;
-    }
-
-    private void SetTextSection(TextMeshProUGUI field, string content, Color color)
-    {
-        if (field == null) return;
-
-        bool hasContent = !string.IsNullOrEmpty(content);
-        field.gameObject.SetActive(hasContent);
-
-        if (hasContent)
-        {
-            field.text = content;
-            field.color = color;
-        }
-    }
-
-    private string BuildImplicits(ItemTooltipDto item)
-    {
-        var lines = new List<string>();
-
-        string damage = GetDamageText(item);
-        if (!string.IsNullOrEmpty(damage))
-            lines.Add(damage);
-
-        string rawImplicits = GetRawImplicitText(item);
-        if (!string.IsNullOrEmpty(rawImplicits))
-            lines.Add(rawImplicits);
-
-        string crit = GetCritText(item);
-        if (!string.IsNullOrEmpty(crit))
-            lines.Add(crit);
-
-        string speed = GetSpeedText(item);
-        if (!string.IsNullOrEmpty(speed))
-            lines.Add(speed);
-
-        return string.Join("\n", lines);
-    }
-
-    private string GetRawImplicitText(ItemTooltipDto item)
+    private static string GetRawImplicitText(ItemTooltipDto item)
     {
         if (item.Implicits == null)
             return string.Empty;
@@ -125,7 +85,7 @@ public class ItemTooltipView : MonoBehaviour
         return string.Join("\n", lines);
     }
 
-    private bool IsDamageStat(GameTag stat)
+    private static bool IsDamageStat(GameTag stat)
     {
         if (stat == null) return false;
 
@@ -142,14 +102,14 @@ public class ItemTooltipView : MonoBehaviour
         return false;
     }
 
-    private bool IsDisplayedAsWeaponStat(GameTag stat)
+    private static bool IsDisplayedAsWeaponStat(GameTag stat)
     {
         return IsDamageStat(stat) ||
                stat == GameTags.ModOffenseCritical ||
                stat == GameTags.ModOffenseCastSpeed;
     }
 
-    private List<GameTag> GetElementTags(TagRequirement requirement, GameTag stat)
+    private static List<GameTag> GetElementTags(TagRequirement requirement, GameTag stat)
     {
         var elements = new List<GameTag>();
 
@@ -164,7 +124,7 @@ public class ItemTooltipView : MonoBehaviour
         return elements;
     }
 
-    private string GetDamageText(ItemTooltipDto item)
+    private static string GetDamageText(ItemTooltipDto item)
     {
         var ranges = new Dictionary<GameTag, (float Min, float Max)>();
 
@@ -282,7 +242,7 @@ public class ItemTooltipView : MonoBehaviour
         return string.Join("\n", lines);
     }
 
-    private string GetCritText(ItemTooltipDto item)
+    private static string GetCritText(ItemTooltipDto item)
     {
         float baseCrit = 0f;
         float critMultiplier = 1f;
@@ -323,7 +283,7 @@ public class ItemTooltipView : MonoBehaviour
         return $"Critical: {finalCrit:F2}%";
     }
 
-    private string GetSpeedText(ItemTooltipDto item)
+    private static string GetSpeedText(ItemTooltipDto item)
     {
         float castSpeed = 0f;
         bool found = false;
@@ -367,12 +327,12 @@ public class ItemTooltipView : MonoBehaviour
         return $"Cast Speed: {castSpeed:F2}";
     }
 
-    private float NormalizePercent(float value)
+    private static float NormalizePercent(float value)
     {
         return value > 1f ? value / 100f : value;
     }
 
-    private string GetDamageLabel(GameTag element)
+    private static string GetDamageLabel(GameTag element)
     {
         if (element == GameTags.RestrictionElementFire) return "Fire Damage";
         if (element == GameTags.RestrictionElementCold) return "Cold Damage";
@@ -381,7 +341,7 @@ public class ItemTooltipView : MonoBehaviour
         return "Damage";
     }
 
-    private string GetDamageColorHex(GameTag element)
+    private static string GetDamageColorHex(GameTag element)
     {
         if (element == GameTags.RestrictionElementFire) return "#FF5555";
         if (element == GameTags.RestrictionElementCold) return "#55FFFF";
@@ -390,7 +350,7 @@ public class ItemTooltipView : MonoBehaviour
         return "#FFFFFF";
     }
 
-    private string AffixesToString(List<AffixState> states)
+    private static string AffixesToString(List<AffixState> states)
     {
         if (states == null || states.Count == 0) return string.Empty;
         return string.Join("\n", states

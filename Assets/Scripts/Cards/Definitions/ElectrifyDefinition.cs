@@ -17,7 +17,7 @@ public class ElectrifyDefinition : CardDefinition
         var projectile = card.AddCardComponent<ProjectileComponent>();
         projectile.Configure(
             projectileInfo,
-            context.ServerSpawn);
+            context);
 
         var statusEffect = card.AddCardComponent<StatusEffectComponent>();
         statusEffect.Configure(

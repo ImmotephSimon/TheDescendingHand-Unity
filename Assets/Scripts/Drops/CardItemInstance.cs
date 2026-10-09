@@ -27,11 +27,14 @@ public class CardItemInstance : IInventoryItem
 
     public void Use(IEntity owner)
     {
-        // Execute card learning, deck addition, or casting logic here
+        // Execute deck addition here
     }
 
-    public void Display()
-    {
-        throw new NotImplementedException();
-    }
+    public TooltipDto Display() => new TooltipDto(
+        id: Definition.Id,
+        layout: TooltipLayout.Card,
+        title: Definition.Visuals.Name,
+        body: string.IsNullOrEmpty(Definition.Visuals.Description)
+            ? null
+            : new List<string> { Definition.Visuals.Description });
 }

@@ -847,7 +847,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c04af62b6b04ff4ebf789bb99db0f99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemTooltipPrefab: {fileID: 5131487604771474550, guid: 5ee7ac51846b06d419df71f4bf9dda94, type: 3}
+  layouts:
+  - layout: 0
+    prefab: {fileID: 94682322438018923, guid: 5ee7ac51846b06d419df71f4bf9dda94, type: 3}
+  - layout: 1
+    prefab: {fileID: 2816908495506519091, guid: 303ac158cbd7ef545a35b345013e6dbf, type: 3}
   cardTooltipPrefab: {fileID: 1648273522252265153, guid: 34d189f3b1b26d64581675555114a2a6, type: 3}
   tooltipLayer: {fileID: 4346269659506228650}
   fixedTooltipAnchor: {fileID: 6928122778567732364}

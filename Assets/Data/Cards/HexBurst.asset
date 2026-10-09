@@ -17,7 +17,7 @@ MonoBehaviour:
   spawnAtCursor: 0
   visuals:
     Name: Hex Burst
-    Description: Conditional
+    Description: 'Condition: Hex'
     Icon: {fileID: 21300000, guid: 21df9195ed43b004394e6d7913b03149, type: 3}
     AnimationOverride: {fileID: 0}
     Vfx:

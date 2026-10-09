@@ -62,10 +62,13 @@ public readonly struct CardInitContext
     public readonly Guid InstanceId;
     public readonly IEntity Owner;
 
-    public CardInitContext(Guid instanceId, IEntity owner)
+    public bool IsTriggered { get; }
+
+    public CardInitContext(Guid instanceId, IEntity owner, bool isTriggered = false)
     {
         InstanceId = instanceId;
         Owner = owner;
+        IsTriggered = isTriggered;
     }
 
     public GameObject ServerSpawn(GameObject go) =>

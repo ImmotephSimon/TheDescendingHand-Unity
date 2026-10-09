@@ -9,7 +9,7 @@ public static class CardFactory
         return new CardInstance(Guid.NewGuid(), definition, owner);
     }
 
-    public static CardRuntime CreateRuntime(CardInstance card)
+    public static CardRuntime CreateRuntime(CardInstance card, bool isTriggered = false)
     {
         if (!InstanceFinder.IsServerStarted)
         {
@@ -36,7 +36,7 @@ public static class CardFactory
         runtime.Initialize(Guid.NewGuid(), card.Definition, card.Owner);
 
         card.Definition.Construct(
-            new CardInitContext(Guid.NewGuid(), card.Owner),
+            new CardInitContext(Guid.NewGuid(), card.Owner, isTriggered),
             runtime);
 
         return runtime;

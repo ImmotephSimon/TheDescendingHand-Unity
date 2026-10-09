@@ -3,12 +3,15 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class PlayerItemsSync : NetworkBehaviour
 {
-
+    public struct EquippedItemDto
+    {
+        public Guid EquipmentTypeId;
+        public Guid BaseTypeId;
+    }
 
 
 
@@ -16,7 +19,7 @@ public class PlayerItemsSync : NetworkBehaviour
     private Loadout _loadout;
     private readonly SyncList<InventoryItemDto> _inventoryItems = new();
 
-    private readonly SyncList<ItemTooltipDto> _equippedItems = new();
+    private readonly SyncList<EquippedItemDto> _equippedItems = new();
 
     public event Action InventoryChanged;
     public event Action LoadoutChanged;
@@ -29,7 +32,7 @@ public class PlayerItemsSync : NetworkBehaviour
 
 
     public IReadOnlyList<InventoryItemDto> InventoryItems => _inventoryItems;
-    public IReadOnlyList<ItemTooltipDto> EquippedItems => _equippedItems;
+    public IReadOnlyList<EquippedItemDto> EquippedItems => _equippedItems;
 
     public override void OnStartServer()
     {
@@ -91,22 +94,14 @@ public class PlayerItemsSync : NetworkBehaviour
         int index,
         InventoryItemDto oldItem,
         InventoryItemDto newItem,
-        bool asServer) 
-    { 
+        bool asServer)
+    {
         if (!asServer)
             InventoryChanged?.Invoke();
     }
 
 
 
-
-    /// <summary>
-    /// recently refactored, so keep
-    /// </summary>
-    /// <param name="row"></param>
-    /// <param name="column"></param>
-    /// <param name="item"></param>
-    /// <returns></returns>
     public bool TryGetInventoryItem(
         int row,
         int column,
@@ -155,7 +150,11 @@ public class PlayerItemsSync : NetworkBehaviour
 
             foreach (var entry in _loadout.Equipped)
             {
-                _equippedItems.Add(CreateItemTooltip(entry.Value));
+                _equippedItems.Add(new EquippedItemDto
+                {
+                    EquipmentTypeId = entry.Key.ID,
+                    BaseTypeId = entry.Value.BaseType.Id
+                });
             }
         }
 
@@ -173,50 +172,85 @@ public class PlayerItemsSync : NetworkBehaviour
         _loadout.Unequip(equipmentSlot);
     }
 
+    //[ServerRpc]
+    //public void Server_RequestInventoryTooltip(int row, int column)
+    //{
+    //    if (!_inventory.TryGet(row, column, out IInventoryItem item))
+    //        return;
+
+    //    if (item is not ItemDropInstance itemDrop)
+    //    {
+    //        Debug.LogError($"visualizing cards unhandled");
+    //        return;
+    //    }
+
+    //    var dto = item.Display();
+
+    //    //switch (item)
+    //    //{
+    //    //    case ItemDropInstance itemDrop:
+    //    //        Target_InventoryTooltipRpc(Owner, CreateItemTooltip(itemDrop));
+    //    //        break;
+
+    //    //    case CardDropInstance card:
+    //    //        Target_CardTooltipRpc(Owner, card.Definition.Id);
+    //    //        break;
+
+    //    //    default:
+    //    //        Debug.LogError($"Unhandled tooltip type: {item.GetType().Name}");
+    //    //        break;
+    //    //}
+
+
+    //    //var dto = CreateItemTooltip(itemDrop);
+
+    //    Target_InventoryTooltipRpc(Owner, dto);
+    //}
+
     [ServerRpc]
     public void Server_RequestInventoryTooltip(int row, int column)
     {
-        if (!_inventory.TryGet(row, column, out IInventoryItem item))
+        if (_inventory.TryGet(row, column, out IInventoryItem item))
+            Target_TooltipRpc(Owner, item.Display());
+    }
+
+    [ServerRpc]
+    public void Server_RequestEquippedTooltip(Guid equipmentTypeId)
+    {
+        if (!EquipmentType.TryGet(equipmentTypeId, out EquipmentType slot))
             return;
 
-        if (item is not ItemDropInstance itemDrop)
-        {
-            Debug.LogError($"visualizing cards unhandled");
-            return;
-        }
-
-        var dto = CreateItemTooltip(itemDrop);
-
-        Target_InventoryTooltipRpc(Owner, dto);
+        if (_loadout.Equipped.TryGetValue(slot, out var item))
+            Target_TooltipRpc(Owner, item.Display());
     }
 
     [TargetRpc]
-    private void Target_InventoryTooltipRpc(NetworkConnection connection, ItemTooltipDto dto)
+    private void Target_TooltipRpc(NetworkConnection connection, TooltipDto dto)
     {
-        TooltipController.Instance.ShowItem(dto);
+        TooltipController.Instance.Show(dto);
     }
 
-    private ItemTooltipDto CreateItemTooltip(ItemDropInstance item)
-    {
-        var equipUse = item.BaseType.Components
-            .OfType<EquipComponentDefinition>()
-            .FirstOrDefault();
+    //private ItemTooltipDto CreateItemTooltip(ItemDropInstance item)
+    //{
+    //    var equipUse = item.BaseType.Components
+    //        .OfType<EquipComponentDefinition>()
+    //        .FirstOrDefault();
 
-        Debug.Assert(equipUse != null, $"CreateItemTooltip for item which can't be equipped.");
+    //    Debug.Assert(equipUse != null, $"CreateItemTooltip for item which can't be equipped.");
 
-        return new ItemTooltipDto
-        {
-            EquipmentTypeId = equipUse.EquipmentType.ID,
-            BaseTypeId = item.BaseType.Id,
-            RarityId = item.Rarity.Id,
+    //    return new ItemTooltipDto
+    //    {
+    //        EquipmentTypeId = equipUse.EquipmentType.ID,
+    //        BaseTypeId = item.BaseType.Id,
+    //        RarityId = item.Rarity.Id,
 
-            Implicits = item.BaseType.Implicits.Select(x => x.Modifier)
-                .Select(AffixState.FromModifier)
-                .ToList(),
+    //        Implicits = item.BaseType.Implicits.Select(x => x.Modifier)
+    //            .Select(AffixState.FromModifier)
+    //            .ToList(),
 
-            Explicits = item.Explicits
-                .Select(affix => AffixState.FromInstance(affix, item.BaseType.Implicits))
-                .ToList()
-        };
-    }
+    //        Explicits = item.Explicits
+    //            .Select(affix => AffixState.FromInstance(affix, item.BaseType.Implicits))
+    //            .ToList()
+    //    };
+    //}
 }

@@ -22,15 +22,15 @@ public class ProjectileInfo
 
     [Range(0, 10)]
     public int Bounces = 0;
-    
-    public Vector3 GetSpawnPosition(IEntity owner)
-        => owner.Transform.position + owner.Transform.up * 1.5f;
 
-    public Quaternion GetSpawnRotation(IEntity owner)
-        => Quaternion.LookRotation(GetLaunchVelocity(owner));
+    public Vector3 GetSpawnPosition(Transform frame)
+        => frame.position + Vector3.up * 1.5f;
 
-    public Vector3 GetLaunchVelocity(IEntity owner)
-        => Direction.GetDirection(owner).normalized * Speed;
+    public Quaternion GetSpawnRotation(Transform frame)
+        => Quaternion.LookRotation(GetLaunchVelocity(frame));
+
+    public Vector3 GetLaunchVelocity(Transform frame)
+        => Direction.GetDirection(frame).normalized * Speed;
 
     public ProjectileInfo Clone()
     {

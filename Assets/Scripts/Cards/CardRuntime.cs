@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class CardRuntime : MonoBehaviour 
 {
@@ -60,16 +61,31 @@ public class CardRuntime : MonoBehaviour
     }
 
 
-    public void ExecuteCastTimeDone()
+    public void Cast()
     {
-        transform.position = TargetLocation;
-        transform.rotation = GetLookRotation(TargetLocation);
+        Place(TargetLocation, GetLookRotation(TargetLocation));
+        Activate();
+    }
 
+    public void Trigger(Vector3 position, Quaternion? trajectory = null)
+    {
+        var rotation = GetLookRotation(TargetLocation) * (trajectory ?? Quaternion.identity);
+        Place(position, rotation);
+        Activate();
+    }
+
+    private void Place(Vector3 position, Quaternion rotation)
+    {
+        gameObject.transform.SetPositionAndRotation(position, rotation);
+    }
+
+    private void Activate()
+    {
         OnActivated?.Invoke();
         foreach (var comp in _components)
             comp.Activate();
-
     }
+
 
     public void ExecuteCancelled()
     {
@@ -113,6 +129,7 @@ public class CardRuntime : MonoBehaviour
         overlap.Configure(collider);
         return overlap;
     }
+
 
     //public AreaOverlapComponent AddBoxOverlap(Vector3 size, int? overrideLayer = null)
     //{

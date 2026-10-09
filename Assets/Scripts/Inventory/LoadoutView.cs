@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using static PlayerItemsSync;
 
@@ -18,15 +16,18 @@ public class LoadoutView : MonoBehaviour
             slot.OnSlotHoverEnter += HandleSlotHoverEnter;
             slot.OnSlotHoverExit += HandleSlotHoverExit;
         }
-            
+
     }
 
     private void HandleSlotHoverEnter(EquipmentType type)
     {
-        var dto = _items.EquippedItems.FirstOrDefault(x => x.EquipmentTypeId == type.ID);
-        if (dto.Equals(default(ItemTooltipDto))) return;
+        foreach (var item in _items.EquippedItems)
+        {
+            if (item.EquipmentTypeId != type.ID) continue;
 
-        TooltipController.Instance.ShowItem(dto);
+            _items.Server_RequestEquippedTooltip(type.ID);
+            return;
+        }
     }
 
     private void HandleSlotHoverExit()
@@ -62,15 +63,29 @@ public class LoadoutView : MonoBehaviour
     {
         foreach (var slot in slots)
         {
-            var dto = _items.EquippedItems
-                .FirstOrDefault(x => x.EquipmentTypeId == slot.SlotType.ID);
+            bool found = false;
+            EquippedItemDto equipped = default;
 
-            if (dto.Equals(default(ItemTooltipDto)))
+            foreach (var item in _items.EquippedItems)
+            {
+                if (item.EquipmentTypeId != slot.SlotType.ID) continue;
+                equipped = item;
+                found = true;
+                break;
+            }
+
+            if (!found)
             {
                 slot.UpdateSlot(null);
                 continue;
             }
-            ItemRegistry.Instance.TryGetDefinition(dto.BaseTypeId, out ItemDefinition def);
+
+            if (!ItemRegistry.Instance.TryGetDefinition(equipped.BaseTypeId, out ItemDefinition def))
+            {
+                Debug.LogError($"Unknown item {equipped.BaseTypeId}");
+                slot.UpdateSlot(null);
+                continue;
+            }
 
             slot.UpdateSlot(def.Appearance.Icon);
         }

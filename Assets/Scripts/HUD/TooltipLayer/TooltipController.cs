@@ -1,16 +1,25 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TooltipController : MonoBehaviour
 {
     public static TooltipController Instance { get; private set; }
 
-    [SerializeField] private ItemTooltipView itemTooltipPrefab;
-    [SerializeField] private CardView cardTooltipPrefab;
+    [System.Serializable]
+    private struct LayoutEntry
+    {
+        public TooltipLayout layout;
+        public TooltipView prefab;
+    }
+
+    [SerializeField] private LayoutEntry[] layouts;
+
+    private readonly Dictionary<TooltipLayout, TooltipView> _views = new();
+    private TooltipView _active;
+
     [SerializeField] private RectTransform tooltipLayer;
     [SerializeField] private RectTransform fixedTooltipAnchor;
 
-    private ItemTooltipView itemTooltip;
-    private CardView cardTooltip;
 
     private void Awake()
     {
@@ -22,49 +31,38 @@ public class TooltipController : MonoBehaviour
 
         Instance = this;
 
-        itemTooltip = Instantiate(itemTooltipPrefab, tooltipLayer);
-        itemTooltip.gameObject.SetActive(false);
-
-        cardTooltip = Instantiate(cardTooltipPrefab, tooltipLayer);
-        cardTooltip.gameObject.SetActive(false);
+        foreach (var entry in layouts)
+        {
+            var view = Instantiate(entry.prefab, tooltipLayer);
+            view.transform.localScale = Vector3.one;
+            ((RectTransform)view.transform).pivot = new Vector2(1f, 1f);
+            view.gameObject.SetActive(false);
+            _views[entry.layout] = view;
+        }
     }
 
-#if UNITY_EDITOR
-    private void OnValidate()
-    {
-        Debug.Assert(itemTooltipPrefab != null, $"{nameof(itemTooltipPrefab)} is not assigned.", this);
-        Debug.Assert(cardTooltipPrefab != null, $"{nameof(cardTooltipPrefab)} is not assigned.", this);
-        Debug.Assert(tooltipLayer != null, $"{nameof(tooltipLayer)} is not assigned.", this);
-        Debug.Assert(fixedTooltipAnchor != null, $"{nameof(fixedTooltipAnchor)} is not assigned.", this);
-    }
-#endif
-
-
-    public void ShowItem(ItemTooltipDto item)
+    public void Show(TooltipDto dto)
     {
         Hide();
 
-        itemTooltip.SetItem(item);
-        Show(itemTooltip.GetComponent<RectTransform>());
-    }
+        if (!_views.TryGetValue(dto.Layout, out var view))
+        {
+            Debug.LogError($"No tooltip view registered for layout {dto.Layout}");
+            return;
+        }
 
-    public void ShowCard(CardDropInstance card)
-    {
-        Hide();
+        view.gameObject.SetActive(true);
+        view.Set(dto);
+        _active = view;
 
-        cardTooltip.InitializeTooltipCard(card.Definition);
-        Show(cardTooltip.GetComponent<RectTransform>());
-    }
-
-    private void Show(RectTransform rect)
-    {
+        var rect = view.GetComponent<RectTransform>();
         rect.position = fixedTooltipAnchor.position;
-        rect.gameObject.SetActive(true);
     }
 
     public void Hide()
     {
-        itemTooltip.gameObject.SetActive(false);
-        cardTooltip.gameObject.SetActive(false);
+        if (_active != null)
+            _active.gameObject.SetActive(false);
+        _active = null;
     }
 }

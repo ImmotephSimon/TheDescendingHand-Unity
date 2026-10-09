@@ -17,6 +17,6 @@ public class RicochetShotDefinition : CardDefinition
         var projectile = card.AddCardComponent<ProjectileComponent>();
         projectile.Configure(
             projectileInfo,
-            context.ServerSpawn);
+            context);
     }
 }

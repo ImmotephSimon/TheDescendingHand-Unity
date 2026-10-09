@@ -7,6 +7,6 @@ public interface IInventoryItem
     Vector2Int Size { get; }
     Sprite Icon { get; }
 
-    public void Display();
+    TooltipDto Display();
 }
 
