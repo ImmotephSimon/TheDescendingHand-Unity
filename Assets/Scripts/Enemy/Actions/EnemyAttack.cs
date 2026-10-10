@@ -16,7 +16,7 @@ public abstract class EnemyAttack : MonoBehaviour, IEnemyAttack
 
     protected AttackHitbox AttackHitbox => attackHitbox;
     private AttackHitbox attackHitbox;
-    
+
 
     public virtual void Initialize(EnemyAttackDefinition def)
     {
@@ -26,10 +26,6 @@ public abstract class EnemyAttack : MonoBehaviour, IEnemyAttack
         priority = def.priority;
 
         attackHitbox = GetComponentInChildren<AttackHitbox>();
-        if (attackHitbox != null)
-        {
-            attackHitbox.OnHit += HandleHit;
-        }
     }
 
     public float GetPriority() => priority;
@@ -45,11 +41,11 @@ public abstract class EnemyAttack : MonoBehaviour, IEnemyAttack
 
     public virtual void Execute(Transform target)
     {
+        AttackHitbox.OnHit -= HandleHit;
+        AttackHitbox.OnHit += HandleHit;
     }
 
-    public virtual void Stop()
-    {
-    }
+    public virtual void Stop() => AttackHitbox.OnHit -= HandleHit;
 
     public virtual void OnAnimationFinish()
     {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public enum BrainState
@@ -22,7 +21,7 @@ public class EnemyBrain : MonoBehaviour, ISpawnable
         actions.Add(action);
     }
 
-    void Update()
+    private void Update()
     {
         // Dead or stunned
         if (_state != BrainState.Active) return;
@@ -57,8 +56,8 @@ public class EnemyBrain : MonoBehaviour, ISpawnable
 
             currentAction?.StartAction();
         }
-        if (currentAction.CanBeUpdated)
-        { 
+        if (currentAction != null && currentAction.CanBeUpdated)
+        {
             currentAction?.UpdateAction();
         }
     }

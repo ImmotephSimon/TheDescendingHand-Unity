@@ -9,7 +9,7 @@ public class AttackHitbox : MonoBehaviour
     {
         _hitCollider.enabled = false;
     }
-    
+
     public void Enable()
     {
         _hitCollider.enabled = true;
@@ -22,7 +22,9 @@ public class AttackHitbox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<IEntity>(out var target))
+        bool isEntity = other.TryGetComponent<IEntity>(out var target);
+
+        if (isEntity)
         {
             OnHit?.Invoke(target);
         }

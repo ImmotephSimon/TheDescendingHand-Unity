@@ -1,6 +1,3 @@
-﻿using System;
-using UnityEngine;
-
-public class MeleeAttack : EnemyAttack
+﻿public class MeleeAttack : EnemyAttack
 {
 }

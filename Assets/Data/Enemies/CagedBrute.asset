@@ -16,3 +16,4 @@ MonoBehaviour:
   ModelPrefab: {fileID: 3829372780128530005, guid: 6baa4702c05691644b000e5f7714656b, type: 3}
   Attacks:
   - {fileID: 11400000, guid: 7a30cd658af516443a51b774068d64ac, type: 2}
+  - {fileID: 11400000, guid: 63b75e8675a945a429ec3caad4ca7f25, type: 2}

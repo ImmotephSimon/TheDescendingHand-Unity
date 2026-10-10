@@ -15,7 +15,6 @@ public class EnemyAnimationController : MonoBehaviour, IAnimationHandler
     private void Awake()
     {
         _animator = GetComponentInChildren<Animator>();
-        _animator.applyRootMotion = false;
         _hitbox = GetComponentInChildren<AttackHitbox>();
 
     }
@@ -70,7 +69,7 @@ public class EnemyAnimationController : MonoBehaviour, IAnimationHandler
         CharacterAnimationState state,
         float transitionDuration = TransitionDuration)
     {
-        
+
 
         if (state == CharacterAnimationState.Unset || _currentState == state)
             return;
