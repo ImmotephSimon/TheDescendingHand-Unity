@@ -6,7 +6,7 @@ public interface IInventoryItem
     Guid InventoryId { get; }
     Vector2Int Size { get; }
     Sprite Icon { get; }
+    GameTag DropPrefabTag { get; }
 
     TooltipDto Display();
 }
-

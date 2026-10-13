@@ -20,6 +20,8 @@ public class CardItemInstance : IInventoryItem
 
     public Guid InventoryId => Definition.Id;
 
+    public GameTag DropPrefabTag => GameTags.PrefabCard;
+
     public CardItemInstance(CardDefinition definition)
     {
         Definition = definition;

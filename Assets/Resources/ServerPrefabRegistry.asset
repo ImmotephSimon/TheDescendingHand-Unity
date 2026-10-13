@@ -22,3 +22,6 @@ MonoBehaviour:
   - Tag:
       TagId: Prefab.CardWall
     Prefab: {fileID: 2646070988946056756, guid: 919f17fddb6c8e3439c57f53f0e54135, type: 3}
+  - Tag:
+      TagId: Prefab.Item
+    Prefab: {fileID: 442775255196232616, guid: e8296fc36f1e33548afb362aa70fd075, type: 3}

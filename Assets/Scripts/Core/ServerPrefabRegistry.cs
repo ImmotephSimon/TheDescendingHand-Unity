@@ -11,7 +11,11 @@ public class ServerPrefabRegistry : ScriptableObject
         public GameObject Prefab;
     }
 
+
     private static ServerPrefabRegistry _instance;
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics() => _instance = null;
+
 
     public static ServerPrefabRegistry Instance
     {
@@ -31,16 +35,15 @@ public class ServerPrefabRegistry : ScriptableObject
     public bool TryGetPrefab(GameTag tag, out GameObject prefab)
     {
         if (_lookup == null)
-        {
             CreateLookup();
-        }
 
         if (_lookup.TryGetValue(tag, out prefab))
             return true;
 
-        Debug.LogError($"ServerPrefabRegistry: No prefab registered for tag '{tag}'.");
+        Debug.LogError($"ServerPrefabRegistry: No prefab registered for tag '{tag.TagId}'.");
         return false;
     }
+
 
     private void CreateLookup()
     {
@@ -51,5 +54,15 @@ public class ServerPrefabRegistry : ScriptableObject
             if (entry.Prefab != null)
                 _lookup[entry.Tag] = entry.Prefab;
         }
+    }
+
+    public bool TryInstantiate(GameTag tag, Vector3 position, out GameObject obj)
+    {
+        obj = null;
+        if (!TryGetPrefab(tag, out var prefab))
+            return false;
+
+        obj = Instantiate(prefab, position, Quaternion.identity);
+        return true;
     }
 }

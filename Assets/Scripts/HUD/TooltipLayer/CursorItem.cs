@@ -8,8 +8,7 @@ public class CursorItem : MonoBehaviour
     private RectTransform rectTransform;
     private RectTransform parentRect;
 
-    public IInventoryItem HeldItem { get; private set; }
-    public bool HasItem => HeldItem != null;
+    public bool HasItem { get; private set; }
 
     private void Awake()
     {
@@ -25,30 +24,21 @@ public class CursorItem : MonoBehaviour
         }
     }
 
-    public void Hold(IInventoryItem item)
-    {
-        HeldItem = item;
 
+
+    public void Hold(Sprite iconSprite, Vector2Int size)   // adjust type to whatever icon.Render takes
+    {
+        HasItem = true;
         gameObject.SetActive(true);
 
-        Vector2Int gridDimensions = item.Size;
-        Vector2 pixelSize = new Vector2(gridDimensions.x * 64f, gridDimensions.y * 64f);
-
-        icon.Render(
-            item.Icon,
-            Vector2.zero,
-            pixelSize
-        );
-
+        icon.Render(iconSprite, Vector2.zero, new Vector2(size.x * 64f, size.y * 64f));
         UpdatePosition();
     }
 
-    public IInventoryItem Clear()
+    public void Clear()
     {
-        IInventoryItem item = HeldItem;
-        HeldItem = null;
+        HasItem = false;
         gameObject.SetActive(false);
-        return item;
     }
 
     private void UpdatePosition()

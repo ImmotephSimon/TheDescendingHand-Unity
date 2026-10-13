@@ -1,4 +1,3 @@
-using FishNet.Object;
 using System;
 using UnityEngine;
 
@@ -16,7 +15,7 @@ public class ClientBridge : MonoBehaviour
     public PlayerNetworkActions PlayerNetwork { get; private set; }
     public EquipmentVisuals EquipmentVisuals { get; private set; }
     public PlayerStatsSync Stats { get; private set; }
-
+    public PlayerItemsSync ItemsSync { get; private set; }
     private PassiveTreeComponent _passiveTreeComponent;
 
     public VfxRegistry VfxRegistry => VfxRegistry.Instance;
@@ -45,6 +44,7 @@ public class ClientBridge : MonoBehaviour
         CardHandController = Camera.main.GetComponentInChildren<CardHandController>(true);
         PlayerNetwork = client.GetComponent<PlayerNetworkActions>();
         Stats = client.GetComponent<PlayerStatsSync>();
+        ItemsSync = client.GetComponent<PlayerItemsSync>();
 
         Debug.Assert(AbilitySystem != null, "Failed to register AbilitySystem");
         Debug.Assert(Movement != null, "Failed to register PlayerMovement");

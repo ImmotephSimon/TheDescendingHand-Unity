@@ -1,9 +1,4 @@
-using FishNet.Object;
-using NUnit;
-using System;
-using System.Globalization;
 using UnityEngine;
-using UnityEngine.InputSystem.HID;
 
 public class PlayerHUD : MonoBehaviour
 {
@@ -13,7 +8,6 @@ public class PlayerHUD : MonoBehaviour
     private PassiveTreeView _passiveTreeView;
 
     public HUD HUD { get; private set; }
-    public CursorItem CursorItem { get; private set; }
 
     private void Awake()
     {
@@ -34,7 +28,7 @@ public class PlayerHUD : MonoBehaviour
         HUD.Bind(synchedStats.GetComponent<IMana>());
         _inventoryView.Bind(synchedItems);
         _loadoutView.Bind(synchedItems);
-        
+
 
         ClientBridge.Instance.OnClientPlayerReady += OnClientPlayerReady;
     }

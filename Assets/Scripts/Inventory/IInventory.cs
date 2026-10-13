@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public interface IInventory
 {
@@ -13,9 +12,6 @@ public interface IInventory
 
     bool TryAdd(IInventoryItem item);
     bool TryRemove(IInventoryItem item);
-
-    void SlotLeftClicked(int row, int column);
-    void SlotRightClicked(int row, int column);
 
     event Action OnChanged;
 }

@@ -34,6 +34,18 @@ public class PlayerItemsSync : NetworkBehaviour
     public IReadOnlyList<InventoryItemDto> InventoryItems => _inventoryItems;
     public IReadOnlyList<EquippedItemDto> EquippedItems => _equippedItems;
 
+    public struct HeldItemDto
+    {
+        public bool HasItem;
+        public Guid ItemId;
+        public Vector2Int Size;
+    }
+
+    private readonly SyncVar<HeldItemDto> _heldItem = new();
+    public HeldItemDto HeldItem => _heldItem.Value;
+    public event Action HeldItemChanged;
+
+
     public override void OnStartServer()
     {
         base.OnStartServer();
@@ -45,6 +57,7 @@ public class PlayerItemsSync : NetworkBehaviour
 
         _inventory.OnChanged += SyncInventory;
         _loadout.OnLoadoutChanged += HandleLoadoutChanged;
+        _inventory.OnHeldItemChanged += SyncHeldItem;
 
         SyncInventory();
         HandleLoadoutChanged();
@@ -55,6 +68,12 @@ public class PlayerItemsSync : NetworkBehaviour
         base.OnStartClient();
 
         _inventoryItems.OnChange += HandleInventoryChanged;
+
+        _heldItem.OnChange += (prev, next, asServer) =>
+        {
+            if (!asServer) HeldItemChanged?.Invoke();
+        };
+
     }
 
     private void OnDestroy()
@@ -130,9 +149,12 @@ public class PlayerItemsSync : NetworkBehaviour
 
 
     [ServerRpc]
-    public void RequestInventorySlotClick(int row, int column)
+    public void RequestInventorySlotClick(int row, int column, bool ctrl)
     {
-        _inventory.SlotLeftClicked(row, column);
+        if (row < 0 || row >= _inventory.Rows || column < 0 || column >= _inventory.Columns)
+            return;
+
+        _inventory.HandleLeftClick(row, column, ctrl);
     }
 
     [ServerRpc]
@@ -172,40 +194,6 @@ public class PlayerItemsSync : NetworkBehaviour
         _loadout.Unequip(equipmentSlot);
     }
 
-    //[ServerRpc]
-    //public void Server_RequestInventoryTooltip(int row, int column)
-    //{
-    //    if (!_inventory.TryGet(row, column, out IInventoryItem item))
-    //        return;
-
-    //    if (item is not ItemDropInstance itemDrop)
-    //    {
-    //        Debug.LogError($"visualizing cards unhandled");
-    //        return;
-    //    }
-
-    //    var dto = item.Display();
-
-    //    //switch (item)
-    //    //{
-    //    //    case ItemDropInstance itemDrop:
-    //    //        Target_InventoryTooltipRpc(Owner, CreateItemTooltip(itemDrop));
-    //    //        break;
-
-    //    //    case CardDropInstance card:
-    //    //        Target_CardTooltipRpc(Owner, card.Definition.Id);
-    //    //        break;
-
-    //    //    default:
-    //    //        Debug.LogError($"Unhandled tooltip type: {item.GetType().Name}");
-    //    //        break;
-    //    //}
-
-
-    //    //var dto = CreateItemTooltip(itemDrop);
-
-    //    Target_InventoryTooltipRpc(Owner, dto);
-    //}
 
     [ServerRpc]
     public void Server_RequestInventoryTooltip(int row, int column)
@@ -230,27 +218,17 @@ public class PlayerItemsSync : NetworkBehaviour
         TooltipController.Instance.Show(dto);
     }
 
-    //private ItemTooltipDto CreateItemTooltip(ItemDropInstance item)
-    //{
-    //    var equipUse = item.BaseType.Components
-    //        .OfType<EquipComponentDefinition>()
-    //        .FirstOrDefault();
+    [Server]
+    private void SyncHeldItem()
+    {
+        var held = _inventory.HeldItem;
+        _heldItem.Value = held == null
+            ? default
+            : new HeldItemDto { HasItem = true, ItemId = held.InventoryId, Size = held.Size };
+    }
 
-    //    Debug.Assert(equipUse != null, $"CreateItemTooltip for item which can't be equipped.");
+    [ServerRpc]
+    public void RequestDropHeld() => _inventory.DropHeld();
 
-    //    return new ItemTooltipDto
-    //    {
-    //        EquipmentTypeId = equipUse.EquipmentType.ID,
-    //        BaseTypeId = item.BaseType.Id,
-    //        RarityId = item.Rarity.Id,
 
-    //        Implicits = item.BaseType.Implicits.Select(x => x.Modifier)
-    //            .Select(AffixState.FromModifier)
-    //            .ToList(),
-
-    //        Explicits = item.Explicits
-    //            .Select(affix => AffixState.FromInstance(affix, item.BaseType.Implicits))
-    //            .ToList()
-    //    };
-    //}
 }

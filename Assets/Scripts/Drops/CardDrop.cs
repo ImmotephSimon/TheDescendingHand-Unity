@@ -16,6 +16,18 @@ public class CardDrop : WorldDrop
         ApplyRarityVisualsRpc(new Color(0.6f, 0.1f, 1f), 2f, 5f);
     }
 
+    public override bool Restore(IInventoryItem item)
+    {
+        if (item is not CardItemInstance card)
+        {
+            Debug.LogError($"Invalid restoration type for {item.InventoryId}");
+            return false;
+        }
+
+        Instance = card;
+        ApplyRarityVisualsRpc(new Color(0.6f, 0.1f, 1f), 2f, 5f);
+        return true;
+    }
 
     [ObserversRpc]
     private void ApplyRarityVisualsRpc(Color color, float intensity, float range)

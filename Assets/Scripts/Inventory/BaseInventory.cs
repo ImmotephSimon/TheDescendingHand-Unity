@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class BaseInventory : MonoBehaviour, IInventory
 {
@@ -144,14 +143,6 @@ public class BaseInventory : MonoBehaviour, IInventory
 
     private bool IsWithinGrid(int r, int c) => r >= 0 && r < Rows && c >= 0 && c < Columns;
 
-    public virtual void SlotLeftClicked(int row, int column)
-    {
-    }
-
-    public virtual void SlotRightClicked(int row, int column)
-    {   
-
-    }
 
     public bool TryGet(Guid id, out IInventoryItem item)
     {

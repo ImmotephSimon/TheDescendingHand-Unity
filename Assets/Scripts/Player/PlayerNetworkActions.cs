@@ -1,32 +1,23 @@
 ﻿using FishNet.Connection;
 using FishNet.Object;
-using System;
-using UnityEngine;
 
 public class PlayerNetworkActions : NetworkBehaviour
 {
-
-    [ServerRpc]
-    public void RequestDrop(string itemId)
+    public override void OnStartServer()
     {
-        if (!Guid.TryParse(itemId, out Guid id))
+        base.OnStartServer();
+        GetComponent<PlayerInventory>().OnItemDropped += SpawnWorldDrop;
+    }
+
+
+    [Server]
+    public void SpawnWorldDrop(IInventoryItem item)
+    {
+        if (!ServerPrefabRegistry.Instance.TryInstantiate(item.DropPrefabTag, transform.position, out var obj))
             return;
-
-        var player = GetComponent<Player>();
-        var inventory = player.GetComponent<IInventory>();
-
-        if (!inventory.TryGet(id, out IInventoryItem inventoryItem) || inventoryItem is not ItemDropInstance item)
-            return;
-
-        if (!inventory.TryRemove(item))
-            return;
-
-        GameObject obj = Instantiate(ItemRegistry.Instance.ItemPrefab, player.transform.position, Quaternion.identity);
-        ItemDrop drop = obj.GetComponent<ItemDrop>();
-        drop.Initialize(item.BaseType, item.Rarity);
-        drop.Instance = item;
 
         ServerManager.Spawn(obj);
+        obj.GetComponent<WorldDrop>().Restore(item);
     }
 
     [ServerRpc]

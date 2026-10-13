@@ -1,7 +1,6 @@
-using UnityEngine;
 using FishNet;
 using FishNet.Transporting;
-using System.Linq;
+using UnityEngine;
 
 public static class NetworkBootstrapper
 {
@@ -36,6 +35,10 @@ public static class NetworkBootstrapper
         switch (mode)
         {
             case NetworkMode.Client:
+                string targetAddress = GetTargetAddress(args);
+                InstanceFinder.TransportManager.Transport.SetClientAddress(targetAddress);
+                Debug.Log($"[NetworkBootstrapper] Connecting client to: {targetAddress}");
+
                 InstanceFinder.ClientManager.OnClientConnectionState += OnClientStateChanged;
                 InstanceFinder.ClientManager.StartConnection();
                 break;
@@ -53,8 +56,18 @@ public static class NetworkBootstrapper
                 InstanceFinder.ClientManager.StartConnection();
                 break;
         }
-        
-        
+    }
+
+    private static string GetTargetAddress(string[] args)
+    {
+        for (int i = 0; i < args.Length - 1; i++)
+        {
+            if (args[i].ToLower() == "-serveraddress")
+            {
+                return args[i + 1];
+            }
+        }
+        return "127.0.0.1";
     }
 
     private static NetworkMode GetNetworkMode(string[] args)

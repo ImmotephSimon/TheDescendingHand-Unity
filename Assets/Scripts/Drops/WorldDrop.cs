@@ -31,6 +31,8 @@ public abstract class WorldDrop : NetworkBehaviour, IInteractable
         }
     }
 
+    public virtual bool Restore(IInventoryItem item) => false;
+
     protected virtual bool TryPickup(Player player)
     {
         return false;

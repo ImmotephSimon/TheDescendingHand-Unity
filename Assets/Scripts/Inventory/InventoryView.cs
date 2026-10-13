@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class InventoryView : MonoBehaviour
@@ -129,7 +130,17 @@ public class InventoryView : MonoBehaviour
 
     private void HandleSlotClicked(InventorySlotView slot, PointerEventData eventData)
     {
-        _items.RequestInventorySlotClick(slot.Row, slot.Column);
+        bool ctrl = Keyboard.current != null && Keyboard.current.leftCtrlKey.isPressed;
+        var cursor = CursorItemController.Instance;
+
+        // Predict only: empty cursor, no ctrl, clicking an occupied slot
+        if (!ctrl && !cursor.CursorItem.HasItem &&
+            _items.TryGetInventoryItem(slot.Row, slot.Column, out var dto))
+        {
+            cursor.ShowPredicted(dto.ItemId, dto.Size);
+        }
+
+        _items.RequestInventorySlotClick(slot.Row, slot.Column, ctrl);
     }
 
     private void HandleSlotRightClicked(InventorySlotView slot, PointerEventData eventData)

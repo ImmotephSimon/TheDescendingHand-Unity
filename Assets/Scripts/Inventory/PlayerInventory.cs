@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 
 public class PlayerInventory : BaseInventory, ITargetable
 {
@@ -12,18 +10,28 @@ public class PlayerInventory : BaseInventory, ITargetable
     private Loadout _loadout;
     public Loadout Loadout => _loadout ??= new Loadout(GetComponent<IEntity>());
 
-    public PlayerInventory()
-    {   
-        
+
+    public event Action<IInventoryItem> OnItemDropped;
+    public Action OnHeldItemChanged { get; internal set; }
+    private IInventoryItem _heldItem;
+    public IInventoryItem HeldItem
+    {
+        get => _heldItem;
+        private set
+        {
+            _heldItem = value;
+            OnHeldItemChanged?.Invoke();
+        }
     }
+
     protected override void Awake()
     {
         base.Awake();
         Loadout.OnItemUnequipped += item => TryAdd(item);
         Loadout.CanUnequipToDestination = CanAdd;
     }
-    
-    public override void SlotRightClicked(int row, int column)
+
+    public void SlotRightClicked(int row, int column)
     {
         if (!TryGet(row, column, out IInventoryItem inventoryItem))
             return;
@@ -50,68 +58,46 @@ public class PlayerInventory : BaseInventory, ITargetable
             return;
         }
     }
-    public override void SlotLeftClicked(int row, int column)
+
+
+
+    public void HandleLeftClick(int row, int column, bool ctrl)
     {
-        var cursorController = CursorItemController.Instance;
-        if (cursorController == null || cursorController.CursorItem == null) return;
-
-        CursorItem cursor = cursorController.CursorItem;
-
-        // Drop shortcut (Ctrl+Click)
-        bool isCtrlPressed = Keyboard.current != null && Keyboard.current.leftCtrlKey.isPressed;
-        if (isCtrlPressed)
+        if (ctrl)
         {
-            if (TryGet(row, column, out IInventoryItem slotItem))
-            {
-                DropInWorld(slotItem);
-            }
+            if (TryGet(row, column, out IInventoryItem slotItem) && TryRemove(slotItem))
+                OnItemDropped?.Invoke(slotItem);
             return;
         }
 
-        // Cursor holds an item: place or swap
-        if (cursor.HasItem)
+        if (HeldItem != null)
         {
-            IInventoryItem held = cursor.HeldItem;
-            
-
             if (TryGet(row, column, out IInventoryItem slotItem))
             {
-                // Swap slot item with cursor item
                 if (TryRemove(slotItem))
                 {
-                    if (TryAddAt(held, row, column))
+                    if (TryAddAt(HeldItem, row, column))
                     {
-                        cursor.Clear();
-                        cursor.Hold(slotItem);
+                        HeldItem = slotItem;
                     }
                     else
-                    {
-                        // Re-add original if target placement fails
                         TryAddAt(slotItem, row, column);
-                    }
                 }
             }
-            else if (TryAddAt(held, row, column))
+            else if (TryAddAt(HeldItem, row, column))
             {
-                cursor.Clear();
+                HeldItem = null;
             }
             return;
         }
 
-        // Cursor is empty: pick up slot item
-        if (TryGet(row, column, out IInventoryItem itemToPick))
-        {
-            CursorItemController.Instance.OnDropRequested -= DropInWorld;
-            CursorItemController.Instance.OnDropRequested += DropInWorld;
-            cursor.Hold(itemToPick);
-        }
+        if (TryGet(row, column, out IInventoryItem itemToPick) && TryRemove(itemToPick))
+            HeldItem = itemToPick;
     }
 
-    private void DropInWorld(IInventoryItem instance)
-    {
-        ClientBridge.Instance.PlayerNetwork.RequestDrop(instance.InventoryId.ToString());
-        CursorItemController.Instance.CursorItem.Clear();
-    }
+
+
+
 
     public TagContainer GetTargetingRequirements()
     {
@@ -128,9 +114,13 @@ public class PlayerInventory : BaseInventory, ITargetable
         throw new NotImplementedException();
     }
 
-    private void OnDestroy()
+
+    public void DropHeld()
     {
-        if (CursorItemController.Instance != null)
-            CursorItemController.Instance.OnDropRequested -= DropInWorld;
+        if (HeldItem == null) return;
+        var item = HeldItem;
+        HeldItem = null;
+        OnItemDropped?.Invoke(item);
     }
+
 }

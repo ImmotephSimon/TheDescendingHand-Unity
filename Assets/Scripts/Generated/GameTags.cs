@@ -71,6 +71,7 @@ public static class GameTags
     public static readonly GameTag PrefabProjectile = new("Prefab.Projectile");
     public static readonly GameTag PrefabCard = new("Prefab.Card");
     public static readonly GameTag PrefabCardWall = new("Prefab.CardWall");
+    public static readonly GameTag PrefabItem = new("Prefab.Item");
 
     public static readonly GameTag[] DamageTypes = new GameTag[] { RestrictionElementFire, RestrictionElementCold, RestrictionElementLightning, RestrictionPhysical, RestrictionChaos };
     public static readonly GameTag[] Immobilizations = { StatusStun, StatusFreeze };

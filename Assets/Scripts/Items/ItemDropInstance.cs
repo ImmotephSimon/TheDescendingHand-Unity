@@ -17,6 +17,8 @@ public class ItemDropInstance : IInventoryItem
 
     public Guid InventoryId => BaseType.Id;
 
+    public GameTag DropPrefabTag => GameTags.PrefabItem;
+
     public ItemDropInstance(ItemDefinition baseType, Rarity rarity, List<AffixInstance> explicits)
     {
         BaseType = baseType;

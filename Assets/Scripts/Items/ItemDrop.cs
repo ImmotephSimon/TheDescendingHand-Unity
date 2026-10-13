@@ -67,6 +67,20 @@ public class ItemDrop : WorldDrop
         }
     }
 
+    public override bool Restore(IInventoryItem item)
+    {
+        if (item is not ItemDropInstance instance)
+        {
+            Debug.LogError($"Invalid restoration type for {item.InventoryId}");
+            return false;
+        }
+
+        Instance = instance;
+        _definitionId.Value = instance.BaseType.Id;
+        ApplyRarityVisualsRpc(instance.Rarity.DisplayColor, instance.Rarity.LightIntensity, instance.Rarity.LightRange);
+        return true;
+    }
+
     [ObserversRpc]
     private void ApplyRarityVisualsRpc(Color color, float intensity, float range)
     {
