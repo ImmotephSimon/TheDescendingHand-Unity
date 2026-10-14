@@ -99,7 +99,7 @@ public class PlayerItemsSync : NetworkBehaviour
 
             InventoryItemDto dto = new InventoryItemDto
             {
-                ItemId = item.InventoryId,
+                IconId = item.InventoryId,
                 Position = position,
                 Size = item.Size
             };
@@ -126,7 +126,7 @@ public class PlayerItemsSync : NetworkBehaviour
         int column,
         out InventoryItemDto item)
     {
-        foreach (var dto in _inventoryItems)
+        foreach (InventoryItemDto dto in _inventoryItems)
         {
             var origin = dto.Position;
             var size = dto.Size;

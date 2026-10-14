@@ -137,7 +137,7 @@ public class InventoryView : MonoBehaviour
         if (!ctrl && !cursor.CursorItem.HasItem &&
             _items.TryGetInventoryItem(slot.Row, slot.Column, out var dto))
         {
-            cursor.ShowPredicted(dto.ItemId, dto.Size);
+            cursor.ShowPredicted(dto.IconId, dto.Size);
         }
 
         _items.RequestInventorySlotClick(slot.Row, slot.Column, ctrl);
@@ -170,7 +170,7 @@ public class InventoryView : MonoBehaviour
 
         foreach (var entry in _items.InventoryItems)
         {
-            if (!ItemRegistry.Instance.TryGetIcon(entry.ItemId, out Sprite icon))
+            if (!ItemRegistry.Instance.TryGetIcon(entry.IconId, out Sprite icon))
                 continue;
 
             ItemIconView iconView = Instantiate(itemIconPrefab, grid);

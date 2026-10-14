@@ -5,21 +5,26 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Registries/Items")]
 public class ItemRegistry : ScriptableObject
 {
-    [SerializeField] private GameObject itemPrefab;
     [SerializeField] private List<Rarity> rarities = new();
 
     [SerializeField] private CardRegistry cardRegistry;
     [SerializeField] private CardRegistry testCardRegistry;
 
-    public CardRegistry CardRegistry =>
-        testCardRegistry != null && testCardRegistry.Cards.Count > 0
-            ? testCardRegistry
-            : cardRegistry;
+    public CardRegistry CardRegistry => UseTestRegistry ? testCardRegistry : cardRegistry;
+
+    private bool UseTestRegistry =>
+        Application.isEditor
+        && testCardRegistry != null
+        && testCardRegistry.Cards.Count > 0;
+
     public List<ItemDefinition> Items = new();
-    public GameObject ItemPrefab => itemPrefab;
     public List<Rarity> Rarities => rarities;
 
+
+
     private static ItemRegistry _instance;
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics() => _instance = null;
     public static ItemRegistry Instance
     {
         get

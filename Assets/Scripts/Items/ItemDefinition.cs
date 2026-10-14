@@ -13,11 +13,12 @@ public struct ItemImplicit
 [CreateAssetMenu(fileName = "NewItemDefinition", menuName = "Items/Item Definition")]
 public class ItemDefinition : ScriptableObject
 {
-    public Guid Id;
+    [SerializeField, HideInInspector] private string id;
+    public Guid Id => Guid.TryParse(id, out var guid) ? guid : Guid.Empty;
     public string DisplayName;
 
-    
-    public Vector2Int InventorySize = new Vector2Int(2,2);
+
+    public Vector2Int InventorySize = new Vector2Int(2, 2);
     public AppearanceData Appearance;
     public int RequiredLevel;
     public string Lore;
@@ -29,15 +30,13 @@ public class ItemDefinition : ScriptableObject
 
 
 
+
 #if UNITY_EDITOR
     private void OnValidate()
     {
         string path = UnityEditor.AssetDatabase.GetAssetPath(this);
         if (!string.IsNullOrEmpty(path))
-        {
-            string hex = UnityEditor.AssetDatabase.AssetPathToGUID(path);
-            Id = System.Guid.Parse(hex);
-        }
+            id = UnityEditor.AssetDatabase.AssetPathToGUID(path);
 
         if (string.IsNullOrEmpty(DisplayName))
             DisplayName = DisplayFormat(name);

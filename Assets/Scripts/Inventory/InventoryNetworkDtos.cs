@@ -8,7 +8,7 @@ using UnityEngine;
 [Serializable]
 public struct InventoryItemDto
 {
-    public Guid ItemId;
+    public Guid IconId;
     public Vector2Int Position;
     public Vector2Int Size;
 }

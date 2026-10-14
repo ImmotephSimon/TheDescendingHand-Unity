@@ -47,9 +47,9 @@ public class CursorItemController : MonoBehaviour
             ClientBridge.Instance.OnClientPlayerReady -= BindTo;
     }
 
-    public void ShowPredicted(Guid itemId, Vector2Int size)
+    public void ShowPredicted(Guid iconId, Vector2Int size)
     {
-        if (ItemRegistry.Instance.TryGetIcon(itemId, out Sprite icon))
+        if (ItemRegistry.Instance.TryGetIcon(iconId, out Sprite icon))
             CursorItem.Hold(icon, size);
     }
 
