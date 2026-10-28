@@ -12,33 +12,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35d546714e5600244bf9148235d56df9, type: 3}
   m_Name: DiamondRing
   m_EditorClassIdentifier: 
+  id: 46d8aee5e29508546bae3e69ad43986f
   DisplayName: Diamond Ring
   InventorySize: {x: 1, y: 1}
   Appearance:
     WorldModel: {fileID: 919132149155446097, guid: 5dabcd0974f9098449183d2b966a1ec6, type: 3}
-    Icon: {fileID: 21300000, guid: 5c43af9fc8739294f87141681bbafcb3, type: 3}
+    Icon:
+      _id: 970324311431c794ca338446ea889948:21300000
   RequiredLevel: 0
   Lore: 
   Tags:
     Tags: []
   Implicits:
   - Modifier:
-      Stat:
-        TagId: Mod.Defense.Mitigation
       Op: 0
       Value: 5
       RequiredTags:
         MatchAll: 0
         Tags:
-          Tags:
-          - TagId: Restriction.Physical
+          Tags: []
     IsScalable: 1
   Components:
-  - rid: 7617656363769921681
+  - rid: 6340319042743042243
   references:
     version: 2
     RefIds:
-    - rid: 7617656363769921681
-      type: {class: EquipComponentDefinition, ns: , asm: Assembly-CSharp}
+    - rid: 6340319042743042243
+      type: {class: EquipComponentDefinition, ns: , asm: Game.Server}
       data:
-        equipmentType: {fileID: 11400000, guid: 1e70a872fda9f1249bc61d1433170884, type: 2}
+        slot: 7

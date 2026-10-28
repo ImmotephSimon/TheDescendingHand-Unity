@@ -12,13 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0b84949ac503a244915b061c29d6d6b, type: 3}
   m_Name: Uncommon
   m_EditorClassIdentifier: 
-  id: 8dee7be8-0c1e-450d-a090-2fc4b98ea671
   Tier: 2
   DropWeight: 100
   MaxAffixes: 4
   MinAffixes: 4
   AllowedDrops:
-  - rid: 7617656375266771148
+  - rid: 6340319042743042239
   CanHaveUniqueMods: 0
   DisplayColor: {r: 0, g: 1, b: 0.26201963, a: 1}
   LightIntensity: 0.3
@@ -26,7 +25,7 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 7617656375266771148
-      type: {class: ItemLootDefinition, ns: , asm: Assembly-CSharp}
+    - rid: 6340319042743042239
+      type: {class: ItemLootDefinition, ns: , asm: Game.Server}
       data:
         Prefab: {fileID: 442775255196232616, guid: e8296fc36f1e33548afb362aa70fd075, type: 3}

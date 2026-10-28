@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16ebe703bacf6e247bdd62e3ec7db4d5, type: 3}
   m_Name: Belt
   m_EditorClassIdentifier: 
+  slot: 1
   modifierPool: {fileID: 11400000, guid: f288b2d42e1918645b1e764494197c06, type: 2}

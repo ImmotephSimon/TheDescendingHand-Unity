@@ -1,20 +1,20 @@
-using FishNet.Object;
-using System.Xml.Linq;
 using UnityEngine;
 
 public class ClientPlayer : MonoBehaviour
 {
     private PlayerMovementController _playerMovement;
-    private PlayerStatsSync _synchedStats;
-    private PlayerItemsSync _synchedItems;
+    private PlayerStatsNetwork _synchedStats;
+    private PlayerItemsNetwork _synchedItems;
+    private PlayerNetworkActions _networkActions;
 
     public Vector3 CursorPosition => _playerMovement.CursorPosition;
 
     private void Awake()
     {
         _playerMovement = GetComponent<PlayerMovementController>();
-        _synchedStats = GetComponent<PlayerStatsSync>();
-        _synchedItems = GetComponent<PlayerItemsSync>();
+        _synchedStats = GetComponent<PlayerStatsNetwork>();
+        _synchedItems = GetComponent<PlayerItemsNetwork>();
+        _networkActions = GetComponent<PlayerNetworkActions>();
 
         Debug.Assert(_playerMovement != null, $"{name} missing PlayerMovementController");
         Debug.Assert(_synchedStats != null, $"{name} missing PlayerStatsSync");
@@ -23,12 +23,12 @@ public class ClientPlayer : MonoBehaviour
 
     public void InitializeLocalPlayer()
     {
-        ClientBridge.Instance.PlayerHUD.Bind(_synchedStats, _synchedItems);
-        ClientBridge.Instance.GlobePositioner.Initialize(_synchedStats);
+        ClientRoot.Instance.PlayerHUD.Bind(_synchedStats, _synchedItems, _networkActions);
+        ClientRoot.Instance.GlobePositioner.Initialize(_synchedStats);
     }
 
     public void TryInteract()
     {
-        GetComponent<PlayerNetworkActions>().RequestInteract();
+        _networkActions.RequestInteract();
     }
 }

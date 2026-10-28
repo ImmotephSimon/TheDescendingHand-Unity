@@ -12,33 +12,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35d546714e5600244bf9148235d56df9, type: 3}
   m_Name: PlateGloves
   m_EditorClassIdentifier: 
+  id: 61d54c498dbf1cc4080a4d7767e84417
   DisplayName: Plate Gloves
   InventorySize: {x: 2, y: 2}
   Appearance:
     WorldModel: {fileID: 919132149155446097, guid: deb22067e8e1fad47a68af5f892b15a8, type: 3}
-    Icon: {fileID: 21300000, guid: 31bf04d84ae774042a59e26c752ce197, type: 3}
+    Icon:
+      _id: 70a77abda853dd941a0c8debf1de9b04:21300000
   RequiredLevel: 0
   Lore: 
   Tags:
     Tags: []
   Implicits:
   - Modifier:
-      Stat:
-        TagId: Mod.Defense.Mitigation
       Op: 0
       Value: 5
       RequiredTags:
         MatchAll: 0
         Tags:
-          Tags:
-          - TagId: Restriction.Physical
+          Tags: []
     IsScalable: 1
   Components:
-  - rid: 7617656363769921681
+  - rid: 6340319042743042254
   references:
     version: 2
     RefIds:
-    - rid: 7617656363769921681
-      type: {class: EquipComponentDefinition, ns: , asm: Assembly-CSharp}
+    - rid: 6340319042743042254
+      type: {class: EquipComponentDefinition, ns: , asm: Game.Server}
       data:
-        equipmentType: {fileID: 11400000, guid: abc45f4c1e1ac064b9f9fa094ca3b9b2, type: 2}
+        slot: 4

@@ -1,13 +1,12 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.XR;
 
 public class PlayerInputController : MonoBehaviour
 {
     private Vector2 _rawInput;
     private LayerMask _floorLayer;
     private GameInput _gameInput;
+    private CardNetwork _cardNetwork;
 
     private void Awake()
     {
@@ -28,7 +27,7 @@ public class PlayerInputController : MonoBehaviour
         _gameInput.Player.Card4.canceled += ctx => OnReleaseCard(3);
         _gameInput.Player.Card5.canceled += ctx => OnReleaseCard(4);
 
-        
+
         _gameInput.Player.LeftClick.performed += OnLeftClick;
         _gameInput.Player.Interact.performed += OnLoot;
         _gameInput.Player.Inventory.performed += OnOpenInventory;
@@ -36,11 +35,13 @@ public class PlayerInputController : MonoBehaviour
 
         _gameInput.Player.Dodgeroll.performed += DodgeRoll;
 
+
+        _cardNetwork = GetComponent<CardNetwork>();
     }
 
     private void DodgeRoll(InputAction.CallbackContext context)
     {
-        ClientBridge.Instance.Movement.DodgeRoll();
+        ClientRoot.Instance.Movement.DodgeRoll();
     }
 
     private void Update()
@@ -51,17 +52,17 @@ public class PlayerInputController : MonoBehaviour
     private void OnPlayCard(int index)
     {
         Debug.Log($"Playing index {index}");
-        ClientBridge.Instance.AbilitySystem.RequestUseAbility(index);
+        _cardNetwork.RequestUseAbility(index);
     }
 
     private void OnReleaseCard(int index)
     {
-        ClientBridge.Instance.AbilitySystem.RequestCancelAbility(index);
+        _cardNetwork.RequestCancelAbility(index);
     }
 
     private void UpdateMovementInput()
     {
-        IPlayerMovement movement = ClientBridge.Instance.Movement;
+        IPlayerMovement movement = ClientRoot.Instance.Movement;
 
         if (movement == null) return;
 
@@ -90,17 +91,17 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnLoot(InputAction.CallbackContext ctx)
     {
-        ClientBridge.Instance?.ClientPlayer?.TryInteract();
+        ClientRoot.Instance?.ClientPlayer?.TryInteract();
     }
 
     private void OnOpenInventory(InputAction.CallbackContext context)
     {
-        ClientBridge.Instance.PlayerHUD.ToggleInventory();
+        ClientRoot.Instance.PlayerHUD.ToggleInventory();
     }
 
     private void OnTogglePassiveTree(InputAction.CallbackContext context)
     {
-        ClientBridge.Instance.PlayerHUD.TogglePassiveTree();
+        ClientRoot.Instance.PlayerHUD.TogglePassiveTree();
     }
 
     private void OnDestroy()

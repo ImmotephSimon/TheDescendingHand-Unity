@@ -12,19 +12,19 @@ public class ClientPlayerRegistration : NetworkBehaviour
         _client = GetComponent<ClientPlayer>();
 
         var animHandler =
-            GetComponentInChildren<IAnimationHandler>();
+            GetComponentInChildren<IPlayerAnimationHandler>();
 
-        var cardController =
-            GetComponent<CardController>();
+        var cardNetwork =
+            GetComponent<CardNetwork>();
 
-        cardController.InitializeClientObservers(animHandler);
+        cardNetwork.InitializeClientObservers(animHandler);
 
         if (IsOwner)
         {
-            ClientBridge.Instance.RegisterLocalPlayer(_client);
-            cardController.NotifyClientReadyServerRpc();
+            ClientRoot.Instance.RegisterLocalPlayer(_client);
+            cardNetwork.NotifyClientReadyServerRpc();
         }
-            
-        
+
+
     }
 }

@@ -12,33 +12,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35d546714e5600244bf9148235d56df9, type: 3}
   m_Name: PlateBelt
   m_EditorClassIdentifier: 
+  id: ac8dfc47c768fad4eadbcfd5016b0155
   DisplayName: Plate Belt
   InventorySize: {x: 2, y: 1}
   Appearance:
     WorldModel: {fileID: 919132149155446097, guid: 4d137fc27c66ca3498e021580084eb38, type: 3}
-    Icon: {fileID: 21300000, guid: 4eba08e8434a6e940aa54d3f63ead11a, type: 3}
+    Icon:
+      _id: 4eba08e8434a6e940aa54d3f63ead11a:21300000
   RequiredLevel: 0
   Lore: 
   Tags:
     Tags: []
   Implicits:
   - Modifier:
-      Stat:
-        TagId: Mod.Defense.Mitigation
       Op: 0
       Value: 5
       RequiredTags:
         MatchAll: 0
         Tags:
-          Tags:
-          - TagId: Restriction.Physical
+          Tags: []
     IsScalable: 1
   Components:
-  - rid: 7617656363769921681
+  - rid: 6340319042743042252
   references:
     version: 2
     RefIds:
-    - rid: 7617656363769921681
-      type: {class: EquipComponentDefinition, ns: , asm: Assembly-CSharp}
+    - rid: 6340319042743042252
+      type: {class: EquipComponentDefinition, ns: , asm: Game.Server}
       data:
-        equipmentType: {fileID: 11400000, guid: e5aeaf1640d9bfb40a40201c88fcd9f7, type: 2}
+        slot: 1

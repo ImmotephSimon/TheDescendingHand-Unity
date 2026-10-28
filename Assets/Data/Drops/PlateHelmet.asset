@@ -12,33 +12,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35d546714e5600244bf9148235d56df9, type: 3}
   m_Name: PlateHelmet
   m_EditorClassIdentifier: 
+  id: 03ad957ae97c36e4eb634533f492b6fc
   DisplayName: Plate Helmet
   InventorySize: {x: 2, y: 2}
   Appearance:
     WorldModel: {fileID: 919132149155446097, guid: 05ce57e582a1d844bbc1e311bb8c09bf, type: 3}
-    Icon: {fileID: 21300000, guid: 8a35f12c62f2ee546bf2d247b6fc569d, type: 3}
+    Icon:
+      _id: 8a35f12c62f2ee546bf2d247b6fc569d:21300000
   RequiredLevel: 0
   Lore: 
   Tags:
     Tags: []
   Implicits:
   - Modifier:
-      Stat:
-        TagId: Mod.Defense.Mitigation
       Op: 0
       Value: 5
       RequiredTags:
         MatchAll: 0
         Tags:
-          Tags:
-          - TagId: Restriction.Physical
+          Tags: []
     IsScalable: 1
   Components:
-  - rid: 7617656363769921681
+  - rid: 6340319042743042255
   references:
     version: 2
     RefIds:
-    - rid: 7617656363769921681
-      type: {class: EquipComponentDefinition, ns: , asm: Assembly-CSharp}
+    - rid: 6340319042743042255
+      type: {class: EquipComponentDefinition, ns: , asm: Game.Server}
       data:
-        equipmentType: {fileID: 11400000, guid: 72072ba10aea13b4597c61474179ed53, type: 2}
+        slot: 5

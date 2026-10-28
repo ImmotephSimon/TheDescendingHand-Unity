@@ -1,68 +1,144 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class EquipmentVisuals : MonoBehaviour
 {
     [Serializable]
     private struct SlotBinding
     {
-        public EquipmentType Type;
+        public EquipmentSlot Slot;
         public Transform BoneAnchor;
     }
 
     [SerializeField] private List<SlotBinding> slots;
+    private PlayerItemsNetwork _itemsNetwork;
 
-    private readonly Dictionary<EquipmentType, Transform> _boneAnchors = new();
-    private readonly Dictionary<EquipmentType, GameObject> _activeVisuals = new();
+    private readonly Dictionary<EquipmentSlot, Transform> _boneAnchors = new();
+    private readonly Dictionary<EquipmentSlot, GameObject> _activeVisuals = new();
+    private readonly Dictionary<EquipmentSlot, EquippedItemDto> _applied = new();
+    private readonly HashSet<EquipmentSlot> _present = new();
+    private readonly List<EquipmentSlot> _toClear = new();
+
+    private ClientRoot _clientRoot;
+    private bool _subscribedToLoadout;
 
     private void Awake()
     {
-        foreach (var slot in slots)
+        ClientRoot.Instance.OnClientPlayerReady += HandleClientPlayerReady;
+
+        foreach (var binding in slots)
         {
-            if (slot.BoneAnchor != null)
-                _boneAnchors[slot.Type] = slot.BoneAnchor;
+            if (binding.BoneAnchor != null)
+                _boneAnchors[binding.Slot] = binding.BoneAnchor;
         }
     }
 
-    public void SetEquipment(EquipmentType type, ItemDefinition item)
+    private void HandleClientPlayerReady(ClientPlayer client)
     {
-        if (item == null)
+        _itemsNetwork = client.GetComponent<PlayerItemsNetwork>();
+
+        if (_itemsNetwork == null)
         {
-            ClearEquipment(type);
+            Debug.LogError("EquipmentVisuals: PlayerItemsNetwork reference is missing.", this);
             return;
         }
 
-        if (item.Appearance?.WorldModel == null)
+        if (!_subscribedToLoadout)
         {
-            Debug.LogWarning($"Item '{item.Id}' has no EquippedPrefab assigned for {type}.");
+            _itemsNetwork.LoadoutChanged += OnLoadoutChanged;
+            _subscribedToLoadout = true;
+        }
+
+        OnLoadoutChanged();
+    }
+
+    private void OnDisable()
+    {
+        if (_clientRoot != null)
+            _clientRoot.OnClientPlayerReady -= HandleClientPlayerReady;
+
+        if (_subscribedToLoadout && _itemsNetwork != null)
+        {
+            _itemsNetwork.LoadoutChanged -= OnLoadoutChanged;
+            _subscribedToLoadout = false;
+        }
+
+        _clientRoot = null;
+    }
+
+    private void OnLoadoutChanged()
+    {
+        _present.Clear();
+
+        foreach (EquippedItemDto dto in _itemsNetwork.EquippedItems)
+        {
+            _present.Add(dto.Slot);
+
+            if (_applied.TryGetValue(dto.Slot, out EquippedItemDto current) &&
+                current.Equals(dto))
+                continue;
+
+            SetEquipment(dto.Slot, ResolveWorldModel(dto));
+            _applied[dto.Slot] = dto;
+        }
+
+        _toClear.Clear();
+
+        foreach (var slot in _applied.Keys)
+        {
+            if (!_present.Contains(slot))
+                _toClear.Add(slot);
+        }
+
+        foreach (var slot in _toClear)
+        {
+            ClearEquipment(slot);
+            _applied.Remove(slot);
+        }
+    }
+
+    private GameObject ResolveWorldModel(EquippedItemDto dto)
+    {
+        Debug.LogError(
+            $"ResolveWorldModel not implemented: slot {dto.Slot} will show nothing.",
+            this);
+
+        return null; // TODO: Resolve prefab through the item registry.
+    }
+
+    public void SetEquipment(EquipmentSlot slot, GameObject worldModel)
+    {
+        if (worldModel == null)
+        {
+            ClearEquipment(slot);
             return;
         }
 
-        ClearEquipment(type);
-
-        if (!_boneAnchors.TryGetValue(type, out Transform anchor))
+        if (!_boneAnchors.TryGetValue(slot, out Transform anchor))
         {
-            Debug.LogWarning($"No bone anchor assigned for {type}");
+            Debug.LogWarning($"No bone anchor assigned for {slot}", this);
             return;
         }
 
-        GameObject visual = Instantiate(item.Appearance.WorldModel, anchor, false);
+        ClearEquipment(slot);
+
+        GameObject visual = Instantiate(worldModel, anchor, false);
         visual.transform.localPosition = Vector3.zero;
         visual.transform.localRotation = Quaternion.identity;
         visual.transform.localScale = Vector3.one;
 
-        _activeVisuals[type] = visual;
+        _activeVisuals[slot] = visual;
     }
 
-    public void ClearEquipment(EquipmentType type)
+    public void ClearEquipment(EquipmentSlot slot)
     {
-        if (_activeVisuals.TryGetValue(type, out GameObject currentVisual))
-        {
-            if (currentVisual != null)
-                Destroy(currentVisual);
+        if (!_activeVisuals.TryGetValue(slot, out GameObject current))
+            return;
 
-            _activeVisuals.Remove(type);
-        }
+        if (current != null)
+            Destroy(current);
+
+        _activeVisuals.Remove(slot);
     }
 }

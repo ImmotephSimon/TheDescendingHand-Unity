@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16ebe703bacf6e247bdd62e3ec7db4d5, type: 3}
   m_Name: Sword
   m_EditorClassIdentifier: 
+  slot: 8
   modifierPool: {fileID: 11400000, guid: c865c85192288e24a88bc695601e6698, type: 2}

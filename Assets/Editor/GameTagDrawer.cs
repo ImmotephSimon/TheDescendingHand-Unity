@@ -7,8 +7,16 @@ public class GameTagDrawer : PropertyDrawer
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         string[] availableTags = TagLookup.AvailableTags;
-        SerializedProperty tagId = property.FindPropertyRelative("TagId");
-
+        SerializedProperty tagId = property.FindPropertyRelative(GameTag.TagIdField);
+        if (tagId == null)
+        {
+            Debug.LogError(
+                $"GameTagDrawer: Could not find serialized field '{GameTag.TagIdField}' " +
+                $"in '{property.propertyPath}'.",
+                property.serializedObject.targetObject);
+            EditorGUI.PropertyField(position, property, label, true);
+            return;
+        }
         if (availableTags == null || availableTags.Length == 0)
         {
             EditorGUI.PropertyField(position, tagId, label);

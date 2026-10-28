@@ -17,8 +17,8 @@ MonoBehaviour:
   MaxAffixes: 2
   MinAffixes: 2
   AllowedDrops:
-  - rid: 7617656375266771146
-  - rid: 3345370885775163800
+  - rid: 6340319042743042234
+  - rid: 6340319042743042235
   CanHaveUniqueMods: 0
   DisplayColor: {r: 0, g: 0.103065014, b: 1, a: 1}
   LightIntensity: 0.3
@@ -26,11 +26,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 3345370885775163800
-      type: {class: CardLootDefinition, ns: , asm: Assembly-CSharp}
+    - rid: 6340319042743042234
+      type: {class: CardLootDefinition, ns: , asm: Game.Server}
       data:
         Prefab: {fileID: 315467223515205245, guid: f45f3f303806c01469581299b98fd536, type: 3}
-    - rid: 7617656375266771146
-      type: {class: ItemLootDefinition, ns: , asm: Assembly-CSharp}
+    - rid: 6340319042743042235
+      type: {class: ItemLootDefinition, ns: , asm: Game.Server}
       data:
         Prefab: {fileID: 442775255196232616, guid: e8296fc36f1e33548afb362aa70fd075, type: 3}

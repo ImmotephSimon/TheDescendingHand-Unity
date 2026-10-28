@@ -1,0 +1,12 @@
+﻿using System;
+using UnityEngine;
+
+public interface IInventoryItem
+{
+    Guid InventoryId { get; }
+    Vector2Int Size { get; }
+    SpriteString Icon { get; }
+    GameTag DropPrefabTag { get; }
+
+    TooltipDto Display();
+}
