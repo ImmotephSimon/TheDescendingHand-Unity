@@ -331,10 +331,6 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
 
         Vector3 movementInput =
             new Vector3(_bufferedInput.x, 0f, _bufferedInput.y).normalized;
-
-        Debug.DrawRay(transform.position, movementInput * 2f, Color.green);
-        Debug.DrawRay(transform.position, _currentMoveVelocity, Color.red);
-        Debug.Log($"buffered:{_bufferedInput} vel:{currentVelocity:F2} dodge:{isDodging}");
     }
 
     public void DodgeRoll()

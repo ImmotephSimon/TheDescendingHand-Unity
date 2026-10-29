@@ -18,19 +18,22 @@ MonoBehaviour:
   Appearance:
     WorldModel: {fileID: 919132149155446097, guid: 5dabcd0974f9098449183d2b966a1ec6, type: 3}
     Icon:
-      _id: 970324311431c794ca338446ea889948:21300000
+      _id: 286ce66ac3cfed84aa731d535cefe851:21300000
   RequiredLevel: 0
   Lore: 
   Tags:
     Tags: []
   Implicits:
   - Modifier:
+      Stat:
+        _tagId: Mod.Defense.Mitigation
       Op: 0
       Value: 5
       RequiredTags:
         MatchAll: 0
         Tags:
-          Tags: []
+          Tags:
+          - _tagId: Restriction.Physical
     IsScalable: 1
   Components:
   - rid: 6340319042743042243

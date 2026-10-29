@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _entries:
   - Tag:
-      TagId: Prefab.Projectile
+      _tagId: Prefab.Projectile
     Prefab: {fileID: 755919957440293959, guid: 09d0ab38ffa41c24fb5537cb07e4f326, type: 3}
   - Tag:
-      TagId: Prefab.Card
+      _tagId: Prefab.Card
     Prefab: {fileID: 7759561611833895041, guid: 5722867f81ead58488e74b3e93913eaa, type: 3}
   - Tag:
-      TagId: Prefab.CardWall
+      _tagId: Prefab.CardWall
     Prefab: {fileID: 2646070988946056756, guid: 919f17fddb6c8e3439c57f53f0e54135, type: 3}
   - Tag:
-      TagId: Prefab.Item
+      _tagId: Prefab.Item
     Prefab: {fileID: 442775255196232616, guid: e8296fc36f1e33548afb362aa70fd075, type: 3}

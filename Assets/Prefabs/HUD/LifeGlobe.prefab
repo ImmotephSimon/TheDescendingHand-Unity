@@ -234,7 +234,7 @@ MonoBehaviour:
   wobbleSpeed: 0.5
   recovery: 2
   resourceTag:
-    TagId: Mod.Stat.Health
+    _tagId: Mod.Stat.Health
   type: 0
   fillPercentage: 1
   lightColor: {r: 1, g: 0, b: 0, a: 1}

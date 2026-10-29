@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1588361522031770242}
-  - component: {fileID: 6981665846237183477}
   - component: {fileID: 6041473256373477496}
   - component: {fileID: 1440030305545149092}
   - component: {fileID: 4930120298934782470}
+  - component: {fileID: -1891371565582834113}
   m_Layer: 0
   m_Name: ClientRoot
   m_TagString: Untagged
@@ -35,22 +35,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6981665846237183477
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2440746720248370019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e36df73c939e8e146a2b16fce876f906, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  title: {fileID: 0}
-  description: {fileID: 0}
-  keybind: {fileID: 0}
-  art: {fileID: 0}
 --- !u!114 &6041473256373477496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,4 +71,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e483c58dc3a651349810992a2cbf78cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testCards: {fileID: 11400000, guid: d10fb8c24588bbd4198011091344e1b8, type: 2}
+--- !u!114 &-1891371565582834113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2440746720248370019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e0f442bb81fb4d48b0e7f6b71e0b148, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hudPrefab: {fileID: 6607168225021539708, guid: 5c4a9236940cdc046892af6ef774de20, type: 3}

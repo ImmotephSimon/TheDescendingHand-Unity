@@ -1,11 +1,5 @@
 fileFormatVersion: 2
 guid: 008f5b7416cb3dc4a930c9414c3b6d4f
-NativeFormatImporter:
-  externalObjects: {}
-  mainObjectFileID: 2100000
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
 AssetOrigin:
   serializedVersion: 1
   productId: 276754
@@ -13,3 +7,9 @@ AssetOrigin:
   packageVersion: 1.0
   assetPath: Assets/Fantasy knight/Materials/Mat_Armor_1.mat
   uploadId: 642948
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

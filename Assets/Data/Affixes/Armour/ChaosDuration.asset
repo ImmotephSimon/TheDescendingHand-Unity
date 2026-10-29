@@ -16,14 +16,14 @@ MonoBehaviour:
   NameOverride: 
   Mods:
   - Stat:
-      TagId: Mod.Utility.Duration
+      _tagId: Mod.Utility.Duration
     Op: 1
     Value: 0.4
     RequiredTags:
       MatchAll: 0
       Tags:
         Tags:
-        - TagId: Restriction.Chaos
+        - _tagId: Restriction.Chaos
   ContextRequirement:
     MatchAll: 0
     Tags:

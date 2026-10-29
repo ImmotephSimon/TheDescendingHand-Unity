@@ -16,7 +16,7 @@ MonoBehaviour:
   NameOverride: 
   Mods:
   - Stat:
-      TagId: Mod.Stat.Health
+      _tagId: Mod.Stat.Health
     Op: 1
     Value: 0.2
     RequiredTags:

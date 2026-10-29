@@ -18,15 +18,17 @@ MonoBehaviour:
   visuals:
     Name: Falling Boulder
     Description: Debris
-    Icon: {fileID: 21300000, guid: 8a96b38c76be79946a150249547b07bc, type: 3}
-    AnimationOverride: {fileID: 0}
-    Vfx: []
+    Icon:
+      Id: 
+    AnimationOverride:
+      _id: 
+    Vfx: 
   DeckOverrides:
     addedDraws: 0
     addedDiscards: 0
   boulderPrefab: {fileID: 8151445253895366970, guid: 3fc25fa3acefd11468c1ce7215a5e965, type: 3}
   effectiveness: 1
   damageConversion:
-    TagId: Restriction.Physical
+    _tagId: Restriction.Physical
   radius: 3
   spawnOffset: {x: 0, y: 10, z: 0}

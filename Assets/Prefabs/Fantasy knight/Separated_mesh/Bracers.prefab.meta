@@ -1,10 +1,5 @@
 fileFormatVersion: 2
 guid: 805d6e74402c009408caaba344947d2b
-PrefabImporter:
-  externalObjects: {}
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
 AssetOrigin:
   serializedVersion: 1
   productId: 276754
@@ -12,3 +7,8 @@ AssetOrigin:
   packageVersion: 1.0
   assetPath: Assets/Fantasy knight/Prefab/Separated_mesh/Bracers.prefab
   uploadId: 642948
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

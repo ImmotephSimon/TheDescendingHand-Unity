@@ -18,8 +18,7 @@ public class CardNetwork : NetworkBehaviour
     private IPlayerAnimationHandler _animationHandler;
     private Action _cancelAnimation;
 
-    public event Action<int, CardVisuals> CardAdded;
-    public event Action<int> CardRemoved;
+    public event Action<int, CardVisuals> OnCardSlotChanged;
     public Action<bool, IReadOnlyList<CardVisuals>> OnPileReceived { get; set; }
 
     // ---------- Lifecycle ----------
@@ -29,6 +28,10 @@ public class CardNetwork : NetworkBehaviour
     public override void OnStartServer()
     {
         base.OnStartServer();
+
+        for (int i = 0; i < MaxHandSize; i++)
+            _hand.Add(default);
+
         _server = GetComponent<ICardServerHandler>();
         if (_server == null)
             throw new InvalidOperationException($"{nameof(ICardServerHandler)} missing on {name}.");
@@ -42,7 +45,10 @@ public class CardNetwork : NetworkBehaviour
 
         // Late joiners don't get Add events for existing items.
         for (int i = 0; i < _hand.Count; i++)
-            CardAdded?.Invoke(i, _hand[i]);
+        {
+            if (!EqualityComparer<CardVisuals>.Default.Equals(_hand[i], default))
+                OnCardSlotChanged?.Invoke(i, _hand[i]);
+        }
     }
 
     public override void OnStopClient()
@@ -59,14 +65,13 @@ public class CardNetwork : NetworkBehaviour
     [Server]
     public void ServerAddCard(int index, CardVisuals visuals)
     {
-        if (index >= 0 && index < _hand.Count) _hand.Insert(index, visuals);
-        else _hand.Add(visuals);
+        _hand[index] = visuals;
     }
 
     [Server]
     public void ServerRemoveCard(int index)
     {
-        if (index >= 0 && index < _hand.Count) _hand.RemoveAt(index);
+        _hand[index] = default;
     }
 
     [Server]
@@ -90,10 +95,9 @@ public class CardNetwork : NetworkBehaviour
         => OnPileReceived?.Invoke(drawPile, cards);
 
     [ObserversRpc]
-    private void CardStartedObserversRpc(AnimationString animationString, float duration)
+    private void CardStartedObserversRpc(AnimationString overrideAnimation, float duration)
     {
-        // TODO: resolve key through a client-side animation catalog.
-        AnimationClip clip = ResolveClip(animationString) ?? standardCastAnimation;
+        AnimationClip clip = ResolveClip(overrideAnimation);
         _cancelAnimation?.Invoke();
         _cancelAnimation = _animationHandler?.PlayAnimation(clip, duration: duration);
     }
@@ -105,34 +109,41 @@ public class CardNetwork : NetworkBehaviour
         _cancelAnimation = null;
     }
 
-    private AnimationClip ResolveClip(AnimationString key)
+    private AnimationClip ResolveClip(AnimationString overrideAnimation)
     {
-        AnimationRegistry.Instance.TryGetClip(key, out AnimationClip clip);
-        return clip;
+        if (!string.IsNullOrEmpty(overrideAnimation.Id) &&
+            AnimationRegistry.Instance.TryGetClip(overrideAnimation, out AnimationClip clip))
+        {
+            return clip;
+        }
+
+        return standardCastAnimation;
     }
 
     // ---------- Hand change handling ----------
 
-    private void OnHandChanged(SyncListOperation op, int index,
+    private void OnHandChanged(
+        SyncListOperation op, int index,
         CardVisuals oldItem, CardVisuals newItem, bool asServer)
     {
+        Debug.Log($"[CLIENT asServer={asServer}] {op} idx={index} name='{newItem.Name}' icon='{newItem.Icon}'");
         if (asServer) return;
 
         switch (op)
         {
+            case SyncListOperation.Set:
             case SyncListOperation.Add:
             case SyncListOperation.Insert:
-                CardAdded?.Invoke(index, newItem);
+                OnCardSlotChanged?.Invoke(index, newItem);
                 break;
+
             case SyncListOperation.RemoveAt:
-                CardRemoved?.Invoke(index);
+                OnCardSlotChanged?.Invoke(index, default);
                 break;
-            case SyncListOperation.Set:
-                CardRemoved?.Invoke(index);
-                CardAdded?.Invoke(index, newItem);
-                break;
+
             case SyncListOperation.Clear:
-                for (int i = 0; i < MaxHandSize; i++) CardRemoved?.Invoke(i);
+                for (int i = 0; i < _hand.Count; i++)
+                    OnCardSlotChanged?.Invoke(i, default);
                 break;
         }
     }

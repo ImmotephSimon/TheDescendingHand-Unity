@@ -53,7 +53,7 @@ public class VFXView : MonoBehaviour
 
     // ---------------------------------------------------------------- server-driven
 
-    private void OnSpawnRequested(VfxString vfxString, VfxSpawnParams p, NetworkObject attachTarget)
+    private void OnSpawnRequested(VfxType vfxString, VfxSpawnParams p, NetworkObject attachTarget)
     {
         if (!VfxCatalog.Instance.TryGetPrefab(vfxString, out GameObject prefab))
             return;
@@ -123,5 +123,30 @@ public class VFXView : MonoBehaviour
             vfx.Stop();     // assumes Stop() handles its own cleanup, as the old code did
         else
             Destroy(instance);
+    }
+
+    // ---------------------------------------------------------------- projectiles
+
+    private void OnEnable()
+    {
+        ProjectileNetworkView.AnyClientStarted += OnProjectileStarted;
+        ProjectileNetworkView.AnyClientStopped += OnProjectileStopped;
+    }
+
+    private void OnDisable()
+    {
+        ProjectileNetworkView.AnyClientStarted -= OnProjectileStarted;
+        ProjectileNetworkView.AnyClientStopped -= OnProjectileStopped;
+    }
+
+    private void OnProjectileStarted(ProjectileNetworkView projectile)
+    {
+        if (VfxCatalog.Instance.TryGetPrefab(projectile.Visual, out GameObject prefab))
+            AttachAbilityVisual(prefab, projectile.transform);
+    }
+
+    private void OnProjectileStopped(ProjectileNetworkView projectile)
+    {
+        DetachAbilityVisual(projectile.transform);
     }
 }

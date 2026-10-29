@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 [CustomPropertyDrawer(typeof(GameTag))]
@@ -8,40 +9,42 @@ public class GameTagDrawer : PropertyDrawer
     {
         string[] availableTags = TagLookup.AvailableTags;
         SerializedProperty tagId = property.FindPropertyRelative(GameTag.TagIdField);
+
         if (tagId == null)
         {
-            Debug.LogError(
-                $"GameTagDrawer: Could not find serialized field '{GameTag.TagIdField}' " +
-                $"in '{property.propertyPath}'.",
-                property.serializedObject.targetObject);
             EditorGUI.PropertyField(position, property, label, true);
             return;
         }
+
         if (availableTags == null || availableTags.Length == 0)
         {
             EditorGUI.PropertyField(position, tagId, label);
             return;
         }
 
-        int currentIndex = System.Array.IndexOf(availableTags, tagId.stringValue);
-
         EditorGUI.BeginProperty(position, label, property);
-        using (var check = new EditorGUI.ChangeCheckScope())
-        {
-            // If tag wasn't found, display index 0 visually, but don't commit it to the property yet
-            int selectedIndex = EditorGUI.Popup(
-                position,
-                label.text,
-                currentIndex < 0 ? 0 : currentIndex,
-                availableTags
-            );
 
-            // Only update the actual serialized value when the user actively picks a new option
-            if (check.changed && selectedIndex >= 0 && selectedIndex < availableTags.Length)
+        string currentVal = tagId.stringValue;
+        GUIContent buttonContent = new GUIContent(string.IsNullOrEmpty(currentVal) ? "Select Tag..." : currentVal);
+
+        // Draw a button field that mimics a dropdown selector
+        if (EditorGUI.DropdownButton(position, buttonContent, FocusType.Keyboard))
+        {
+            var rect = position;
+            var dropdown = new GameTagDropdown(new AdvancedDropdownState(), availableTags, selected =>
             {
-                tagId.stringValue = availableTags[selectedIndex];
-            }
+                tagId.stringValue = selected;
+                property.serializedObject.ApplyModifiedProperties();
+                GUI.changed = true;
+            });
+            dropdown.Show(rect);
         }
+
         EditorGUI.EndProperty();
+    }
+
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        return EditorGUIUtility.singleLineHeight;
     }
 }

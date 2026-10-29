@@ -52,7 +52,7 @@ MonoBehaviour:
   hinge: {fileID: 8661411643167445293}
   openAngle: {x: 0, y: -150, z: 0}
   openSpeed: 1
-  interactionMode: 0
+  propType: 0
   interactionCollider: {fileID: 5439318028308926662}
 --- !u!65 &5439318028308926662
 BoxCollider:

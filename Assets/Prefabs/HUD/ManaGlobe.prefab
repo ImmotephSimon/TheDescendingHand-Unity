@@ -234,7 +234,7 @@ MonoBehaviour:
   wobbleSpeed: 1
   recovery: 1
   resourceTag:
-    TagId: Mod.Stat.Mana
+    _tagId: Mod.Stat.Mana
   type: 1
   fillPercentage: 1
   lightColor: {r: 0, g: 0, b: 1, a: 1}

@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 
 [Serializable]
-public class CardVisuals
+public struct CardVisuals
 {
     public string Name;
     public string Description;
     public SpriteString Icon;
     public AnimationString AnimationOverride;
-    public List<VfxString> Vfx;
+    public List<VfxType> Vfx;
+
+    public bool IsEmpty => string.IsNullOrEmpty(Name);
 }

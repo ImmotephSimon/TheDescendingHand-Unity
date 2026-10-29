@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7867602266871398658}
   - component: {fileID: 448445193206466085}
   m_Layer: 0
-  m_Name: ElectrocuteVFX
+  m_Name: LightningVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

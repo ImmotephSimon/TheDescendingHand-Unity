@@ -13,12 +13,11 @@ MonoBehaviour:
   m_Name: Stun
   m_EditorClassIdentifier: 
   id: 2208a74e-7cef-415e-9ee6-87a44d21aa44
-  DisplayName: Stun Duration
-  BaseValue: 0.9
-  Modifier:
-    TagId: Mod.Stat.Stun.Duration
-  MathOp: 2
-  TagRequirement:
+  NameOverride: 
+  Mods: []
+  ContextRequirement:
     MatchAll: 0
     Tags:
       Tags: []
+  Prerequisites: []
+  Tags: []

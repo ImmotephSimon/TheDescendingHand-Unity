@@ -9,7 +9,7 @@ public class ProjectileInfo
     public float Speed = 5;
 
     public LaunchDirection Direction;
-    public GameObject Visual;
+    public VfxType Visual = VfxType.None;
 
     [Range(1, 10)]
     public int Count = 1;

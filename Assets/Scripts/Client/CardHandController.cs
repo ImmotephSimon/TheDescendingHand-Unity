@@ -7,19 +7,55 @@ public class CardHandController : MonoBehaviour
     [SerializeField] private int maxHandSize = 10;
 
     private GameObject[] cards;
+    private CardNetwork _network;
 
-    private void Awake() => cards = new GameObject[maxHandSize];
+    private void Awake()
+    {
+        cards = new GameObject[maxHandSize];
 
-    public void OnCardAdded(int index, CardVisuals visuals)
+        // Camera.main predates ClientRoot.Instance
+        ClientRoot.OnInstanceReady += Bind;
+    }
+
+
+    private void Bind(ClientRoot root)
+    {
+        ClientRoot.Instance.OnClientPlayerReady += Initialize;
+    }
+
+    private void Initialize(ClientPlayer client)
+    {
+        _network = client.GetComponent<CardNetwork>();
+        Debug.Assert(_network != null, $"[{name}] CardHandController requires a CardNetwork", this);
+
+        _network.OnCardSlotChanged += OnCardSlotChanged;
+    }
+
+    private void OnDisable()
+    {
+        ClientRoot.OnInstanceReady -= Bind;
+        _network.OnCardSlotChanged -= OnCardSlotChanged;
+    }
+
+    public void OnCardSlotChanged(int index, CardVisuals visuals)
     {
         if ((uint)index >= cards.Length) return;
 
-        if (cards[index] != null)          // server replaced a slot, don't leak the old one
-            OnCardRemoved(index);
+        // Clean up existing card if present
+        if (cards[index] != null)
+        {
+            CardView view = cards[index].GetComponentInChildren<CardView>();
+            handView.RemoveCard(view);
+            cards[index] = null;
+        }
 
+        // If the new state is empty, we're done
+        if (visuals.IsEmpty) return;
+
+        // Otherwise, instantiate and setup the new card
         GameObject cardObject = Instantiate(physicalCardPrefab, handView.transform);
-        CardView view = cardObject.GetComponentInChildren<CardView>();
-        view.InitializePhysicalCard(visuals, cardObject.transform, $"{index + 1}");
+        CardView newView = cardObject.GetComponentInChildren<CardView>();
+        newView.InitializePhysicalCard(visuals, cardObject.transform, $"{index + 1}");
 
         cards[index] = cardObject;
         handView.AddCard(cardObject);

@@ -16,7 +16,7 @@ MonoBehaviour:
   NameOverride: 
   Mods:
   - Stat:
-      TagId: Mod.Offense.DamagePerMana
+      _tagId: Mod.Offense.DamagePerMana
     Op: 1
     Value: 0.2
     RequiredTags:

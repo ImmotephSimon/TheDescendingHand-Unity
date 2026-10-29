@@ -25,6 +25,8 @@ MonoBehaviour:
     Tags: []
   Implicits:
   - Modifier:
+      Stat:
+        _tagId: Mod.Offense.Damage
       Op: 0
       Value: 3
       RequiredTags:
@@ -33,6 +35,8 @@ MonoBehaviour:
           Tags: []
     IsScalable: 1
   - Modifier:
+      Stat:
+        _tagId: Mod.Offense.Critical
       Op: 0
       Value: 10
       RequiredTags:
@@ -41,6 +45,8 @@ MonoBehaviour:
           Tags: []
     IsScalable: 0
   - Modifier:
+      Stat:
+        _tagId: Mod.Offense.CastSpeed
       Op: 2
       Value: 0.9
       RequiredTags:

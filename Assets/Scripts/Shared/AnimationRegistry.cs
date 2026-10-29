@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Registries/Animation")]
@@ -97,25 +99,57 @@ public class AnimationRegistry : ScriptableObject
 
     public bool TryGetId(AnimationClip clip, out string id)
     {
+        id = null;
+
+        if (clip == null)
+        {
+            Debug.LogError("[AnimationRegistry] Clip is null, cannot look up an ID.");
+            return false;
+        }
+
         EnsureInit();
 
-        if (clip != null && _clipToId.TryGetValue(clip, out id))
+        if (_clipToId.TryGetValue(clip, out id))
             return true;
 
         id = null;
-        Debug.LogError($"[AnimationRegistry] No ID registered for clip '{clip?.name}'.");
+        Debug.LogError($"[AnimationRegistry] No ID registered for clip '{clip.name}'.");
         return false;
     }
 
-    public bool TryGetClip(AnimationString key, out AnimationClip clip)
+    public bool TryGetClip(
+        AnimationString key,
+        out AnimationClip clip,
+        UnityEngine.Object context = null,
+        [CallerMemberName] string caller = "",
+        [CallerFilePath] string file = "",
+        [CallerLineNumber] int line = 0)
     {
+        clip = null;
+
+        if (string.IsNullOrEmpty(key.Id))
+        {
+            Debug.LogError(
+                $"[AnimationRegistry] Animation ID is empty (no clip assigned). {Describe(context, caller, file, line)}",
+                context);
+            return false;
+        }
+
         EnsureInit();
 
-        if (!string.IsNullOrEmpty(key.Id) && _idToClip.TryGetValue(key.Id, out clip))
+        if (_idToClip.TryGetValue(key.Id, out clip))
             return true;
 
         clip = null;
-        Debug.LogError($"[AnimationRegistry] No clip registered for ID '{key.Id}'.");
+        Debug.LogError(
+            $"[AnimationRegistry] No clip registered for ID '{key.Id}'. {Describe(context, caller, file, line)}",
+            context);
         return false;
+    }
+
+    private static string Describe(UnityEngine.Object context, string caller, string file, int line)
+    {
+        string objectName = context != null ? context.name : "unknown";
+        return $"Object: '{objectName}', at {caller} ({Path.GetFileName(file)}:{line})";
     }
 }

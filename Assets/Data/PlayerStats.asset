@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Modifiers:
   - Stat:
-      TagId: Mod.Stat.Movement
+      _tagId: Mod.Stat.Movement
     Op: 0
     Value: 2.5
     RequiredTags:
@@ -22,7 +22,7 @@ MonoBehaviour:
       Tags:
         Tags: []
   - Stat:
-      TagId: Mod.Stat.Stun.Threshold
+      _tagId: Mod.Stat.Stun.Threshold
     Op: 0
     Value: 0.05
     RequiredTags:
@@ -30,16 +30,16 @@ MonoBehaviour:
       Tags:
         Tags: []
   - Stat:
-      TagId: Mod.Offense.Damage
+      _tagId: Mod.Offense.Damage
     Op: 0
     Value: 3
     RequiredTags:
       MatchAll: 0
       Tags:
         Tags:
-        - TagId: Restriction.Physical
+        - _tagId: Restriction.Physical
   - Stat:
-      TagId: Mod.Stat.Mana
+      _tagId: Mod.Stat.Mana
     Op: 0
     Value: 20
     RequiredTags:
@@ -47,7 +47,7 @@ MonoBehaviour:
       Tags:
         Tags: []
   - Stat:
-      TagId: Mod.Stat.Movement
+      _tagId: Mod.Stat.Movement
     Op: 1
     Value: 0
     RequiredTags:
@@ -55,7 +55,7 @@ MonoBehaviour:
       Tags:
         Tags: []
   - Stat:
-      TagId: Mod.Stat.Stun.Duration
+      _tagId: Mod.Stat.Stun.Duration
     Op: 0
     Value: 0.6
     RequiredTags:
@@ -63,7 +63,7 @@ MonoBehaviour:
       Tags:
         Tags: []
   - Stat:
-      TagId: Mod.Stat.Strength
+      _tagId: Mod.Stat.Strength
     Op: 0
     Value: 4
     RequiredTags:

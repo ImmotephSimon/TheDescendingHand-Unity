@@ -18,16 +18,16 @@ MonoBehaviour:
   visuals:
     Name: Water Puddle
     Description: Wet
-    Icon: {fileID: 21300000, guid: 2bccd332882fcd14b9e4c377e432c587, type: 3}
-    AnimationOverride: {fileID: 0}
-    Vfx:
-    - {fileID: 4422894025167180682, guid: 2667054c4967f2940b00d415a7edb12a, type: 3}
-    - {fileID: 6255241496188343087, guid: dcca08f5d8bf5d744a8d223ffba43ccf, type: 3}
+    Icon:
+      Id: 
+    AnimationOverride:
+      _id: 
+    Vfx: 0000000000000000
   DeckOverrides:
     addedDraws: 0
     addedDiscards: 0
   radius: 3
   effectiveness: 1
   damageConversion:
-    TagId: Restriction.Element.Lightning
+    _tagId: Restriction.Element.Lightning
   duration: 8

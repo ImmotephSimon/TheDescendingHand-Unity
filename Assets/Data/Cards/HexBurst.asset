@@ -18,14 +18,15 @@ MonoBehaviour:
   visuals:
     Name: Hex Burst
     Description: 'Condition: Hex'
-    Icon: {fileID: 21300000, guid: 21df9195ed43b004394e6d7913b03149, type: 3}
-    AnimationOverride: {fileID: 0}
-    Vfx:
-    - {fileID: 4422894025167180682, guid: b6bf06d8b658e41488f1c5621ef0269d, type: 3}
+    Icon:
+      Id: 
+    AnimationOverride:
+      _id: 
+    Vfx: 00000000
   DeckOverrides:
     addedDraws: 0
     addedDiscards: 0
   radius: 3
   effectiveness: 0
   damageConversion:
-    TagId: Restriction.Chaos
+    _tagId: Restriction.Chaos

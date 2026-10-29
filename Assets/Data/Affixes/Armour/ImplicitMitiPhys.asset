@@ -16,14 +16,14 @@ MonoBehaviour:
   NameOverride: 
   Mods:
   - Stat:
-      TagId: Mod.Defense.Mitigation
+      _tagId: Mod.Defense.Mitigation
     Op: 0
     Value: 100
     RequiredTags:
       MatchAll: 0
       Tags:
         Tags:
-        - TagId: Restriction.Physical
+        - _tagId: Restriction.Physical
   ContextRequirement:
     MatchAll: 0
     Tags:

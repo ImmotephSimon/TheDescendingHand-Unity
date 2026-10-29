@@ -45,7 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0168b3863af1a954783ec5c130cca256, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  equipmentTypes: []
   gameNetworkPrefab: {fileID: 8059897725794121243, guid: 8fe7a30ef6087c94fbfd80cd15c22907, type: 3}
 --- !u!114 &576698347235475781
 MonoBehaviour:

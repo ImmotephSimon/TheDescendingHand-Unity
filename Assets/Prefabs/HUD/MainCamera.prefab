@@ -60,6 +60,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handView: {fileID: 2833487610784687531}
   physicalCardPrefab: {fileID: 1859473530935221782, guid: 3e09d615b92909543bea4b9bfd3c6899, type: 3}
+  maxHandSize: 10
 --- !u!1 &4313581013542312678
 GameObject:
   m_ObjectHideFlags: 0

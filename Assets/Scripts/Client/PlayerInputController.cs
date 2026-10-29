@@ -6,7 +6,6 @@ public class PlayerInputController : MonoBehaviour
     private Vector2 _rawInput;
     private LayerMask _floorLayer;
     private GameInput _gameInput;
-    private CardNetwork _cardNetwork;
 
     private void Awake()
     {
@@ -35,8 +34,6 @@ public class PlayerInputController : MonoBehaviour
 
         _gameInput.Player.Dodgeroll.performed += DodgeRoll;
 
-
-        _cardNetwork = GetComponent<CardNetwork>();
     }
 
     private void DodgeRoll(InputAction.CallbackContext context)
@@ -52,12 +49,12 @@ public class PlayerInputController : MonoBehaviour
     private void OnPlayCard(int index)
     {
         Debug.Log($"Playing index {index}");
-        _cardNetwork.RequestUseAbility(index);
+        ClientRoot.Instance.CardHandler.RequestUseAbility(index);
     }
 
     private void OnReleaseCard(int index)
     {
-        _cardNetwork.RequestCancelAbility(index);
+        ClientRoot.Instance.CardHandler.RequestCancelAbility(index);
     }
 
     private void UpdateMovementInput()
@@ -86,12 +83,12 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnLeftClick(InputAction.CallbackContext ctx)
     {
-        CursorItemController.Instance?.TryDropHeldItem();
+        CursorItemController.Instance.TryDropHeldItem();
     }
 
     private void OnLoot(InputAction.CallbackContext ctx)
     {
-        ClientRoot.Instance?.ClientPlayer?.TryInteract();
+        ClientRoot.Instance.ClientPlayer.TryInteract();
     }
 
     private void OnOpenInventory(InputAction.CallbackContext context)

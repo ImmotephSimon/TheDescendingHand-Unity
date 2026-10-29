@@ -389,13 +389,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a27667e2aa5ab2449a06347b2cd5715c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _data: {fileID: 11400000, guid: 770d43bc901ed154ca717f4ceca71d66, type: 2}
   _container: {fileID: 6773811295272760407}
   _nodePrefab: {fileID: 2875565376338760330, guid: 870a608e0a51fbc478b1ad4499e79522, type: 3}
   _connectionPrefab: {fileID: 1436147734990938337, guid: 89d12cacda5dfb14db3e5c8d4ccf19e2, type: 3}
   _window: {fileID: 3157163587290910362}
-  _tooltip: {fileID: 9089113733512695637, guid: 4cbbdc7e4c377d2498dbf1c6d3078a04, type: 3}
-  _rootCanvas: {fileID: 0}
+  _tooltipPrefab: {fileID: 0}
+  _tooltipLayer: {fileID: 0}
   _minZoom: 0.5
   _maxZoom: 2
   _zoomSpeed: 0.1

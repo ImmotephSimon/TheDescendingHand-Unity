@@ -1,0 +1,20 @@
+public enum VfxType
+{
+    None = 0,
+    Explosion = 1,
+    FireProjectile = 2,
+    LightningProjectile = 3,
+    FallingBoulder = 4,
+    Fireball = 5,
+    Firewall = 6,
+    ChaosExplosion = 7,
+    Curse = 8,
+    Cyclone = 9,
+    INSERT1 = 10,
+    Shockwave = 11,
+    SigilInvocationExplosion = 12,
+    Volcano = 13,
+    WaterPuddle = 14,
+    SigilChannel = 15,
+    ElectrifiedWater = 16,
+}

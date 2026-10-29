@@ -18,17 +18,17 @@ MonoBehaviour:
   visuals:
     Name: Sigil Invocation
     Description: 'Trace: Triad (1)'
-    Icon: {fileID: 21300000, guid: 26838ad032bf91e438955a8de1e01bea, type: 3}
-    AnimationOverride: {fileID: 0}
-    Vfx:
-    - {fileID: 2607803137352215680, guid: f3cb59e40f071724cbe15c59f5fef672, type: 3}
-    - {fileID: 1007127540951276732, guid: 3ace37360f306cb4aac03640550fa9ef, type: 3}
+    Icon:
+      Id: 
+    AnimationOverride:
+      _id: 
+    Vfx: 0000000000000000
   DeckOverrides:
     addedDraws: 0
     addedDiscards: 0
   effectiveness: 4
   damageConversion:
-    TagId: 
+    _tagId: Restriction.Element.Fire
   minSize: 1
   area: 2
   tickInterval: 0.1

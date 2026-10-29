@@ -16,7 +16,7 @@ MonoBehaviour:
   NameOverride: 
   Mods:
   - Stat:
-      TagId: Mod.Defense.Glancing
+      _tagId: Mod.Defense.Glancing
     Op: 1
     Value: 0.3
     RequiredTags:

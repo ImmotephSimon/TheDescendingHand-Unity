@@ -5,22 +5,35 @@ using UnityEngine;
 
 public class ProjectileNetworkView : NetworkBehaviour
 {
-    private readonly SyncVar<string> _visualId = new();
+    private readonly SyncVar<VfxType> _visual = new();
 
-    public string VisualId => _visualId.Value;
+    public VfxType Visual => _visual.Value;
 
     public event Action ServerStarted;
     public event Action ServerStopped;
 
-    public event Action<string> ClientStarted;
-    public event Action ClientStopped;
     public event Action ClientRedirected;
     public event Action ClientTerminalHit;
 
-    // Set by the server before spawning the projectile.
-    public void SetInitialVisualId(string id)
+    public static event Action<ProjectileNetworkView> AnyClientStarted;
+    public static event Action<ProjectileNetworkView> AnyClientStopped;
+
+    public override void OnStartClient()
     {
-        _visualId.Value = id;
+        base.OnStartClient();
+        AnyClientStarted?.Invoke(this);
+    }
+
+    public override void OnStopClient()
+    {
+        AnyClientStopped?.Invoke(this);
+        base.OnStopClient();
+    }
+
+    // Set by the server before spawning the projectile.
+    public void SetInitialVisualId(VfxType vfxType)
+    {
+        _visual.Value = vfxType;
     }
 
     public override void OnStartServer()
@@ -33,18 +46,6 @@ public class ProjectileNetworkView : NetworkBehaviour
     {
         ServerStopped?.Invoke();
         base.OnStopServer();
-    }
-
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
-        ClientStarted?.Invoke(_visualId.Value);
-    }
-
-    public override void OnStopClient()
-    {
-        ClientStopped?.Invoke();
-        base.OnStopClient();
     }
 
     public void SendRedirect(Vector3 point, Quaternion rotation)

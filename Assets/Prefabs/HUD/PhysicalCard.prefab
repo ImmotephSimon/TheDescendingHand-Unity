@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1282121188446650604}
+  - component: {fileID: 4797022270052424999}
   m_Layer: 0
   m_Name: PhysicalCard
   m_TagString: Untagged
@@ -33,6 +34,19 @@ Transform:
   - {fileID: 263957869715273369}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4797022270052424999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1859473530935221782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e36df73c939e8e146a2b16fce876f906, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltip: {fileID: 8107012509079988244}
 --- !u!1 &4550832786262587120
 GameObject:
   m_ObjectHideFlags: 0

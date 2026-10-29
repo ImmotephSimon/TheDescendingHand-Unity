@@ -16,14 +16,14 @@ MonoBehaviour:
   NameOverride: 
   Mods:
   - Stat:
-      TagId: Mod.Offense.Damage
+      _tagId: Mod.Offense.Damage
     Op: 1
     Value: 0.2
     RequiredTags:
       MatchAll: 0
       Tags:
         Tags:
-        - TagId: Restriction.Physical
+        - _tagId: Restriction.Physical
   ContextRequirement:
     MatchAll: 0
     Tags:

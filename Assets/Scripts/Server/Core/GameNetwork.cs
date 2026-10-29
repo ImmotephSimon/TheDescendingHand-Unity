@@ -50,7 +50,7 @@ public class GameNetwork : NetworkBehaviour
         vfxSpawnParams.Rotation = Quaternion.LookRotation(direction);
 
         NetworkObject attachTarget = owner.Transform.GetComponent<NetworkObject>();
-        VfxString vfx = cardDefinition.visuals.Vfx[vfxSpawnParams.VfxIndex];
+        VfxType vfx = cardDefinition.visuals.Vfx[vfxSpawnParams.VfxIndex];
 
         return VfxNet.Instance.Spawn(vfx, vfxSpawnParams, attachTarget);
     }

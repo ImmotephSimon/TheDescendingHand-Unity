@@ -18,16 +18,18 @@ MonoBehaviour:
   visuals:
     Name: Rockslide
     Description: 
-    Icon: {fileID: 21300000, guid: 406984ac0d0fc2c4bbaf906048f7c43e, type: 3}
-    AnimationOverride: {fileID: 0}
-    Vfx: []
+    Icon:
+      Id: 
+    AnimationOverride:
+      _id: 
+    Vfx: 
   DeckOverrides:
     addedDraws: 0
     addedDiscards: 0
   rockPrefab: {fileID: 8151445253895366970, guid: 391cef2f5a7abd245b9f51c78235caa7, type: 3}
   effectiveness: 0.4
   damageConversion:
-    TagId: Restriction.Physical
+    _tagId: Restriction.Physical
   radius: 0.7
   spawnOffset: {x: 0, y: 6, z: 0}
   spread: 1.5

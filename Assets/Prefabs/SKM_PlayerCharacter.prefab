@@ -94,9 +94,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slots:
-  - Type: {fileID: 11400000, guid: f01af71c047dd70418b8497a35a13735, type: 2}
+  - Slot: 0
     BoneAnchor: {fileID: 2690125801499765618}
-  - Type: {fileID: 11400000, guid: 72072ba10aea13b4597c61474179ed53, type: 2}
+  - Slot: 0
     BoneAnchor: {fileID: 1953475384476147461}
 --- !u!114 &2276911923374810706
 MonoBehaviour:

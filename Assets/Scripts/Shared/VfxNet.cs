@@ -5,7 +5,7 @@ public class VfxNet : NetworkBehaviour
 {
     public static VfxNet Instance { get; private set; }
 
-    public event Action<VfxString, VfxSpawnParams, NetworkObject> SpawnRequested;
+    public event Action<VfxType, VfxSpawnParams, NetworkObject> SpawnRequested;
     public event Action<Guid> StopRequested;
 
     public override void OnStartNetwork()
@@ -27,7 +27,7 @@ public class VfxNet : NetworkBehaviour
     /// Call from the server.
     /// </summary>
     public Action Spawn(
-            VfxString vfxString,
+            VfxType vfxString,
             VfxSpawnParams parameters,
             NetworkObject attachTarget)
     {
@@ -40,7 +40,7 @@ public class VfxNet : NetworkBehaviour
 
     [ObserversRpc]
     private void RpcSpawn(
-            VfxString vfxString,
+            VfxType vfxString,
             VfxSpawnParams parameters,
             NetworkObject attachTarget)
     {

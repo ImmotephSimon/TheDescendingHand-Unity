@@ -179,7 +179,6 @@ public class PlayerAnimationController : MonoBehaviour, IPlayerAnimationHandler
     private IEnumerator AnimationRoutine(
         float duration)
     {
-
         float time = 0f;
 
         while (time < BlendTime)

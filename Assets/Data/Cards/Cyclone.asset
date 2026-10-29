@@ -18,17 +18,17 @@ MonoBehaviour:
   visuals:
     Name: Cyclone
     Description: 'Trace: Orbit (2)'
-    Icon: {fileID: 21300000, guid: 1ffb5b0094027f24b925481d250beae3, type: 3}
-    AnimationOverride: {fileID: 0}
-    Vfx:
-    - {fileID: 2607803137352215680, guid: f3cb59e40f071724cbe15c59f5fef672, type: 3}
-    - {fileID: 1007127540951276732, guid: 3ace37360f306cb4aac03640550fa9ef, type: 3}
+    Icon:
+      Id: 
+    AnimationOverride:
+      _id: 
+    Vfx: 0f00000009000000
   DeckOverrides:
     addedDraws: 0
     addedDiscards: 0
   effectiveness: 1.5
   damageConversion:
-    TagId: Restriction.Physical
+    _tagId: Restriction.Physical
   minSize: 1
   requiredMatches: 2
   cycloneScale: 3

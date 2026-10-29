@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: InoculationReaction
   m_EditorClassIdentifier: 
   listeningTag:
-    TagId: Keystone.Inoculation
+    _tagId: Keystone.Inoculation
   onHitModifier:
     Stat:
-      TagId: Mod.Special.DamageTypeLockout
+      _tagId: Mod.Special.DamageTypeLockout
     Op: 0
     Value: 1
     RequiredTags:

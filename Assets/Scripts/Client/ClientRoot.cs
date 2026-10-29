@@ -17,7 +17,7 @@ public class ClientRoot : MonoBehaviour
     public PlayerStatsNetwork Stats { get; private set; }
     public PlayerItemsNetwork ItemsSync { get; private set; }
     private PassiveTreeNetwork _passiveTreeComponent;
-
+    public static event Action<ClientRoot> OnInstanceReady;
     public VfxCatalog VfxRegistry => VfxCatalog.Instance;
 
     public event Action<ClientPlayer> OnClientPlayerReady;
@@ -25,11 +25,14 @@ public class ClientRoot : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        VFXView = GetComponentInChildren<VFXView>(true);
+        VFXView = GetComponent<VFXView>();
+        PlayerHUD = GetComponent<PlayerHUD>();
         GlobePositioner = Camera.main.GetComponentInChildren<GlobePositioner>(true);
 
         if (GlobePositioner == null)
             Debug.LogError("Failed to find GlobePositioner");
+
+        OnInstanceReady?.Invoke(this);
     }
 
     public void RegisterLocalPlayer(ClientPlayer client)
@@ -38,7 +41,7 @@ public class ClientRoot : MonoBehaviour
 
         Movement = client.GetComponent<IPlayerMovement>();
         CardHandler = client.GetComponent<CardNetwork>();
-        PlayerHUD = client.GetComponent<PlayerHUD>();
+
         EquipmentVisuals = client.GetComponentInChildren<EquipmentVisuals>(true);
         CardHandController = Camera.main.GetComponentInChildren<CardHandController>(true);
         PlayerNetwork = client.GetComponent<PlayerNetworkActions>();
@@ -47,7 +50,6 @@ public class ClientRoot : MonoBehaviour
 
         Debug.Assert(Movement != null, "Failed to register PlayerMovement");
         Debug.Assert(CardHandler != null, "Failed to register AbilitySystem");
-        Debug.Assert(PlayerHUD != null, "Failed to register HUD");
         Debug.Assert(EquipmentVisuals != null, "Failed to register EquipmentVisuals");
         Debug.Assert(CardHandController != null, "Failed to register CardHandController");
         Debug.Assert(PlayerNetwork != null, "Failed to register PlayerNetwork");

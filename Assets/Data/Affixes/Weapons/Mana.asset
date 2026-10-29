@@ -16,7 +16,7 @@ MonoBehaviour:
   NameOverride: 
   Mods:
   - Stat:
-      TagId: Mana
+      _tagId: Mana
     Op: 0
     Value: 40
     RequiredTags:

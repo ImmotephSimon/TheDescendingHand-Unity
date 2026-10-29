@@ -104,7 +104,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1778844407666822232, guid: b6e6093c4f23dac4eb3e245545d09d26, type: 3}
       propertyPath: _initializedTimestamp
-      value: -8584156494860164661
+      value: -8584084082638254673
       objectReference: {fileID: 0}
     - target: {fileID: 1778844407666822232, guid: b6e6093c4f23dac4eb3e245545d09d26, type: 3}
       propertyPath: <PrefabId>k__BackingField

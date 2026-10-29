@@ -16,7 +16,7 @@ MonoBehaviour:
   NameOverride: 
   Mods:
   - Stat:
-      TagId: Mod.Implicit
+      _tagId: Mod.Implicit
     Op: 2
     Value: 2
     RequiredTags:

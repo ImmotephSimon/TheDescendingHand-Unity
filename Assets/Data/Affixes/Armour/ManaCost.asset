@@ -16,14 +16,14 @@ MonoBehaviour:
   NameOverride: 
   Mods:
   - Stat:
-      TagId: Mod.Utility.Cost
+      _tagId: Mod.Utility.Cost
     Op: 1
     Value: -0.01
     RequiredTags:
       MatchAll: 0
       Tags:
         Tags:
-        - TagId: Mod.Stat.Mana
+        - _tagId: Mod.Stat.Mana
   ContextRequirement:
     MatchAll: 0
     Tags:

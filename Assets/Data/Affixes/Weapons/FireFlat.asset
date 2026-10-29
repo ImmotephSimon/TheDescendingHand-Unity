@@ -16,14 +16,14 @@ MonoBehaviour:
   NameOverride: 
   Mods:
   - Stat:
-      TagId: Mod.Implicit
+      _tagId: Mod.Implicit
     Op: 0
     Value: 40
     RequiredTags:
       MatchAll: 0
       Tags:
         Tags:
-        - TagId: Restriction.Element.Fire
+        - _tagId: Restriction.Element.Fire
   ContextRequirement:
     MatchAll: 0
     Tags:

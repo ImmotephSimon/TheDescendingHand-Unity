@@ -16,7 +16,7 @@ MonoBehaviour:
   NameOverride: 
   Mods:
   - Stat:
-      TagId: Cost
+      _tagId: Cost
     Op: 1
     Value: -0.2
     RequiredTags:

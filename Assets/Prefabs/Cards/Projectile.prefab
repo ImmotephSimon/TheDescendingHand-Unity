@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8538095024961665766}
   - component: {fileID: 2315670145579654760}
   - component: {fileID: 3316837456438388902}
+  - component: {fileID: 8275916108441359388}
   m_Layer: 10
   m_Name: Projectile
   m_TagString: Untagged
@@ -67,7 +68,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 3
+  <PrefabId>k__BackingField: 4
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 7527335073314202494
   SceneId: 0
@@ -83,7 +84,7 @@ MonoBehaviour:
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
   NetworkBehaviours:
-  - {fileID: 7175949987687955276}
+  - {fileID: 3316837456438388902}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -94,7 +95,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584135113504276627
+  _initializedTimestamp: -8584084082638254673
 --- !u!114 &7175949987687955276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107,9 +108,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4af06114cd076d84ea48af60646443f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 0
-  _addedNetworkObject: {fileID: 748158798430338154}
-  _networkObjectCache: {fileID: 748158798430338154}
 --- !u!108 &8538095024961665766
 Light:
   m_ObjectHideFlags: 0
@@ -210,9 +208,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 0
   _addedNetworkObject: {fileID: 748158798430338154}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 748158798430338154}
   _componentConfiguration: 0
   _synchronizeParent: 0
   _packing:
@@ -244,6 +242,21 @@ MonoBehaviour:
     X: 0
     Y: 0
     Z: 0
+--- !u!114 &8275916108441359388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 755919957440293959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 089ec605cddffaa4f9100e4f198c1e6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 748158798430338154}
+  _networkObjectCache: {fileID: 0}
 --- !u!1 &8352997758175192186
 GameObject:
   m_ObjectHideFlags: 0

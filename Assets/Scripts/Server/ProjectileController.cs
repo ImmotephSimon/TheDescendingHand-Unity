@@ -78,10 +78,10 @@ public class ProjectileController : MonoBehaviour
         _velocity = info.GetLaunchVelocity(
             frame != null ? frame : owner.Transform);
 
-        if (string.IsNullOrWhiteSpace(info.Visual.name))
+        if (info.Visual == VfxType.None)
             Debug.LogError("ProjectileController: Missing VisualId.", this);
         else
-            _networkView.SetInitialVisualId(info.Visual.name);
+            _networkView.SetInitialVisualId(info.Visual);
 
         _initialized = true;
     }

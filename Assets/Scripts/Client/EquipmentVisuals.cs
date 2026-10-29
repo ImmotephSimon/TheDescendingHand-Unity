@@ -100,11 +100,17 @@ public class EquipmentVisuals : MonoBehaviour
 
     private GameObject ResolveWorldModel(EquippedItemDto dto)
     {
-        Debug.LogError(
-            $"ResolveWorldModel not implemented: slot {dto.Slot} will show nothing.",
-            this);
+        var catalog = WorldModelCatalog.Instance;
 
-        return null; // TODO: Resolve prefab through the item registry.
+        if (catalog == null ||
+            !catalog.TryGetPrefab(dto.BaseTypeId, out GameObject prefab))
+        {
+            Debug.LogWarning(
+                $"No world model found for item {dto.BaseTypeId}.", this);
+            return null;
+        }
+
+        return prefab;
     }
 
     public void SetEquipment(EquipmentSlot slot, GameObject worldModel)

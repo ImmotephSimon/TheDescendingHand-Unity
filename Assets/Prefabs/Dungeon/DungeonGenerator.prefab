@@ -49,6 +49,7 @@ MonoBehaviour:
   config: {fileID: 11400000, guid: 93324807452a3d743a7e8c58bb74c3e8, type: 2}
   roomUnit: 3
   navMeshSurface: {fileID: 6179433214050386463}
+  ZoneLevel: 0
 --- !u!114 &959545188080898593
 MonoBehaviour:
   m_ObjectHideFlags: 0

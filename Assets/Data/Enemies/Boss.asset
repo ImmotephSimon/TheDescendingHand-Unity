@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 496e247dc2da8d342b1a374f13afa696, type: 3}
   m_Name: Boss
   m_EditorClassIdentifier: 
+  id: a95a7926620f7b44e8633a576140cd33
   EnemyType: 3
   ModelPrefab: {fileID: 1494583877365688, guid: 8a8c850b3d9c8a54496ac45fa9fcf7d6, type: 3}
   Attacks:

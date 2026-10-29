@@ -18,9 +18,11 @@ MonoBehaviour:
   visuals:
     Name: Electrify
     Description: Projectile\nChain
-    Icon: {fileID: 21300000, guid: 2456dd2824f5ec540830760922f5bac6, type: 3}
-    AnimationOverride: {fileID: 0}
-    Vfx: []
+    Icon:
+      _id: 2456dd2824f5ec540830760922f5bac6:21300000
+    AnimationOverride:
+      _id: 
+    Vfx: 
   DeckOverrides:
     addedDraws: 0
     addedDiscards: 0
@@ -31,11 +33,11 @@ MonoBehaviour:
       Upward: 0
       Forward: 1
       Gravity: 0
-    Visual: {fileID: 8553150264899835645, guid: e7e405b0ae2a4b64499b3f5624b62bd0, type: 3}
+    Visual: 3
     Count: 1
     Pierce: 0
     Chains: 2
     Bounces: 0
   effectiveness: 1
   damageConversion:
-    TagId: Restriction.Element.Lightning
+    _tagId: Restriction.Element.Lightning

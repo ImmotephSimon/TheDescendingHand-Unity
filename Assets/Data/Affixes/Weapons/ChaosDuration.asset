@@ -16,7 +16,7 @@ MonoBehaviour:
   NameOverride: 
   Mods:
   - Stat:
-      TagId: Duration
+      _tagId: Duration
     Op: 1
     Value: 0.3
     RequiredTags:
