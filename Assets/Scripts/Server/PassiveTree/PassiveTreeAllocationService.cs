@@ -203,10 +203,9 @@ public class PassiveTreeAllocationService : MonoBehaviour, IPassiveTreeAllocatio
 
     private PassiveTreeDto BuildPassiveTreeDto()
     {
-        var dto = new PassiveTreeDto();
-
-        dto.Nodes.AddRange(_data.Nodes);
-        dto.Connections.AddRange(_data.Connections);
+        var nodes = new List<PassiveNode>(_data.Nodes);
+        var connections = new List<PassiveNodeConnection>(_data.Connections);
+        var nodeTypes = new List<PassiveNodeTypeDto>();
 
         foreach (PassiveNodeType type in _data.NodeTypes)
         {
@@ -223,14 +222,20 @@ public class PassiveTreeAllocationService : MonoBehaviour, IPassiveTreeAllocatio
                 ? string.Join(" & ", type.Modifiers.Select(modifier => modifier.Stat))
                 : type.Name;
 
-            dto.NodeTypes.Add(new PassiveNodeTypeDto
+            nodeTypes.Add(new PassiveNodeTypeDto
             {
                 Name = type.Name,
+                Sprite = type.Sprite,
                 DisplayTitle = displayTitle,
                 Description = description
             });
         }
 
-        return dto;
+        return new PassiveTreeDto
+        {
+            Nodes = nodes,
+            Connections = connections,
+            NodeTypes = nodeTypes
+        };
     }
 }

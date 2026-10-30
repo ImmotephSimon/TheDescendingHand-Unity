@@ -19,6 +19,11 @@ public class PassiveTreeNetwork : NetworkBehaviour
 
     public event Action<string, bool> OnNodeStateChanged;
 
+    private void Awake()
+    {
+        _allocatedNodes.OnChange += OnAllocatedNodesChanged;
+    }
+
     public override void OnStartServer()
     {
         base.OnStartServer();
@@ -30,8 +35,6 @@ public class PassiveTreeNetwork : NetworkBehaviour
             throw new InvalidOperationException(
                 $"{nameof(IPassiveTreeAllocationService)} is missing on {gameObject.name}.");
         }
-
-        _allocationService.InitializeServer();
     }
 
     public override void OnStopServer()
@@ -42,9 +45,20 @@ public class PassiveTreeNetwork : NetworkBehaviour
         base.OnStopServer();
     }
 
-    private void Awake()
+
+
+    public override void OnStartClient()
     {
-        _allocatedNodes.OnChange += OnAllocatedNodesChanged;
+        base.OnStartClient();
+
+        ClientReadyServerRpc();
+    }
+
+    [ServerRpc]
+    private void ClientReadyServerRpc()
+    {
+        _allocationService = GetComponent<IPassiveTreeAllocationService>();
+        _allocationService.InitializeServer();
     }
 
     private void OnDestroy()

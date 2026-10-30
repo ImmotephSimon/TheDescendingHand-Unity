@@ -28,7 +28,6 @@ public class PassiveNodeCost
     public GameTag Attribute;
 }
 
-
 [Serializable]
 public class PassiveNodeConnection
 {

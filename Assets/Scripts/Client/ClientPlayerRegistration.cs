@@ -9,6 +9,7 @@ public class ClientPlayerRegistration : NetworkBehaviour
     {
         base.OnStartClient();
         Debug.Log($"CLIENT REGISTRATION: {name}, IsOwner={IsOwner}");
+        Debug.Log($"[Prefab] {name} prefabId={NetworkObject.PrefabId} components={GetComponents<NetworkBehaviour>().Length}");
         _client = GetComponent<ClientPlayer>();
 
         var animHandler =

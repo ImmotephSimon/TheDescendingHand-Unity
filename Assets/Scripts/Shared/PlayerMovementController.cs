@@ -134,26 +134,25 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
 
     private void TimeManager_OnTick()
     {
-        if (IsOwner)
-        {
-            MoveData md = new MoveData
-            {
-                Input = _bufferedInput,
-                MouseWorldPosition = _bufferedMousePos,
-                ActionRequested = _bufferedAction
-            };
+        MoveCharacter(BuildMoveData());
+    }
 
-            MoveCharacter(md);
-        }
-        else if (IsServerInitialized)
+    private MoveData BuildMoveData()
+    {
+        if (!IsOwner)
+            return default;
+
+        return new MoveData
         {
-            MoveCharacter(default);
-        }
+            Input = _bufferedInput,
+            MouseWorldPosition = _bufferedMousePos,
+            ActionRequested = _bufferedAction
+        };
     }
 
     private void TimeManager_OnPostTick()
     {
-        if (IsOwner)
+        if (IsServerInitialized)
             CreateReconcile();
     }
 
@@ -163,6 +162,7 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         ReplicateState state = ReplicateState.Invalid,
         Channel channel = Channel.Unreliable)
     {
+
         if (IsImmobilized())
         {
             _currentMoveVelocity = Vector3.zero;
@@ -199,6 +199,13 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
             (_currentMoveVelocity + new Vector3(0f, _velocity.y, 0f)) * delta;
 
         _controller.Move(finalMotion);
+
+        if (md.Input != Vector2.zero || _currentMoveVelocity.sqrMagnitude > 0.001f)
+        {
+            Debug.Log($"[Move] t={Time.time:F2} netId={ObjectId} owner={IsOwner} server={IsServerInitialized} " +
+                      $"state={state} in={md.Input} vel={_currentMoveVelocity.magnitude:F2} " +
+                      $"speed={MoveSpeed:F1} pos={transform.position}");
+        }
     }
 
     private bool IsImmobilized()
@@ -295,8 +302,10 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         ReconcileData rd,
         Channel channel = Channel.Unreliable)
     {
-        transform.position = rd.Position;
-        transform.rotation = rd.Rotation;
+        _controller.enabled = false;
+        transform.SetPositionAndRotation(rd.Position, rd.Rotation);
+        _controller.enabled = true;
+
         _velocity = rd.Velocity;
         _currentMoveVelocity = rd.CurrentMoveVelocity;
         _currentAction = rd.CurrentAction;
