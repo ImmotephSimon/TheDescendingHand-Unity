@@ -1,15 +1,15 @@
-using FishNet.Utility.Extension;
-using System;
+using FishNet;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class DungeonDecorator : MonoBehaviour
 {
-    private const float FloorHeight = 0.5f;
     [SerializeField] private GameObject wallPrefab;
     [SerializeField] private GameObject doorWallPrefab;
+    [SerializeField] private GameObject chestPrefab;
     private int roomUnit;
+    private const float FloorHeight = 0.5f;
 
     private Dictionary<Vector2Int, Room> dungeonMap;
 
@@ -17,6 +17,7 @@ public class DungeonDecorator : MonoBehaviour
     {
         if (wallPrefab == null) Debug.LogError("DungeonDecorator: wallPrefab is not assigned.", this);
         if (doorWallPrefab == null) Debug.LogError("DungeonDecorator: doorWallPrefab is not assigned.", this);
+        if (wallPrefab == null) Debug.LogError("wallPrefab is not assigned.", this);
     }
 
     public void Decorate(Dictionary<Vector2Int, Room> dungeonMap, int roomUnit)
@@ -56,6 +57,7 @@ public class DungeonDecorator : MonoBehaviour
             CheckWall(cell, Vector2Int.left);
             CheckWall(cell, Vector2Int.right);
         }
+        SpawnChests(dungeonMap.Values);
     }
 
     private void CreateDoorFrame(Room roomA, Room roomB, DoorSocket door)
@@ -63,9 +65,11 @@ public class DungeonDecorator : MonoBehaviour
         GameObject obj = Instantiate(
             doorWallPrefab,
             door.transform.position,
-            door.transform.rotation,
-            roomA.transform
+            door.transform.rotation
+        //,roomA.transform supposedly broken if door is networked.
         );
+
+        InstanceFinder.ServerManager.Spawn(obj);
 
         HingeController controller = obj.GetComponentInChildren<HingeController>();
 
@@ -86,8 +90,8 @@ public class DungeonDecorator : MonoBehaviour
 
         float roomBottom = room.transform.position.y - room.RoomExtent.y / 2 + roomUnit / 2;
         float roomTop = room.transform.position.y + room.RoomExtent.y / 2;
-        
-        for (float y = roomBottom; y < roomTop ; y += roomUnit)
+
+        for (float y = roomBottom; y < roomTop; y += roomUnit)
         {
             if (HasDoorOnEdge(cell, direction, room, y))
                 continue;
@@ -151,7 +155,7 @@ public class DungeonDecorator : MonoBehaviour
             0,
             (cell.y - roomGridPosition.y) * roomUnit + pivotOffset
         );
-        
+
 
         if (direction == Vector2Int.right)
             pos.x += pivotOffset;
@@ -165,4 +169,15 @@ public class DungeonDecorator : MonoBehaviour
         return pos;
     }
 
+    private void SpawnChests(IEnumerable<Room> rooms)
+    {
+        if (!InstanceFinder.IsServerStarted) return;
+
+        foreach (Room room in rooms.Distinct())
+            foreach (Transform point in room.ChestSpawnPoints)
+            {
+                GameObject chest = Instantiate(chestPrefab, point.position, point.rotation);
+                InstanceFinder.ServerManager.Spawn(chest);
+            }
+    }
 }

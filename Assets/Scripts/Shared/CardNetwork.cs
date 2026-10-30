@@ -126,7 +126,6 @@ public class CardNetwork : NetworkBehaviour
         SyncListOperation op, int index,
         CardVisuals oldItem, CardVisuals newItem, bool asServer)
     {
-        Debug.Log($"[CLIENT asServer={asServer}] {op} idx={index} name='{newItem.Name}' icon='{newItem.Icon}'");
         if (asServer) return;
 
         switch (op)

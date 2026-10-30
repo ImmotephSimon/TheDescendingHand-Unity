@@ -1,6 +1,6 @@
-using FishNet.Object;
+using UnityEngine;
 
-public class PlayerStatsServerHandler : NetworkBehaviour, IPlayerStatsServerHandler
+public class PlayerStatsServerHandler : MonoBehaviour, IPlayerStatsServerHandler
 {
     private IStatContainer _stats;
     private IHealth _healthHandler;
@@ -50,18 +50,14 @@ public class PlayerStatsServerHandler : NetworkBehaviour, IPlayerStatsServerHand
 
     private void OnHealthChanged(float current, float max, bool isInstant)
     {
-        if (!IsServerInitialized)
-            return;
 
-        _network.HealthChangedRpc(Owner, current, max, isInstant);
+        _network.HealthChangedRpc(_network.Owner, current, max, isInstant);
     }
 
     private void OnManaChanged(float current, float max, bool isInstant)
     {
-        if (!IsServerInitialized)
-            return;
 
-        _network.ManaChangedRpc(Owner, current, max, isInstant);
+        _network.ManaChangedRpc(_network.Owner, current, max, isInstant);
     }
 
     private void OnDestroy()

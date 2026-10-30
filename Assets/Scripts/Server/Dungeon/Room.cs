@@ -13,7 +13,10 @@ public class Room : MonoBehaviour
     private readonly List<HingeController> _doors = new();
     public List<HingeController> Doors => _doors;
     public Vector3 RoomExtent => bounds.size;
-    
+
+    [SerializeField] private Transform[] chestSpawnPoints;
+    public IReadOnlyList<Transform> ChestSpawnPoints => chestSpawnPoints;
+
     public event Action Entered;
     public Collider Bounds => bounds;
     private bool entered = false;
@@ -99,7 +102,7 @@ public class Room : MonoBehaviour
         Entered?.Invoke();
     }
 
-    
+
 
     public void RegisterDoor(HingeController door)
     {

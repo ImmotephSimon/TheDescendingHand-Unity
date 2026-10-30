@@ -1,14 +1,12 @@
+using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class HingeController : MonoBehaviour, IPointerClickHandler
+public class HingeController : NetworkBehaviour, IPointerClickHandler
 {
-    public enum PropType
-    {
-        Door,
-        Chest
-    }
+    public enum PropType { Door, Chest }
 
     [Header("References")]
     [SerializeField] private Transform hinge;
@@ -19,7 +17,10 @@ public class HingeController : MonoBehaviour, IPointerClickHandler
     [SerializeField] private PropType propType;
     [SerializeField] private Collider interactionCollider;
 
+    // Server raises this when the prop is opened.
     public event Action PlayerInteracted;
+
+    private readonly SyncVar<bool> isOpen = new SyncVar<bool>();
 
     private Quaternion closedRotation;
     private Quaternion openRotation;
@@ -39,59 +40,56 @@ public class HingeController : MonoBehaviour, IPointerClickHandler
         }
 
         if (propType == PropType.Door) interactionCollider.isTrigger = true;
+
+        isOpen.OnChange += OnOpenChanged;
     }
 
-    private void Start()
+    public override void OnStartServer()
     {
-        if (propType == PropType.Chest) DungeonManager.Instance.RegisterDungeonChest(this);
+        if (propType == PropType.Chest)
+            DungeonManager.Instance.RegisterDungeonChest(this);
+    }
+
+    // Server-only state changes
+    [Server] public void Open() => isOpen.Value = true;
+    [Server] public void Close() => isOpen.Value = false;
+
+    private void OnOpenChanged(bool prev, bool next, bool asServer)
+    {
+        targetRotation = next ? openRotation : closedRotation;
+        if (next && !prev && asServer) PlayerInteracted?.Invoke();
     }
 
     private void Update()
     {
         hinge.localRotation = Quaternion.Slerp(
-            hinge.localRotation,
-            targetRotation,
-            openSpeed * Time.deltaTime);
+            hinge.localRotation, targetRotation, openSpeed * Time.deltaTime);
     }
 
-    public void Open()
-    {
-        PlayerInteracted?.Invoke();
-        targetRotation = openRotation;
-    }
-
-    public void Close()
-    {
-        targetRotation = closedRotation;
-    }
-
+    // Doors: server-side triggers only
     private void OnTriggerEnter(Collider other)
     {
-        if (propType != PropType.Door)
-            return;
-
-        if (!other.CompareTag("Player"))
-            return;
-
+        if (!IsServerInitialized || propType != PropType.Door) return;
+        if (!other.CompareTag("Player")) return;
         Open();
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (propType != PropType.Door)
-            return;
-
-        if (!other.CompareTag("Player"))
-            return;
-
+        if (!IsServerInitialized || propType != PropType.Door) return;
+        if (!other.CompareTag("Player")) return;
         Close();
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (propType != PropType.Chest)
-            return;
+        if (propType != PropType.Chest) return;
+        RequestOpenServerRpc();
+    }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestOpenServerRpc()
+    {
         Open();
     }
 }

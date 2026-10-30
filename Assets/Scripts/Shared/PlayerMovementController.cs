@@ -29,6 +29,8 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         public Vector2 Input;
         public Vector3 MouseWorldPosition;
         public MovementAction ActionRequested;
+        public float MoveSpeed;
+        public float DodgeSpeedMultiplier;
 
         private uint _tick;
 
@@ -90,7 +92,6 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
     public Vector3 CursorPosition => _bufferedMousePos;
     public Vector3 Position => transform.position;
     public float Gravity { get; private set; } = -9.81f;
-    private float MoveSpeed => _stats.MoveSpeed.Value;
 
     private float DodgeDuration =>
         _baseDodgeDuration / _stats.DodgeSpeedMultiplier.Value;
@@ -146,7 +147,9 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         {
             Input = _bufferedInput,
             MouseWorldPosition = _bufferedMousePos,
-            ActionRequested = _bufferedAction
+            ActionRequested = _bufferedAction,
+            MoveSpeed = _stats.MoveSpeed.Value,
+            DodgeSpeedMultiplier = _stats.DodgeSpeedMultiplier.Value
         };
     }
 
@@ -162,12 +165,16 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         ReplicateState state = ReplicateState.Invalid,
         Channel channel = Channel.Unreliable)
     {
+        float moveSpeed = md.MoveSpeed;
+        if (IsServerInitialized)
+            moveSpeed = Mathf.Min(moveSpeed, _stats.MoveSpeed.Value);
 
         if (IsImmobilized())
         {
             _currentMoveVelocity = Vector3.zero;
             return;
         }
+
 
 
         _bufferedMousePos = md.MouseWorldPosition;
@@ -187,25 +194,22 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         }
 
         if (_currentAction == MovementAction.DodgeRoll)
-        {
-            ProcessDodgeRollAction(movementInput, delta);
-        }
+            ProcessDodgeRollAction(movementInput, delta, moveSpeed);
         else
-        {
-            ProcessLocomotion(movementInput, md.MouseWorldPosition);
-        }
+            ProcessLocomotion(movementInput, md.MouseWorldPosition, moveSpeed);
+
 
         Vector3 finalMotion =
             (_currentMoveVelocity + new Vector3(0f, _velocity.y, 0f)) * delta;
 
         _controller.Move(finalMotion);
 
-        if (md.Input != Vector2.zero || _currentMoveVelocity.sqrMagnitude > 0.001f)
-        {
-            Debug.Log($"[Move] t={Time.time:F2} netId={ObjectId} owner={IsOwner} server={IsServerInitialized} " +
-                      $"state={state} in={md.Input} vel={_currentMoveVelocity.magnitude:F2} " +
-                      $"speed={MoveSpeed:F1} pos={transform.position}");
-        }
+        //if (md.Input != Vector2.zero || _currentMoveVelocity.sqrMagnitude > 0.001f)
+        //{
+        //    Debug.Log($"[Move] t={Time.time:F2} netId={ObjectId} owner={IsOwner} server={IsServerInitialized} " +
+        //              $"state={state} in={md.Input} vel={_currentMoveVelocity.magnitude:F2} " +
+        //              $"speed={MoveSpeed:F1} pos={transform.position}");
+        //}
     }
 
     private bool IsImmobilized()
@@ -236,7 +240,7 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         _actionTimer = DodgeDuration;
     }
 
-    private void ProcessDodgeRollAction(Vector3 movementInput, float delta)
+    private void ProcessDodgeRollAction(Vector3 movementInput, float delta, float moveSpeed)
     {
         _actionTimer -= delta;
 
@@ -249,7 +253,7 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
             : transform.forward;
 
 
-        _currentMoveVelocity = moveDir * (MoveSpeed * speedMultiplier);
+        _currentMoveVelocity = moveDir * (moveSpeed * speedMultiplier);
 
         if (movementInput.sqrMagnitude > 0.001f)
         {
@@ -269,15 +273,16 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         }
     }
 
-    private void ProcessLocomotion(Vector3 movementInput, Vector3 mouseWorldPosition)
+    private void ProcessLocomotion(
+    Vector3 movementInput,
+    Vector3 mouseWorldPosition,
+    float moveSpeed)
     {
         Vector3 direction = mouseWorldPosition - transform.position;
         direction.y = 0f;
 
         if (direction.sqrMagnitude > 0.001f)
             transform.rotation = Quaternion.LookRotation(direction);
-
-        float moveSpeed = MoveSpeed;
 
         if (moveSpeed <= 0f)
         {
