@@ -58,67 +58,66 @@ public struct StatModifier
 
     public override string ToString()
     {
-        string statName = Stat != null ? Stat.ToString() : "Unknown";
-        string reqStr = RequiredTags.IsElemental
-            ? "Elemental"
-            : !RequiredTags.IsEmpty
-                ? RequiredTags.ToString()
-                : "";
+        //string statName = Stat != null ? Stat.ToString() : "Unknown";
+        //string reqStr = RequiredTags.IsElemental
+        //    ? "Elemental"
+        //    : !RequiredTags.IsEmpty
+        //        ? RequiredTags.ToString()
+        //        : "";
 
-        string requirement = !string.IsNullOrEmpty(reqStr) ? $"{reqStr} " : "";
+        //string requirement = !string.IsNullOrEmpty(reqStr) ? $"{reqStr} " : "";
 
-        if (Op == MathOp.Added)
-        {
-            int roundVal = Mathf.RoundToInt(Value);
-            return $"{requirement}{statName}: {(roundVal >= 0 ? "+" : "-")}{Mathf.Abs(roundVal)}";
-        }
+        //if (Op == MathOp.Added)
+        //{
+        //    int roundVal = Mathf.RoundToInt(Value);
+        //    return $"{requirement}{statName}: {(roundVal >= 0 ? "+" : "-")}{Mathf.Abs(roundVal)}";
+        //}
 
-        if (Op == MathOp.Additive)
-        {
-            int roundVal = Mathf.RoundToInt(Value * 100f);
-            string prefix = roundVal >= 0 ? "Increased " : "Decreased ";
-            return $"{prefix}{requirement}{statName}: {Mathf.Abs(roundVal)}%";
-        }
+        //if (Op == MathOp.Additive)
+        //{
+        //    int roundVal = Mathf.RoundToInt(Value * 100f);
+        //    string prefix = roundVal >= 0 ? "Increased " : "Decreased ";
+        //    return $"{prefix}{requirement}{statName}: {Mathf.Abs(roundVal)}%";
+        //}
 
-        if (Op == MathOp.Multiplicative)
-        {
-            float percentChange = (Value - 1f) * 100f;
-            int roundVal = Mathf.RoundToInt(percentChange);
-            string prefix = roundVal >= 0 ? "More " : "Less ";
-            return $"{prefix}{requirement}{statName}: {Mathf.Abs(roundVal)}%";
-        }
+        //if (Op == MathOp.Multiplicative)
+        //{
+        //    float percentChange = (Value - 1f) * 100f;
+        //    int roundVal = Mathf.RoundToInt(percentChange);
+        //    string prefix = roundVal >= 0 ? "More " : "Less ";
+        //    return $"{prefix}{requirement}{statName}: {Mathf.Abs(roundVal)}%";
+        //}
 
-        return $"{requirement}{statName}: {Mathf.RoundToInt(Value)}";
+        //return $"{requirement}{statName}: {Mathf.RoundToInt(Value)}";
+        return ToDescription();
     }
 
     public string ToDescription()
     {
         string statName = Stat != null ? Stat.ToString() : "Unknown";
-        string reqStr = RequiredTags.IsElemental
+
+        string requirement = RequiredTags.IsElemental
             ? "Elemental"
             : !RequiredTags.IsEmpty
-                ? RequiredTags.ToString()
+                ? $"{RequiredTags} "
                 : "";
-
-        string requirement = !string.IsNullOrEmpty(reqStr) ? $"{reqStr} " : "";
 
         if (Op == MathOp.Added)
         {
             int roundVal = Mathf.RoundToInt(Value);
-            return $"{requirement}{(roundVal >= 0 ? "+" : "-")}{Mathf.Abs(roundVal)} to {statName}";
+            return $"{(roundVal >= 0 ? "+" : "-")}{Mathf.Abs(roundVal)} to {requirement}{statName}";
         }
 
         if (Op == MathOp.Additive)
         {
             int roundVal = Mathf.RoundToInt(Value * 100f);
-            string prefix = roundVal >= 0 ? "increased" : "decreased";
-            return $"{Mathf.Abs(roundVal)}% {prefix} {requirement}{statName}";
+            return $"{(roundVal >= 0 ? "+" : "-")}{Mathf.Abs(roundVal)}% {requirement}{statName}";
         }
 
         if (Op == MathOp.Multiplicative)
         {
-            int roundVal = Mathf.RoundToInt((Value - 1f) * 100f);
-            string prefix = roundVal >= 0 ? "more" : "less";
+            int roundVal = Mathf.RoundToInt((Value > 1f ? Value : Value * 100f));
+            string prefix = roundVal >= 0 ? "More" : "Less";
             return $"{Mathf.Abs(roundVal)}% {prefix} {requirement}{statName}";
         }
 

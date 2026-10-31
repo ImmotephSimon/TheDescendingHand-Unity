@@ -41,3 +41,5 @@ MonoBehaviour:
     Weight: 1
   - Definition: {fileID: 11400000, guid: b6e8f8b63feea0d4e8c1b491acd5f8ec, type: 2}
     Weight: 1
+  - Definition: {fileID: 11400000, guid: c715c62da429e5741afcd70f3ccae7d6, type: 2}
+    Weight: 1

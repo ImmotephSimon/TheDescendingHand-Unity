@@ -32,9 +32,9 @@ MonoBehaviour:
   - Definition: {fileID: 11400000, guid: 9b6114b8e87afa946ac772fc780c3c22, type: 2}
     Weight: 0.2
   - Definition: {fileID: 11400000, guid: 305964ffdcd3e704791fae3fe5ae40a3, type: 2}
-    Weight: 20
+    Weight: 1
   - Definition: {fileID: 11400000, guid: a479e9f9068be254a9f6da71575871f0, type: 2}
-    Weight: 20
+    Weight: 1
   - Definition: {fileID: 11400000, guid: 098cfd33ebc094a4f8fe7a9277d990e1, type: 2}
     Weight: 0.2
   - Definition: {fileID: 11400000, guid: 4445353011cfe104bbddf5ebe358a430, type: 2}

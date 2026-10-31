@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewAffixDefinition", menuName = "Items/Affix Definition")]
@@ -13,7 +12,7 @@ public class AffixDefinition : ScriptableObject
     public TagRequirement ContextRequirement;
     public List<GameTag> Prerequisites;
     public List<GameTag> Tags;
-    public AffixSlot Slot { get; set; }
+    public AffixSlot Slot;
 
     public string Id => id;
 

@@ -14,7 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 2208a74e-7cef-415e-9ee6-87a44d21aa44
   NameOverride: 
-  Mods: []
+  Mods:
+  - Stat:
+      _tagId: Mod.Stat.Stun.Threshold
+    Op: 1
+    Value: 0.2
+    RequiredTags:
+      MatchAll: 0
+      Tags:
+        Tags: []
   ContextRequirement:
     MatchAll: 0
     Tags:

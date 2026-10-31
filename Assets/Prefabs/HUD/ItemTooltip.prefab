@@ -649,7 +649,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Explicits
+  m_text: +5 to cold mitigation
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 896b464d36a4cc749a1123329a6c8742, type: 2}
   m_sharedMaterial: {fileID: -6223782848730063487, guid: 896b464d36a4cc749a1123329a6c8742, type: 2}
@@ -786,7 +786,7 @@ MonoBehaviour:
     m_Bottom: 20
   m_ChildAlignment: 1
   m_Spacing: 0
-  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1

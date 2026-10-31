@@ -22,10 +22,12 @@ MonoBehaviour:
     RequiredTags:
       MatchAll: 0
       Tags:
-        Tags: []
+        Tags:
+        - _tagId: Mod.Stat.Health
   ContextRequirement:
     MatchAll: 0
     Tags:
       Tags: []
   Prerequisites: []
   Tags: []
+  Slot: 1

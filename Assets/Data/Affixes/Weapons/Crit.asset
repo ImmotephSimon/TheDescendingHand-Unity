@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dfcbead597cfa364493009300c53f682, type: 3}
-  m_Name: ImplicitMitiPhys
+  m_Name: Crit
   m_EditorClassIdentifier: 
-  id: 05b64c21-baaf-4561-a839-4b9d66f7ac3f
+  id: 53bdbc32-500b-4fb0-b70c-479af43d80ba
   NameOverride: 
   Mods:
   - Stat:
-      _tagId: Mod.Defense.Mitigation
+      _tagId: Mod.Offense.Critical
     Op: 0
-    Value: 100
+    Value: 5
     RequiredTags:
       MatchAll: 0
       Tags:
@@ -30,3 +30,4 @@ MonoBehaviour:
       Tags: []
   Prerequisites: []
   Tags: []
+  Slot: 1

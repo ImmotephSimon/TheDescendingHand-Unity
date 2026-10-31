@@ -16,16 +16,18 @@ MonoBehaviour:
   NameOverride: 
   Mods:
   - Stat:
-      _tagId: Mod.Utility.Duration
-    Op: 2
-    Value: 0.9
+      _tagId: Mod.Defense.Mitigation
+    Op: 0
+    Value: 30
     RequiredTags:
       MatchAll: 0
       Tags:
-        Tags: []
+        Tags:
+        - _tagId: Restriction.Chaos
   ContextRequirement:
     MatchAll: 0
     Tags:
       Tags: []
   Prerequisites: []
   Tags: []
+  Slot: 1
