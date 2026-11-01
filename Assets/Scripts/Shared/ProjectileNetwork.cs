@@ -3,7 +3,7 @@ using FishNet.Object.Synchronizing;
 using System;
 using UnityEngine;
 
-public class ProjectileNetworkView : NetworkBehaviour
+public class ProjectileNetwork : NetworkBehaviour
 {
     private readonly SyncVar<VfxType> _visual = new();
 
@@ -15,8 +15,8 @@ public class ProjectileNetworkView : NetworkBehaviour
     public event Action ClientRedirected;
     public event Action ClientTerminalHit;
 
-    public static event Action<ProjectileNetworkView> AnyClientStarted;
-    public static event Action<ProjectileNetworkView> AnyClientStopped;
+    public static event Action<ProjectileNetwork> AnyClientStarted;
+    public static event Action<ProjectileNetwork> AnyClientStopped;
 
     public override void OnStartClient()
     {

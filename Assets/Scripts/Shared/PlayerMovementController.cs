@@ -307,14 +307,19 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
         ReconcileData rd,
         Channel channel = Channel.Unreliable)
     {
-        _controller.enabled = false;
-        transform.SetPositionAndRotation(rd.Position, rd.Rotation);
-        _controller.enabled = true;
+        TeleportCharacterController(rd.Position);
 
         _velocity = rd.Velocity;
         _currentMoveVelocity = rd.CurrentMoveVelocity;
         _currentAction = rd.CurrentAction;
         _actionTimer = rd.ActionTimer;
+    }
+
+    private void TeleportCharacterController(Vector3 position)
+    {
+        _controller.enabled = false;
+        transform.position = position;
+        _controller.enabled = true;
     }
 
     public override void CreateReconcile()

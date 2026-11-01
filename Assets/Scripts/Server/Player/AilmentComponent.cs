@@ -7,7 +7,8 @@ public class AilmentComponent : MonoBehaviour, IAilmentHandler
     private float stunImmunityDuration = 2f;
 
     private float StunThreshold => _stats.GetStat(GameTags.ModStatStunThreshold);
-    private float StunDuration => _stats.GetStat(GameTags.ModStatStunDuration);
+    private static readonly TagContainer StunContext = new(GameTags.StatusStun);
+    private float StunDuration => _stats.GetStat(GameTags.ModUtilityDuration, StunContext);
 
     private IStatContainer _stats;
     private IStunnable _stunnable;

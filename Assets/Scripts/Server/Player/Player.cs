@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : Entity, IPlayerCollection
@@ -8,7 +6,7 @@ public class Player : Entity, IPlayerCollection
     [SerializeField] private StatModifierData startingStats;
     [SerializeField] private LayerMask interactLayer;
     [SerializeField] private float interactRange = 2f;
-    [SerializeField] private TriggerDetector enemyDetector;
+    [SerializeField] private EntityTriggerDetector enemyDetector;
 
     private PlayerMovementController playerMovement;
     private CardController _cardController;
@@ -83,7 +81,7 @@ public class Player : Entity, IPlayerCollection
         }
     }
 
-    
+
     public IInteractable FindNearbyInteractable()
     {
         Collider[] hits = Physics.OverlapSphere(

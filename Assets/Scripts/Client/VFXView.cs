@@ -129,23 +129,23 @@ public class VFXView : MonoBehaviour
 
     private void OnEnable()
     {
-        ProjectileNetworkView.AnyClientStarted += OnProjectileStarted;
-        ProjectileNetworkView.AnyClientStopped += OnProjectileStopped;
+        ProjectileNetwork.AnyClientStarted += OnProjectileStarted;
+        ProjectileNetwork.AnyClientStopped += OnProjectileStopped;
     }
 
     private void OnDisable()
     {
-        ProjectileNetworkView.AnyClientStarted -= OnProjectileStarted;
-        ProjectileNetworkView.AnyClientStopped -= OnProjectileStopped;
+        ProjectileNetwork.AnyClientStarted -= OnProjectileStarted;
+        ProjectileNetwork.AnyClientStopped -= OnProjectileStopped;
     }
 
-    private void OnProjectileStarted(ProjectileNetworkView projectile)
+    private void OnProjectileStarted(ProjectileNetwork projectile)
     {
         if (VfxCatalog.Instance.TryGetPrefab(projectile.Visual, out GameObject prefab))
             AttachAbilityVisual(prefab, projectile.transform);
     }
 
-    private void OnProjectileStopped(ProjectileNetworkView projectile)
+    private void OnProjectileStopped(ProjectileNetwork projectile)
     {
         DetachAbilityVisual(projectile.transform);
     }

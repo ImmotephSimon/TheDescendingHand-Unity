@@ -27,8 +27,7 @@ public static class GameTags
     public static readonly GameTag ModStatInstinct = new("Mod.Stat.Instinct");
     public static readonly GameTag ModStatHealth = new("Mod.Stat.Health");
     public static readonly GameTag ModStatMana = new("Mod.Stat.Mana");
-    public static readonly GameTag ModStatStunThreshold = new("Mod.Stat.Stun.Threshold");
-    public static readonly GameTag ModStatStunDuration = new("Mod.Stat.Stun.Duration");
+    public static readonly GameTag ModStatStunThreshold = new("Mod.Stat.StunThreshold");
     public static readonly GameTag ModStatMovement = new("Mod.Stat.Movement");
     public static readonly GameTag ModStatStrength = new("Mod.Stat.Strength");
     public static readonly GameTag ModStatWillpower = new("Mod.Stat.Willpower");

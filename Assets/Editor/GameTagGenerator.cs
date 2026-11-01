@@ -6,7 +6,7 @@ using UnityEngine;
 public static class GameTagGenerator
 {
     private const string TagFile = "Assets/Data/Tags/Tags.txt";
-    private const string OutputFile = "Assets/Scripts/Generated/GameTags.cs";
+    private const string OutputFile = "Assets/Scripts/Shared/Generated/GameTags.cs";
 
     [MenuItem("Tools/Generate GameTags")]
     public static void Generate()

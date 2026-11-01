@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TriggerDetector : MonoBehaviour
+public class EntityTriggerDetector : MonoBehaviour
 {
     private readonly Dictionary<IEntity, HashSet<Collider>> _inside = new();
 

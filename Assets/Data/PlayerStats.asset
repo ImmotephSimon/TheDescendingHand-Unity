@@ -22,7 +22,7 @@ MonoBehaviour:
       Tags:
         Tags: []
   - Stat:
-      _tagId: Mod.Stat.Stun.Threshold
+      _tagId: Mod.Stat.StunThreshold
     Op: 0
     Value: 0.05
     RequiredTags:
@@ -55,13 +55,14 @@ MonoBehaviour:
       Tags:
         Tags: []
   - Stat:
-      _tagId: Mod.Stat.Stun.Duration
+      _tagId: Mod.Utility.Duration
     Op: 0
     Value: 0.6
     RequiredTags:
       MatchAll: 0
       Tags:
-        Tags: []
+        Tags:
+        - _tagId: Status.Stun
   - Stat:
       _tagId: Mod.Stat.Strength
     Op: 0

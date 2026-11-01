@@ -22,8 +22,7 @@ MonoBehaviour:
     RequiredTags:
       MatchAll: 0
       Tags:
-        Tags:
-        - _tagId: Restriction.Physical
+        Tags: []
   ContextRequirement:
     MatchAll: 0
     Tags:

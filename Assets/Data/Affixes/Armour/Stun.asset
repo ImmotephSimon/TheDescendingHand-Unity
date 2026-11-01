@@ -16,7 +16,7 @@ MonoBehaviour:
   NameOverride: 
   Mods:
   - Stat:
-      _tagId: Mod.Stat.Stun.Threshold
+      _tagId: Mod.Stat.StunThreshold
     Op: 1
     Value: 0.2
     RequiredTags:
@@ -29,3 +29,4 @@ MonoBehaviour:
       Tags: []
   Prerequisites: []
   Tags: []
+  Slot: 0

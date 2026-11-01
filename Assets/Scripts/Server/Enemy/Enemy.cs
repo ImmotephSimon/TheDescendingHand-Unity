@@ -116,9 +116,10 @@ public class Enemy : Entity, IExperienceSource
                 0.2f));
         _stats.AddModifier(
             new StatModifier(
-                GameTags.ModStatStunDuration,
+                GameTags.ModUtilityDuration,
                 MathOp.Added,
-                1f));
+                1f,
+                GameTags.StatusStun.ToRequirement()));
 
 
     }

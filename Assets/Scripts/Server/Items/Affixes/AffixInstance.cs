@@ -50,7 +50,7 @@ public class AffixInstance
                 {
                     if (!implicitMod.IsScalable) continue;
 
-                    CachedModifiers.Add(new StatModifier(implicitMod.Modifier.Stat, mod.Op, scaledValue, mod.RequiredTags));
+                    CachedModifiers.Add(new StatModifier(implicitMod.Modifier.Stat, mod.Op, scaledValue, implicitMod.Modifier.RequiredTags));
                 }
             }
             else

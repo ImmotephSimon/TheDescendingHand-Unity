@@ -47,6 +47,11 @@ public class DungeonManager : MonoBehaviour, IDungeonHandler
         stairs.transform.SetParent(transform);
     }
 
+    private void OnEnable() { Stairs.OnDescend += OnDescend; Stairs.OnAscend += OnAscend; }
+    private void OnDisable() { Stairs.OnDescend -= OnDescend; Stairs.OnAscend -= OnAscend; }
+    private void OnDescend(Stairs s) => EnterDungeon(s.DungeonAnchor);
+    private void OnAscend(Stairs s) => LeaveDungeon();
+
     public void EnterDungeon(Transform anchor)
     {
         if (isGenerating || anchor == null) return;

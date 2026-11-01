@@ -4,7 +4,7 @@ using UnityEngine;
 public class AreaOverlapComponent : CardComponent
 {
     private Collider _collider;
-    private TriggerDetector _detector;
+    private EntityTriggerDetector _detector;
 
     public event Action<IEntity> OnEntityEntered;
     public event Action<IEntity> OnEntityExited;
@@ -12,7 +12,7 @@ public class AreaOverlapComponent : CardComponent
     public void Configure(Collider collider)
     {
         _collider = collider;
-        _detector = Card.gameObject.AddComponent<TriggerDetector>();
+        _detector = Card.gameObject.AddComponent<EntityTriggerDetector>();
         _detector.OnEntered += entity => OnEntityEntered?.Invoke(entity);
         _detector.OnExited += entity => OnEntityExited?.Invoke(entity);
 

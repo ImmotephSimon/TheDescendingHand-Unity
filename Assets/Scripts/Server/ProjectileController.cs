@@ -17,7 +17,7 @@ public class ProjectileController : MonoBehaviour
     private float _chainRadius = 4f;
     private IEntity _lastHitEntity;
     private readonly float maxProjectileDistanceSqr = 1800f;
-    private ProjectileNetworkView _networkView;
+    private ProjectileNetwork _networkView;
     private Coroutine _serverRoutine;
 
 
@@ -27,7 +27,7 @@ public class ProjectileController : MonoBehaviour
     private void Awake()
     {
         _collider = GetComponentInChildren<SphereCollider>();
-        _networkView = GetComponent<ProjectileNetworkView>();
+        _networkView = GetComponent<ProjectileNetwork>();
 
         if (_networkView == null)
         {
