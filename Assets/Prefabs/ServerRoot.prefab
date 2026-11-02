@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7330896588625345057}
   - component: {fileID: 3351679608975274836}
   - component: {fileID: 576698347235475781}
+  - component: {fileID: 6125799255779407554}
   m_Layer: 0
   m_Name: ServerRoot
   m_TagString: Untagged
@@ -68,3 +69,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 30398b53c8edbea4ca003b4196ae51f1, type: 2}
   - {fileID: 11400000, guid: 1e70a872fda9f1249bc61d1433170884, type: 2}
   - {fileID: 11400000, guid: f01af71c047dd70418b8497a35a13735, type: 2}
+--- !u!114 &6125799255779407554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8250304067000137560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 211a9f6ec51ddc14f908f5acc0cd0423, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dualPrefabs: {fileID: 11400000, guid: 1bfee032c44278048897db91aef08df6, type: 2}
+  _addToDefaultScene: 1
+  _spawns: []

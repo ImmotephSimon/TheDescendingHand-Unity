@@ -1,25 +1,27 @@
 ﻿using FishNet;
 using FishNet.Connection;
 using FishNet.Managing.Object;
+using FishNet.Managing.Scened;
 using FishNet.Object;
 using UnityEngine;
 
 public class PlayerSpawner : MonoBehaviour
 {
     [SerializeField] private DualPrefabObjects _dualPrefabs;
-    [SerializeField] private bool _addToDefaultScene = true;
     [SerializeField] private Transform[] _spawns;
 
     private int _nextSpawn;
+    private SceneManager _manager;
 
     private void OnEnable()
     {
-        InstanceFinder.SceneManager.OnClientLoadedStartScenes += OnClientLoadedStartScenes;
+        _manager = InstanceFinder.SceneManager;
+        _manager.OnClientLoadedStartScenes += OnClientLoadedStartScenes;
     }
 
     private void OnDisable()
     {
-        InstanceFinder.SceneManager.OnClientLoadedStartScenes -= OnClientLoadedStartScenes;
+        _manager.OnClientLoadedStartScenes -= OnClientLoadedStartScenes;
     }
 
     private void OnClientLoadedStartScenes(NetworkConnection conn, bool asServer)
@@ -60,8 +62,7 @@ public class PlayerSpawner : MonoBehaviour
 
         InstanceFinder.ServerManager.Spawn(player, conn);
 
-        if (_addToDefaultScene)
-            InstanceFinder.SceneManager.AddOwnerToDefaultScene(player);
+        InstanceFinder.SceneManager.AddOwnerToDefaultScene(player);
     }
 
     private void GetSpawnPosition(
