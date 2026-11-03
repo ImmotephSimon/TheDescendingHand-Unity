@@ -1,35 +1,29 @@
+﻿// Game.Shared: lives on the base prefab
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class EnemyMovementNetwork : NetworkBehaviour
 {
-    [SerializeField] private NavMeshAgent agent;
-    [SerializeField] private EnemyBrain brain;
     [SerializeField] private float speedSmoothing = 10f;
 
-    private float clientSmoothSpeed;
-    private IEnemyMovement movementController;
     private readonly SyncVar<float> networkSpeed = new();
+    private float clientSmoothSpeed;
     private Component _animatorComponent;   // For unity-safe null check
     private IMovementAnimator _animator;
+    private IEnemyMovementState movementController;   // null on the client
 
     public float CurrentSpeed => networkSpeed.Value;
 
-    public delegate void StateChangedHandler(CharacterAnimationState newState);
-
     private void Awake()
     {
-        movementController = GetComponent<IEnemyMovement>();
+        movementController = GetComponent<IEnemyMovementState>();
     }
 
     public override void OnStartServer()
     {
         base.OnStartServer();
-        ((MonoBehaviour)movementController).enabled = true;
-        agent.enabled = true;
-        brain.enabled = true;
+        movementController?.Activate();
     }
 
     private void Update()
@@ -40,15 +34,10 @@ public class EnemyMovementNetwork : NetworkBehaviour
 
     private void UpdateServerMovementState()
     {
-        if (!base.IsServerInitialized)
-            return;
+        if (!IsServerInitialized || movementController == null) return;
 
-        float speed = agent.velocity.magnitude;
-
-        networkSpeed.Value = speed;
+        networkSpeed.Value = movementController.Speed;
     }
-
-
 
     private void UpdateClientVisuals()
     {
@@ -67,5 +56,4 @@ public class EnemyMovementNetwork : NetworkBehaviour
 
         _animator.SetSpeed(clientSmoothSpeed);
     }
-
 }

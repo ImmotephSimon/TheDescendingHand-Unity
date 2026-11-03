@@ -120,6 +120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: NewAssembly::Room
   roomUnit: 3
   bounds: {fileID: 3994433117519989883}
+  chestSpawnPoints: []
 --- !u!114 &5614510177171668369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,7 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c4bee56dfb17f0479a568967145a7ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 2182196613518466211, guid: ddce3e6eea6d088489743b3da6815a76, type: 3}
+  enemyDualPrefabs: {fileID: 11400000, guid: 77e8638389964994d8f0c8f9281062b9, type: 2}
   enemyDefinition: {fileID: 11400000, guid: 54b1781ee4f967e419948efd4aff17ce, type: 2}
   spawnOnEnter: 1
   spawnCount: 2

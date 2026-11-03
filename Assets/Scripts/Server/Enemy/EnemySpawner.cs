@@ -1,12 +1,13 @@
 ﻿using FishNet;
+using FishNet.Managing.Object;
+using FishNet.Object;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private DualPrefabObjects enemyDualPrefabs;
     [SerializeField] public EnemyDefinition enemyDefinition;
 
     [SerializeField] private bool spawnOnEnter = true;
@@ -25,7 +26,7 @@ public class EnemySpawner : MonoBehaviour
         // Search for the collider on any child objects (like your "Bounds" object)
         if (spawnArea == null) Debug.LogError($"[Spawner] Could not find any Collider on {gameObject.name} or its children!");
         if (room == null) Debug.LogError("EnemySpawner requires a Room parent.", this);
-        
+
         room.Entered += SpawnEnemies;
     }
 
@@ -71,25 +72,40 @@ public class EnemySpawner : MonoBehaviour
         if (!InstanceFinder.IsServerStarted)
             return;
 
-        GameObject obj = Instantiate(enemyPrefab, point, Quaternion.identity);
-
-        Enemy enemy = obj.GetComponent<Enemy>();
-        if (enemy != null)
+        if (enemyDualPrefabs == null || enemyDualPrefabs.Prefabs.Count == 0)
         {
-            
-            // Initialize definition & stats BEFORE server spawn call
-            enemy.Initialize(enemyDefinition, DungeonManager.Instance.ZoneLevel);
-        }
-        else
-        {
-            Debug.LogError($"{obj.name} has no Enemy component.");
+            Debug.LogError($"No dual enemy prefab configured on {name}.", this);
             return;
         }
 
-        InstanceFinder.ServerManager.Spawn(obj);
+        NetworkObject serverPrefab = enemyDualPrefabs.Prefabs[0].Server;
 
-        ISpawnable spawnable = obj.GetComponent<ISpawnable>();
-        spawnable?.OnSpawnComplete();
+        NetworkObject nob = InstanceFinder.NetworkManager.GetPooledInstantiated(
+            serverPrefab.PrefabId,
+            serverPrefab.SpawnableCollectionId,
+            point,
+            Quaternion.identity,
+            true);
+
+        if (nob == null)
+        {
+            Debug.LogError("Failed to instantiate enemy prefab.", this);
+            return;
+        }
+
+        Enemy enemy = nob.GetComponent<Enemy>();
+        if (enemy == null)
+        {
+            Debug.LogError($"{nob.name} has no Enemy component.", this);
+            return;
+        }
+
+        // Initialize definition & stats BEFORE server spawn call
+        enemy.Initialize(enemyDefinition, DungeonManager.Instance.ZoneLevel);
+
+        InstanceFinder.ServerManager.Spawn(nob);
+
+        nob.GetComponent<ISpawnable>()?.OnSpawnComplete();
 
         OnSpawned?.Invoke(enemy);
     }

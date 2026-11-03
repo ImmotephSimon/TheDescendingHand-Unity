@@ -10,6 +10,7 @@ public class HingeController : NetworkBehaviour, IPointerClickHandler
 
     [Header("References")]
     [SerializeField] private Transform hinge;
+    [SerializeField] private Transform doorAnchor;
 
     [Header("Settings")]
     [SerializeField] private Vector3 openAngle = new Vector3(0, -150f, 0);
@@ -19,6 +20,7 @@ public class HingeController : NetworkBehaviour, IPointerClickHandler
 
     // Server raises this when the prop is opened.
     public event Action PlayerInteracted;
+    public Transform DoorAnchor => doorAnchor;
 
     private readonly SyncVar<bool> isOpen = new SyncVar<bool>();
 

@@ -320,5 +320,8 @@ public class DungeonGenerator : MonoBehaviour
         if (navMeshSurface.navMeshData == null)
             Debug.LogError($"Failed to bake: {navMeshSurface.gameObject.name}");
 
+        Debug.Log($"Bake: collect={navMeshSurface.collectObjects}, geo={navMeshSurface.useGeometry}, " +
+          $"layers={navMeshSurface.layerMask.value}, " +
+          $"wallColliders={FindObjectsByType<Collider>(FindObjectsSortMode.None).Count(c => c.gameObject.layer == LayerMask.NameToLayer("Wall"))}");
     }
 }

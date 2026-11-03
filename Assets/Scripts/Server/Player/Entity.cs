@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[RequireComponent(typeof(HealthComponent))]
+[RequireComponent(typeof(StatModifierComponent))]
+[RequireComponent(typeof(AilmentComponent))]
 public abstract class Entity : MonoBehaviour, IEntity, IDamageable, IStunnable
 {
     [SerializeField] private TagReactions tagReactions;

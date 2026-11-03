@@ -65,6 +65,7 @@ MonoBehaviour:
   wallPrefab: {fileID: 3273507634397097229, guid: e794ef6281667614cac380cdd895bdf9, type: 3}
   doorWallPrefab: {fileID: 7017249610731780099, guid: 88b0bd32fdfe67946bc7044c5a1ac00c, type: 3}
   chestPrefab: {fileID: 1654766839871344, guid: 68a19aab44d9d544ca4fd9f30e006f22, type: 3}
+  doorPrefab: {fileID: 2264132659979774048, guid: 6706e4153b073664d8d0738efb4eed55, type: 3}
 --- !u!114 &6179433214050386463
 MonoBehaviour:
   m_ObjectHideFlags: 0

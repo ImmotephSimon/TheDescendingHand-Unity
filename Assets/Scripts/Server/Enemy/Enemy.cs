@@ -4,6 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(EnemyBrain))]
 [RequireComponent(typeof(AbilityManager))]
 [RequireComponent(typeof(Perception))]
+[RequireComponent(typeof(EnemyMovementController))]
 public class Enemy : Entity, IExperienceSource
 {
     [SerializeField] private bool debug = false;

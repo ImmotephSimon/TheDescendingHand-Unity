@@ -112,8 +112,6 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
 
     public void SetLocalInput(Vector2 input, Vector3 mousePos)
     {
-        if (IsOwner) Debug.Log($"SetLocalInput mouse={mousePos}");
-
         _ownerMousePos = mousePos;
         _ownerInput = !IsImmobilized()
             ? input
@@ -281,8 +279,6 @@ public class PlayerMovementController : NetworkBehaviour, IPlayerMovement
 
         Vector3 direction = mouseWorldPosition - transform.position;
         direction.y = 0f;
-
-        if (IsOwner) Debug.Log($"Locomotion mouse={mouseWorldPosition} pos={transform.position}, direction={direction}");
 
         if (direction.sqrMagnitude > 0.001f)
             transform.rotation = Quaternion.LookRotation(direction);

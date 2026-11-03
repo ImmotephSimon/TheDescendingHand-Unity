@@ -42,21 +42,11 @@ GameObject:
   - component: {fileID: 5189653355471229585}
   - component: {fileID: 7947321286850115126}
   - component: {fileID: 7081242922096122351}
-  - component: {fileID: 6132481565953133138}
-  - component: {fileID: 6781248631317890454}
-  - component: {fileID: 9017837521374936691}
-  - component: {fileID: 7482887588990020091}
-  - component: {fileID: 2144509509057415787}
-  - component: {fileID: 3320305678461923236}
-  - component: {fileID: 8787597772690017119}
   - component: {fileID: 6223340644755348327}
-  - component: {fileID: 4993178469306669891}
-  - component: {fileID: 7691635752456015185}
-  - component: {fileID: 344030252424001176}
-  - component: {fileID: 3927039314597949403}
   - component: {fileID: 6590118121327696983}
+  - component: {fileID: 5663524243865680372}
   m_Layer: 9
-  m_Name: Enemy
+  m_Name: ClientEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -110,7 +100,7 @@ MonoBehaviour:
   _teleportThreshold: 1
   <PrefabId>k__BackingField: 8
   <SpawnableCollectionId>k__BackingField: 0
-  <AssetPathHash>k__BackingField: 10223260353135030359
+  <AssetPathHash>k__BackingField: 6737413413314349661
   SceneId: 0
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
@@ -124,7 +114,7 @@ MonoBehaviour:
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
   NetworkBehaviours:
-  - {fileID: 6781248631317890454}
+  - {fileID: 0}
   - {fileID: 6223340644755348327}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
@@ -160,124 +150,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
---- !u!195 &6132481565953133138
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2182196613518466211}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
---- !u!114 &6781248631317890454
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2182196613518466211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f5a3224e919ada46b6fe2a9bc1424d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _componentIndexCache: 0
-  _addedNetworkObject: {fileID: 7947321286850115126}
-  _networkObjectCache: {fileID: 7947321286850115126}
-  agent: {fileID: 6132481565953133138}
-  brain: {fileID: 7482887588990020091}
-  speedSmoothing: 10
---- !u!114 &9017837521374936691
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2182196613518466211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8627b2740a9af704c930fa191563d3bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tagReactions: {fileID: 11400000, guid: ba710eb1ec65e5d40a83933b0e7e3215, type: 2}
-  debug: 0
-  experienceTable: {fileID: 11400000, guid: b96a20431e4f10343957eb6ab4b73976, type: 2}
-  balanceCurves: {fileID: 11400000, guid: ad106a06f6b24ee4d91ae928098460cb, type: 2}
-  definition: {fileID: 0}
-  visualRoot: {fileID: 6681640174139553911}
-  healthBarPrefab: {fileID: 6155593254581748141, guid: 00e35970de630f047abd0d79fd2051bf, type: 3}
---- !u!114 &7482887588990020091
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2182196613518466211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 287ed7e750946784bbd06f9fd98769ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2144509509057415787
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2182196613518466211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61edcf406e3142e4a87f8a8121eebe01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3320305678461923236
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2182196613518466211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d076fedeffde86489c1ef4935535b2c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sightRange: 15
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 256
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 128
-  scanInterval: 0.1
-  eyePoint: {fileID: 0}
-  maxDetectedColliders: 32
-  forgetDuration: 3
---- !u!114 &8787597772690017119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2182196613518466211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03caf730a21be9740bd830219ef1a8ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &6223340644755348327
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -304,7 +176,7 @@ MonoBehaviour:
   _extrapolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  _clientAuthoritative: 1
+  _clientAuthoritative: 0
   _sendToOwner: 1
   _interval: 1
   _synchronizePosition: 1
@@ -318,60 +190,12 @@ MonoBehaviour:
     X: 0
     Y: 0
     Z: 0
-  _synchronizeScale: 1
+  _synchronizeScale: 0
   _scaleSensitivity: 0.001
   _scaleSnapping:
     X: 0
     Y: 0
     Z: 0
---- !u!114 &4993178469306669891
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2182196613518466211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7275eb417b7d7ef40aee2db0975e8cb9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7691635752456015185
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2182196613518466211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc5ca062254c93c418040936b963dd5b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &344030252424001176
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2182196613518466211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1cc5c41bfab6a3941be444116b85eb06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3927039314597949403
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2182196613518466211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da88b4d1447642b488eb0b05c03ce51e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!54 &6590118121327696983
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -399,3 +223,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &5663524243865680372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2182196613518466211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86902181581dc9b47bcc9a5ddd19a498, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 7947321286850115126}
+  _networkObjectCache: {fileID: 0}
+  speedSmoothing: 10

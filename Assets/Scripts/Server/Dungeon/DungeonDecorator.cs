@@ -8,6 +8,8 @@ public class DungeonDecorator : MonoBehaviour
     [SerializeField] private GameObject wallPrefab;
     [SerializeField] private GameObject doorWallPrefab;
     [SerializeField] private GameObject chestPrefab;
+    [SerializeField] private GameObject doorPrefab;
+
     private int roomUnit;
     private const float FloorHeight = 0.5f;
 
@@ -62,16 +64,30 @@ public class DungeonDecorator : MonoBehaviour
 
     private void CreateDoorFrame(Room roomA, Room roomB, DoorSocket door)
     {
-        GameObject obj = Instantiate(
+        // Spawn static frame
+        GameObject frame = Instantiate(
             doorWallPrefab,
             door.transform.position,
-            door.transform.rotation
-        //,roomA.transform supposedly broken if door is networked.
+            door.transform.rotation,
+            roomA.transform
         );
 
-        InstanceFinder.ServerManager.Spawn(obj);
+        Transform anchor = frame.GetComponentInChildren<HingeController>().DoorAnchor;
 
-        HingeController controller = obj.GetComponentInChildren<HingeController>();
+        // Spawn moving door at anchor
+        GameObject doorObj = Instantiate(
+            doorPrefab,
+            anchor.position,
+            anchor.rotation,
+            anchor
+        );
+
+        InstanceFinder.ServerManager.Spawn(frame);
+        InstanceFinder.ServerManager.Spawn(doorObj);
+
+        // Register the actual moving door's controller
+        HingeController controller =
+            frame.GetComponentInChildren<HingeController>();
 
         roomA.RegisterDoor(controller);
         roomB.RegisterDoor(controller);

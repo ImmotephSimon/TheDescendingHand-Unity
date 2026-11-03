@@ -359,7 +359,8 @@ PrefabInstance:
       propertyPath: 'chestSpawnPoints.Array.data[0]'
       value: 
       objectReference: {fileID: 6244401783067372787}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5614510177171668369, guid: 46d79c8a54c9d7544b206ed0ede87b5d, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 734188128459893889, guid: 46d79c8a54c9d7544b206ed0ede87b5d, type: 3}

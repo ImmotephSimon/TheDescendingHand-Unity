@@ -3,7 +3,7 @@
 public interface IEnemyMovement
 {
     bool HasReachedDestination();
-    public bool IsWithinStoppingDistance(Vector3 position);
+    bool IsWithinStoppingDistance(Vector3 position);
     void MoveTo(Vector3 position);
     void StopMovement();
     void RotateTowardsTarget(Transform target);
@@ -11,3 +11,4 @@ public interface IEnemyMovement
     void LockRotation(Transform target);
     void UnlockRotation();
 }
+

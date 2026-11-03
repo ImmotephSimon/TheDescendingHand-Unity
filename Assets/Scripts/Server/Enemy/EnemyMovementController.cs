@@ -1,20 +1,21 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyMovementController : MonoBehaviour, IEnemyMovement
+public class EnemyMovementController : MonoBehaviour, IEnemyMovement, IEnemyMovementState
 {
     private float angularSpeed = 300f;
-    float stoppingDistance = 0.5f;
+    private float stoppingDistance = 0.5f;
     private NavMeshAgent agent;
     private Transform ownerTransform;
     private Vector3 lastDestination;
     private Transform _lockTarget;
 
+    public float Speed => agent.velocity.magnitude;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
-        if (agent == null ) Debug.LogError($"NavMeshAgent missing on {name}!");
+        if (agent == null) Debug.LogError($"NavMeshAgent missing on {name}!");
         ownerTransform = transform;
 
         agent.stoppingDistance = stoppingDistance;
@@ -25,6 +26,8 @@ public class EnemyMovementController : MonoBehaviour, IEnemyMovement
         enabled = false; // Guarantees it starts off until OnStartServer enables it
     }
 
+
+
     public void MoveTo(Vector3 position)
     {
         if ((lastDestination - position).sqrMagnitude < 0.25f)
@@ -34,6 +37,8 @@ public class EnemyMovementController : MonoBehaviour, IEnemyMovement
 
         agent.isStopped = false;
         agent.SetDestination(position);
+
+        Debug.Log($"{name} MoveTo: hasPath={agent.hasPath}, pending={agent.pathPending}", this);
     }
 
     public void StopMovement()
@@ -62,7 +67,7 @@ public class EnemyMovementController : MonoBehaviour, IEnemyMovement
     public void RotateTowardsTarget(Transform target)
     {
 
-        Transform focus = _lockTarget != null ? _lockTarget : target ;
+        Transform focus = _lockTarget != null ? _lockTarget : target;
         //if (_lockTarget == null) return;
         //Transform focus = target;
 
@@ -109,5 +114,13 @@ public class EnemyMovementController : MonoBehaviour, IEnemyMovement
     public void UnlockRotation()
     {
         _lockTarget = null;
+    }
+
+    public void Activate()
+    {
+        agent.enabled = true;
+        enabled = true;
+
+        Debug.Log($"{name} Activate: onMesh={agent.isOnNavMesh}, type={agent.agentTypeID}", this);
     }
 }
