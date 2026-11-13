@@ -3,13 +3,13 @@ using FishNet.Object;
 public class ServerPlayerRegistration : NetworkBehaviour
 {
 
-    private Player player;
+    private ServerPlayer player;
 
     public override void OnStartServer()
     {
         base.OnStartServer();
 
-        player = GetComponent<Player>();
+        player = GetComponent<ServerPlayer>();
 
         if (GameWorld.Instance == null)
             throw new System.NullReferenceException("GameWorld missing.");

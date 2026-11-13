@@ -17,7 +17,7 @@ public static class CardFactory
             return null;
         }
 
-        var prefab = GameNetwork.Instance.CardPrefab;
+        var prefab = ServerObjectSpawner.Instance.CardPrefab;
         if (prefab == null)
         {
             Debug.LogError("CardNetworkManager has no card runtime prefab assigned.");

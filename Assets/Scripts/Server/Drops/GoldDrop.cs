@@ -11,17 +11,15 @@ public class GoldDrop : WorldDrop
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!IsServerStarted)
-            return;
+        if (!CanBePickedUp) return;
 
         if (!other.TryGetComponent<IPlayerCollection>(out var collection))
         {
             Debug.LogError($"No gold storage found.");
             return;
         }
-            
 
         collection.AddGold(_amount);
-        Despawn();
+        Consume();
     }
 }

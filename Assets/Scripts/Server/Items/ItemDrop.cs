@@ -1,21 +1,22 @@
-using FishNet.Object;
-using FishNet.Object.Synchronizing;
 using System;
 using UnityEngine;
 
 public class ItemDrop : WorldDrop
 {
-    private readonly SyncVar<Guid> _definitionId = new SyncVar<Guid>();
-
     private static readonly System.Random Seed = new System.Random();
     private ItemDefinition _definition;
+    private DropNetwork _network;
+
     public ItemDropInstance Instance { get; set; }
 
     public ItemDefinition Definition => _definition;
 
     private void Awake()
     {
-        _definitionId.OnChange += OnDefinitionIdChanged;
+
+        _network = GetComponent<DropNetwork>();
+
+        _network.OnIdChanged += OnIdChanged;
     }
 
     public void Initialize(ItemDefinition definition, Rarity rarity)
@@ -27,17 +28,13 @@ public class ItemDrop : WorldDrop
             AffixGenerator.Generate(definition, rarity, Seed, misfortune)
         );
 
-
-
-        _definitionId.Value = definition.Id;
-        ApplyRarityVisualsRpc(rarity.DisplayColor, rarity.LightIntensity, rarity.LightRange);
+        _network.SetId(definition.Id);
+        _network.ApplyRarityVisuals(rarity.DisplayColor, rarity.LightIntensity, rarity.LightRange);
     }
 
-    private void OnDefinitionIdChanged(Guid prev, Guid next, bool asServer)
+    private void OnIdChanged(Guid guid)
     {
-        if (asServer || next == Guid.Empty) return;
-
-        if (ItemRegistry.Instance.TryGetDefinition(next, out var def))
+        if (ServerRoot.Instance.ItemRegistry.TryGetDefinition(guid, out var def))
         {
             _definition = def;
 
@@ -76,27 +73,14 @@ public class ItemDrop : WorldDrop
         }
 
         Instance = instance;
-        _definitionId.Value = instance.BaseType.Id;
-        ApplyRarityVisualsRpc(instance.Rarity.DisplayColor, instance.Rarity.LightIntensity, instance.Rarity.LightRange);
+        _network.SetId(instance.BaseType.Id);
+        _network.ApplyRarityVisuals(instance.Rarity.DisplayColor, instance.Rarity.LightIntensity, instance.Rarity.LightRange);
         return true;
     }
 
-    [ObserversRpc]
-    private void ApplyRarityVisualsRpc(Color color, float intensity, float range)
-    {
-        uint layer1 = 1u << 1;
 
-        var light = GetComponentInChildren<Light>();
-        if (light != null)
-        {
-            light.color = color;
-            light.intensity = intensity;
-            light.range = range;
-            light.renderingLayerMask = (int)layer1;
-        }
-    }
 
-    protected override bool TryPickup(Player player)
+    protected override bool TryPickup(ServerPlayer player)
     {
         return player.GetComponent<IInventory>().TryAdd(Instance);
     }

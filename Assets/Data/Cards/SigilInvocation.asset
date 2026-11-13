@@ -19,7 +19,7 @@ MonoBehaviour:
     Name: Sigil Invocation
     Description: 'Trace: Triad (1)'
     Icon:
-      Id: 
+      _id: 03e6f50b7a998ed46a4c3f9f8cb0855e:21300000
     AnimationOverride:
       _id: 
     Vfx: 0000000000000000

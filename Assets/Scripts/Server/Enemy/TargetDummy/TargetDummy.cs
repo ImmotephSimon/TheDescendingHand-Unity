@@ -1,8 +1,5 @@
-using UnityEngine;
-
 public class TargetDummy : Entity
 {
-    private EnemyHealthBar _healthBar;
 
     protected override void Awake()
     {
@@ -14,17 +11,6 @@ public class TargetDummy : Entity
                 MathOp.Added,
                 20f));
 
-    }
-
-    protected override void Start()
-    {
-        base.Start();
-
-        if (_healthBar == null)
-        {
-            _healthBar = GetComponentInChildren<EnemyHealthBar>();
-            _healthBar.Bind(GetComponent<IHealth>());
-        }
     }
 
 
@@ -49,7 +35,7 @@ public class TargetDummy : Entity
     protected override void OnDeath(IEntity killer)
     {
         GameWorld.Instance.NotifyRevive(this);
-        
+
     }
 
     protected override void OnEntityDied(IEntity victim, IEntity killer)

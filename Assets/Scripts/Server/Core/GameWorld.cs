@@ -11,12 +11,10 @@ public class GameWorld : MonoBehaviour
     public event Action<IEntity> EntityRevived;
     public event Action<IEntity, IEntity> EntityDied;
 
-    public ServerScheduler Scheduler { get; private set; }
 
     private void Awake()
     {
         Instance = this;
-        Scheduler = gameObject.AddComponent<ServerScheduler>();
     }
 
     private void OnDestroy()

@@ -6,7 +6,7 @@ public class ChargeAttackDefinition : EnemyAttackDefinition
 
     public float rangeTolerance = 1f;
 
-    public override IEnemyAttack Create(Enemy owner)
+    public override IEnemyAttack Create(ServerEnemy owner)
     {
         var attack = owner.gameObject.AddComponent<ChargeAttack>();
         attack.Initialize(this);

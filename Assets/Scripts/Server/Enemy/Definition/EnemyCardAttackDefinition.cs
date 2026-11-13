@@ -7,7 +7,7 @@ public class EnemyCardAttackDefinition : EnemyAttackDefinition
 
     public CardDefinition CardDefinition => cardDefinition;
 
-    public override IEnemyAttack Create(Enemy owner)
+    public override IEnemyAttack Create(ServerEnemy owner)
     {
         var attack = owner.gameObject.AddComponent<EnemyCardAttack>();
         attack.Initialize(this);

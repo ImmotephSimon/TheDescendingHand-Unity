@@ -1,0 +1,1 @@
+public enum EnemyType { Normal, Magic, Rare, Unique }

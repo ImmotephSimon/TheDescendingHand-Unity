@@ -1,6 +1,6 @@
 ﻿public class ChaseAction : EnemyActionBase
 {
-    public ChaseAction(Enemy owner) : base(owner)
+    public ChaseAction(ServerEnemy owner) : base(owner)
     {
     }
 

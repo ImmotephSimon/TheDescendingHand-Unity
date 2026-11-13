@@ -29,9 +29,9 @@ MonoBehaviour:
     - rid: 6340319042743042232
       type: {class: GlobeLootDefinition, ns: , asm: Game.Server}
       data:
-        Prefab: {fileID: 7183417159558042707, guid: 31dd94af68c313246a4f460be748cae2, type: 3}
+        Prefab: {fileID: 4236912428321236941, guid: c9eb758368d429d44a0cf22be8e28ab2, type: 3}
         HealPercentage: 15
     - rid: 6340319042743042233
       type: {class: GoldLootDefinition, ns: , asm: Game.Server}
       data:
-        Prefab: {fileID: 8306120704131742554, guid: 6c79d7ddd1e323c4da84468ac13b9cda, type: 3}
+        Prefab: {fileID: 3679489297761102563, guid: 65df22078009d14459ca10954b7f4c94, type: 3}

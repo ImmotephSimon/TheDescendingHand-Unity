@@ -19,7 +19,7 @@ MonoBehaviour:
     Name: Explosive Arrow
     Description: Channelled\nDelay
     Icon:
-      _id: 
+      _id: 51dcbb3542a768b49ac5942bd2a0c8bb:21300000
     AnimationOverride:
       _id: 
     Vfx: 01000000

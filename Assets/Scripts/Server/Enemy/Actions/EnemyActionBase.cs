@@ -2,7 +2,7 @@
 
 public abstract class EnemyActionBase : IEnemyAction
 {
-    protected readonly Enemy _owner;
+    protected readonly ServerEnemy _owner;
     protected readonly IEnemyMovement movementHandler;
     protected readonly IPerception perception;
     protected IEnemyAnimationHandler animationHandler => _owner.GetComponentInChildren<IEnemyAnimationHandler>();
@@ -11,7 +11,7 @@ public abstract class EnemyActionBase : IEnemyAction
     public virtual bool CanBeInterrupted => true;
     public virtual bool CanBeUpdated => true;
 
-    protected EnemyActionBase(Enemy owner)
+    protected EnemyActionBase(ServerEnemy owner)
     {
         if (owner == null)
             throw new ArgumentNullException(nameof(owner));

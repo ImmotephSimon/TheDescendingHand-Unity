@@ -1,19 +1,23 @@
-using FishNet.Object;
 using UnityEngine;
 
 public class CardDrop : WorldDrop
 {
     private CardDefinition _definition;
+    private DropNetwork _network;
 
     public CardItemInstance Instance { get; private set; }
 
+    private void Awake()
+    {
+        _network = GetComponent<DropNetwork>();
+    }
 
     public void Initialize(CardDefinition definition)
     {
         _definition = definition;
         Instance = new CardItemInstance(definition);
 
-        ApplyRarityVisualsRpc(new Color(0.6f, 0.1f, 1f), 2f, 5f);
+        _network.ApplyRarityVisuals(new Color(0.6f, 0.1f, 1f), 2f, 5f);
     }
 
     public override bool Restore(IInventoryItem item)
@@ -25,26 +29,11 @@ public class CardDrop : WorldDrop
         }
 
         Instance = card;
-        ApplyRarityVisualsRpc(new Color(0.6f, 0.1f, 1f), 2f, 5f);
+        _network.ApplyRarityVisuals(new Color(0.6f, 0.1f, 1f), 2f, 5f);
         return true;
     }
 
-    [ObserversRpc]
-    private void ApplyRarityVisualsRpc(Color color, float intensity, float range)
-    {
-        uint layer1 = 1u << 1;
-
-        var light = GetComponentInChildren<Light>();
-        if (light != null)
-        {
-            light.color = color;
-            light.intensity = intensity;
-            light.range = range;
-            light.renderingLayerMask = (int)layer1;
-        }
-    }
-
-    protected override bool TryPickup(Player player)
+    protected override bool TryPickup(ServerPlayer player)
     {
         return player.GetComponent<IInventory>().TryAdd(Instance);
     }

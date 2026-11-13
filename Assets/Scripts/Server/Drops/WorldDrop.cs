@@ -1,42 +1,29 @@
-using FishNet.Connection;
-using FishNet.Object;
+using System;
 using UnityEngine;
 
-public abstract class WorldDrop : NetworkBehaviour, IInteractable
+public abstract class WorldDrop : MonoBehaviour, IInteractable
 {
     public int DropLevel { get; set; } = 1;
 
-    public void Interact(Player player)
+    public event Action<WorldDrop> Consumed;
+
+    private bool _pickedUp;
+
+    protected bool CanBePickedUp => !_pickedUp;
+
+    protected void Consume()
     {
-        if (IsServerStarted) ExecutePickup(player);
-        else RequestPickupServerRpc();
+        _pickedUp = true;
+        Consumed?.Invoke(this);
     }
 
-    [ServerRpc]
-    private void RequestPickupServerRpc(NetworkConnection sender = null)
+    public void Interact(ServerPlayer player)
     {
-        Player player = sender.FirstObject.GetComponent<Player>();
-
-        if (Vector3.Distance(player.transform.position, transform.position) > player.InteractRange)
-            return;
-
-        ExecutePickup(player);
-    }
-
-    private void ExecutePickup(Player player)
-    {
-        if (TryPickup(player))
-        {
-            Despawn(gameObject);
-        }
+        if (CanBePickedUp && TryPickup(player))
+            Consume();
     }
 
     public virtual bool Restore(IInventoryItem item) => false;
 
-    protected virtual bool TryPickup(Player player)
-    {
-        return false;
-    }
-
-
+    protected virtual bool TryPickup(ServerPlayer player) => false;
 }

@@ -7,6 +7,7 @@ public class DegenComponent : MonoBehaviour
     private const float TickInterval = 0.2f;
     private float _tickTimer;
     private IHealth _healthHandler;
+    private float _rate;
     private readonly List<ActiveDegen> _activeDegens = new();
 
     private class ActiveDegen
@@ -64,7 +65,10 @@ public class DegenComponent : MonoBehaviour
     private void Update()
     {
         if (_activeDegens.Count == 0)
+        {
+            if (_rate != 0f) { _rate = 0f; _healthHandler.SetHealthPerSecond(0f); }
             return;
+        }
 
         _tickTimer += Time.deltaTime;
 
@@ -74,20 +78,22 @@ public class DegenComponent : MonoBehaviour
         float tick = _tickTimer;
         _tickTimer = 0f;
 
-        var activeDegens = _activeDegens.ToArray();
 
-        foreach (var degen in activeDegens)
+        float rate = 0f;
+        foreach (var d in _activeDegens)
+            foreach (var (_, amount) in d.Info.Damage)
+                rate -= amount;
+        if (rate != _rate) { _rate = rate; _healthHandler.SetHealthPerSecond(rate); }
+
+        for (int i = _activeDegens.Count - 1; i >= 0; i--)
         {
-            foreach (var (tag, amount) in degen.Info.Damage)
-            {
-                _healthHandler.AdjustHealth(
-                    -amount * TickInterval,
-                    degen.Info.Source,
-                    false);
-            }
+            var degen = _activeDegens[i];
+
+            foreach (var (_, amount) in degen.Info.Damage)
+                _healthHandler.AdjustHealth(-amount * TickInterval, degen.Info.Source);
 
             if (Time.time >= degen.ExpirationTime)
-                _activeDegens.Remove(degen);
+                _activeDegens.RemoveAt(i);
         }
     }
 }

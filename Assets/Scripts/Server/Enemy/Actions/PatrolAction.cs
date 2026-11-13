@@ -21,7 +21,7 @@ public class PatrolAction : IEnemyAction
 
     public bool CanBeUpdated => true;
 
-    public PatrolAction(Enemy owner, float radius)
+    public PatrolAction(ServerEnemy owner, float radius)
     {
         movementHandler = owner.GetComponent<IEnemyMovement>();
         anchorPosition = owner.transform.position;

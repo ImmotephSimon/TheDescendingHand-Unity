@@ -2,7 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
+using System.IO;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -13,11 +14,15 @@ internal static class SpriteCatalogBuilder
     private const string ResourcesFolder = "Assets/Resources";
     private const string CatalogPath = ResourcesFolder + "/" + SpriteCatalog.ResourcesAssetName + ".asset";
 
+    // Matches "<32-hex guid>:<local file id>", the format SpriteString IDs are stored in.
+    private static readonly Regex IdRegex =
+        new Regex(@"[0-9a-fA-F]{32}:-?\d+", RegexOptions.Compiled);
+
     [MenuItem("Tools/Sprites/Rebuild Generated Sprite Catalog")]
     private static void RebuildFromMenu()
     {
         int count = RebuildCatalog();
-        Debug.Log($"Sprite catalog rebuilt. Found {count} sprites.");
+        Debug.Log($"Sprite catalog rebuilt. {count} referenced sprites.");
     }
 
     internal static int RebuildCatalog()
@@ -31,24 +36,35 @@ internal static class SpriteCatalogBuilder
             AssetDatabase.CreateAsset(catalog, CatalogPath);
         }
 
+        HashSet<string> referencedIds = ScanReferencedIds();
         var entriesById = new SortedDictionary<string, SpriteCatalog.Entry>(StringComparer.Ordinal);
-        var paths = new HashSet<string>(StringComparer.Ordinal);
 
-        string[] assetGuids =
-            AssetDatabase.FindAssets("t:Texture2D")
-                .Concat(AssetDatabase.FindAssets("t:Sprite"))
-                .ToArray();
+        // Group by GUID so each texture file is only loaded once.
+        var idsByGuid = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+        foreach (string id in referencedIds)
+        {
+            string guid = id.Substring(0, id.IndexOf(':'));
+            if (!idsByGuid.TryGetValue(guid, out var list))
+                idsByGuid[guid] = list = new List<string>();
+            list.Add(id);
+        }
 
         try
         {
-            for (int i = 0; i < assetGuids.Length; i++)
+            int i = 0;
+            foreach (var kvp in idsByGuid)
             {
-                string path = AssetDatabase.GUIDToAssetPath(assetGuids[i]);
-                if (string.IsNullOrEmpty(path) || !paths.Add(path))
-                    continue;
+                string path = AssetDatabase.GUIDToAssetPath(kvp.Key);
+                EditorUtility.DisplayProgressBar("Rebuilding Sprite Catalog", path, (float)i++ / idsByGuid.Count);
 
-                if (i % 50 == 0)
-                    EditorUtility.DisplayProgressBar("Rebuilding Sprite Catalog", path, (float)i / assetGuids.Length);
+                if (string.IsNullOrEmpty(path))
+                {
+                    foreach (string id in kvp.Value)
+                        Debug.LogWarning($"SpriteString references missing asset: {id}");
+                    continue;
+                }
+
+                var wanted = new HashSet<string>(kvp.Value, StringComparer.Ordinal);
 
                 foreach (UnityEngine.Object asset in AssetDatabase.LoadAllAssetsAtPath(path))
                 {
@@ -60,15 +76,18 @@ internal static class SpriteCatalogBuilder
                         continue;
 
                     string id = guid + ":" + localId.ToString(CultureInfo.InvariantCulture);
-                    if (!entriesById.ContainsKey(id))
+                    if (!wanted.Remove(id))
+                        continue;
+
+                    entriesById[id] = new SpriteCatalog.Entry
                     {
-                        entriesById.Add(id, new SpriteCatalog.Entry
-                        {
-                            Id = new SpriteString(id),
-                            Sprite = sprite
-                        });
-                    }
+                        Id = new SpriteString(id),
+                        Sprite = sprite
+                    };
                 }
+
+                foreach (string missing in wanted)
+                    Debug.LogWarning($"SpriteString references a sprite that no longer exists: {missing} ({path})");
             }
         }
         finally
@@ -82,6 +101,47 @@ internal static class SpriteCatalogBuilder
         EditorUtility.SetDirty(catalog);
         AssetDatabase.SaveAssetIfDirty(catalog);
         return catalog.Entries.Count;
+    }
+
+    private static HashSet<string> ScanReferencedIds()
+    {
+        if (EditorSettings.serializationMode != SerializationMode.ForceText)
+            Debug.LogWarning("Sprite catalog scan reads serialized YAML. Set Asset Serialization to Force Text, " +
+                             "otherwise references will be missed.");
+
+        var ids = new HashSet<string>(StringComparer.Ordinal);
+        string[] allPaths = AssetDatabase.GetAllAssetPaths();
+
+        try
+        {
+            for (int i = 0; i < allPaths.Length; i++)
+            {
+                string path = allPaths[i];
+                if (!path.StartsWith("Assets/", StringComparison.Ordinal) || path == CatalogPath)
+                    continue; // skip packages and the catalog itself (it holds every ID it lists)
+
+                if (!(path.EndsWith(".prefab", StringComparison.OrdinalIgnoreCase) ||
+                      path.EndsWith(".unity", StringComparison.OrdinalIgnoreCase) ||
+                      path.EndsWith(".asset", StringComparison.OrdinalIgnoreCase)))
+                    continue;
+
+                if (i % 100 == 0)
+                    EditorUtility.DisplayProgressBar("Scanning SpriteString references", path, (float)i / allPaths.Length);
+
+                string text;
+                try { text = File.ReadAllText(path); }
+                catch (IOException) { continue; }
+
+                foreach (Match m in IdRegex.Matches(text))
+                    ids.Add(m.Value.ToLowerInvariant());
+            }
+        }
+        finally
+        {
+            EditorUtility.ClearProgressBar();
+        }
+
+        return ids;
     }
 
     private static void EnsureResourcesFolder()

@@ -27,4 +27,3 @@ public class EnemyDefinition : ScriptableObject
 
 }
 
-public enum EnemyType { Normal, Magic, Rare, Unique }

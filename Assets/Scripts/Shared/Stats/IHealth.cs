@@ -4,8 +4,10 @@ public interface IHealth
 {
     float CurrentHealth { get; }
     float MaxHealth { get; }
+    float HealthPerSecond { get; }
 
-    event Action<float, float, bool> OnHealthChanged; // current, max, isInstant
+    event Action<float, float> OnHealthChanged;
 
-    void AdjustHealth(float finalDamage, object source, bool isInstant = true);
+    void AdjustHealth(float finalDamage, object source);
+    void SetHealthPerSecond(float healthPerSecond);
 }

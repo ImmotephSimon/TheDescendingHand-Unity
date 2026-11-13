@@ -19,7 +19,7 @@ MonoBehaviour:
     Name: Cyclone
     Description: 'Trace: Orbit (2)'
     Icon:
-      Id: 
+      _id: b066c869b51f9384fa8ac9cce36b4648:21300000
     AnimationOverride:
       _id: 
     Vfx: 0f00000009000000

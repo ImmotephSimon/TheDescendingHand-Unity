@@ -8,7 +8,6 @@ using UnityEngine;
 public class PlayerSpawner : MonoBehaviour
 {
     [SerializeField] private DualPrefabObjects _dualPrefabs;
-    [SerializeField] private Transform[] _spawns;
 
     private int _nextSpawn;
     private SceneManager _manager;
@@ -16,16 +15,19 @@ public class PlayerSpawner : MonoBehaviour
     private void OnEnable()
     {
         _manager = InstanceFinder.SceneManager;
+        if (_manager == null) { Debug.LogError("SceneManager not ready."); return; }
         _manager.OnClientLoadedStartScenes += OnClientLoadedStartScenes;
     }
 
     private void OnDisable()
     {
-        _manager.OnClientLoadedStartScenes -= OnClientLoadedStartScenes;
+        if (_manager != null)
+            _manager.OnClientLoadedStartScenes -= OnClientLoadedStartScenes;
     }
 
     private void OnClientLoadedStartScenes(NetworkConnection conn, bool asServer)
     {
+
         if (!asServer)
             return;
 
@@ -35,19 +37,18 @@ public class PlayerSpawner : MonoBehaviour
             return;
         }
 
+
         NetworkObject serverPrefab = _dualPrefabs.Prefabs[0].Server;
 
-        GetSpawnPosition(
-            serverPrefab.transform,
-            out Vector3 position,
-            out Quaternion rotation);
+        var coll = InstanceFinder.NetworkManager.SpawnablePrefabs;
+        Debug.Log($"count={coll.GetObjectCount()} playerId={serverPrefab.PrefabId}");
+        var found = coll.GetObject(true, serverPrefab.PrefabId);
+        Debug.Log($"lookup -> {(found == null ? "NULL" : found.name)}");
 
-        NetworkObject player = InstanceFinder.NetworkManager.GetPooledInstantiated(
-            serverPrefab.PrefabId,
-            serverPrefab.SpawnableCollectionId,
-            position,
-            rotation,
-            true);
+        Transform spawn = GetSpawnPoint(serverPrefab.transform);
+
+        NetworkObject player = Instantiate(serverPrefab, spawn.position, spawn.rotation);
+        Debug.Log($"after Instantiate: self={player.gameObject.activeSelf} hierarchy={player.gameObject.activeInHierarchy}");
 
         if (player == null)
         {
@@ -61,35 +62,19 @@ public class PlayerSpawner : MonoBehaviour
 
 
         InstanceFinder.ServerManager.Spawn(player, conn);
-
         InstanceFinder.SceneManager.AddOwnerToDefaultScene(player);
     }
 
-    private void GetSpawnPosition(
-        Transform prefab,
-        out Vector3 position,
-        out Quaternion rotation)
+    private Transform GetSpawnPoint(Transform prefab)
     {
-        if (_spawns == null || _spawns.Length == 0)
+        var points = GameObject.FindGameObjectsWithTag("SpawnPoint");
+
+        if (points.Length == 0)
         {
-            position = prefab.position;
-            rotation = prefab.rotation;
-            return;
+            Debug.LogError("No objects tagged 'SpawnPoint' found, spawning at prefab position.");
+            return prefab;
         }
 
-        Transform spawn = _spawns[_nextSpawn];
-
-        if (spawn == null)
-        {
-            position = prefab.position;
-            rotation = prefab.rotation;
-        }
-        else
-        {
-            position = spawn.position;
-            rotation = spawn.rotation;
-        }
-
-        _nextSpawn = (_nextSpawn + 1) % _spawns.Length;
+        return points[_nextSpawn++ % points.Length].transform;
     }
 }

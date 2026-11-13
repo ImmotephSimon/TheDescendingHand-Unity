@@ -11,13 +11,12 @@ public class GlobeDrop : WorldDrop
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!IsServerStarted)
-            return;
+        if (!CanBePickedUp) return;
 
         if (!other.TryGetComponent<IHealth>(out var health))
             return;
 
         health.AdjustHealth(health.MaxHealth * _healPercentage, this);
-        Despawn();
+        Consume();
     }
 }

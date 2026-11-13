@@ -1,6 +1,5 @@
 
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ProjectileComponent : CardComponent
@@ -54,7 +53,7 @@ public class ProjectileComponent : CardComponent
 
         var projectile = UnityEngine.Object.Instantiate(prefab, position, rotation);
 
-        var controller = projectile.GetComponentInChildren<ProjectileController>();
+        var controller = projectile.AddComponent<ProjectileController>();
         controller.OnHit += hit =>
         {
             OnProjectileHit?.Invoke(hit);

@@ -6,9 +6,12 @@ public class ManaComponent : MonoBehaviour, IMana
     private IStatContainer stats;
     private float _maxMana => stats.GetStat(GameTags.ModStatMana);
     private float _currentMana;
+    private float _manaPerSecond;
 
     public float CurrentMana => _currentMana;
     public float MaxMana => _maxMana;
+
+    public float ManaPerSecond => _manaPerSecond;
 
     public event Action<float, float, bool> OnManaChanged;
 
@@ -19,7 +22,7 @@ public class ManaComponent : MonoBehaviour, IMana
 
     private void Start()
     {
-        
+
         _currentMana = _maxMana;
         OnManaChanged?.Invoke(_currentMana, _maxMana, true);
 
@@ -41,5 +44,10 @@ public class ManaComponent : MonoBehaviour, IMana
     {
         _currentMana = Mathf.Min(_currentMana + amount, _maxMana);
         OnManaChanged?.Invoke(_currentMana, _maxMana, isInstant);
+    }
+
+    public void SetManaPerSecond(float manaPerSecond)
+    {
+        _manaPerSecond = manaPerSecond;
     }
 }

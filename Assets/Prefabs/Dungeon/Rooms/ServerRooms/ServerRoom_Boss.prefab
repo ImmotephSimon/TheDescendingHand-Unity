@@ -1,0 +1,170 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &5952382436272274584
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2723465883617480882, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2723465883617480882, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2723465883617480882, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2723465883617480882, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2723465883617480882, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2723465883617480882, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2723465883617480882, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2723465883617480882, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2723465883617480882, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2723465883617480882, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045709837822586654, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: SceneId
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045709837822586654, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: WasActiveDuringEdit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045709837822586654, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: _initializedTimestamp
+      value: -8584076787464807498
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045709837822586654, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: <PrefabId>k__BackingField
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045709837822586654, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: <AssetPathHash>k__BackingField
+      value: 2335720411304935838
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273590335366189293, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: m_Name
+      value: ServerRoom_Boss
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273590335366189293, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7273590335366189293, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6525174285528821883}
+    - targetCorrespondingSourceObject: {fileID: 7273590335366189293, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6496482053403301018}
+    - targetCorrespondingSourceObject: {fileID: 7273590335366189293, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 417647309095823134}
+  m_SourcePrefab: {fileID: 100100000, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+--- !u!4 &2525578206469717442 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8185217240280334682, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+  m_PrefabInstance: {fileID: 5952382436272274584}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3921482534612839541 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7273590335366189293, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+  m_PrefabInstance: {fileID: 5952382436272274584}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6525174285528821883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3921482534612839541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ab3fd741b5aa7c4ca7bd37a9325cf3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floorOpening: {fileID: 8513207427857482339}
+  bossTransform: {fileID: 2525578206469717442}
+  stairsAnchor: {fileID: 7019920823273126434}
+--- !u!114 &6496482053403301018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3921482534612839541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c4bee56dfb17f0479a568967145a7ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyDualPrefabs: {fileID: 11400000, guid: 77e8638389964994d8f0c8f9281062b9, type: 2}
+  enemyDefinition: {fileID: 11400000, guid: 54b1781ee4f967e419948efd4aff17ce, type: 2}
+  spawnOnEnter: 1
+  spawnCount: 2
+  fixedSpawnPoint: {fileID: 0}
+--- !u!114 &417647309095823134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3921482534612839541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41de7e5d4c8cf174fa470654dd31e2ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: NewAssembly::Room
+  roomUnit: 3
+  bounds: {fileID: 5336733071374732496}
+  chestSpawnPoints: []
+--- !u!65 &5336733071374732496 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 1771320095387594824, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+  m_PrefabInstance: {fileID: 5952382436272274584}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7019920823273126434 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3742729344406488762, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+  m_PrefabInstance: {fileID: 5952382436272274584}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8513207427857482339 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2648082792753266427, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+  m_PrefabInstance: {fileID: 5952382436272274584}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3921482534612839541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcb8b53188ba33942b8ec55ca0700409, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

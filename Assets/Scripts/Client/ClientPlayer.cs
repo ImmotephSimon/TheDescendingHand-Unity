@@ -7,7 +7,9 @@ public class ClientPlayer : MonoBehaviour
     private PlayerItemsNetwork _synchedItems;
     private PlayerNetworkActions _networkActions;
 
+
     public Vector3 CursorPosition => _playerMovement.CursorPosition;
+
 
     private void Awake()
     {

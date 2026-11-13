@@ -1646,7 +1646,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc1062f7fbd09fd469557297f178b29a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardTooltipPrefab: {fileID: 1648273522252265153, guid: 34d189f3b1b26d64581675555114a2a6, type: 3}
+  cardTooltipPrefab: {fileID: 4797022270052424999, guid: 3e09d615b92909543bea4b9bfd3c6899, type: 3}
 --- !u!1 &7053627819915031919
 GameObject:
   m_ObjectHideFlags: 0

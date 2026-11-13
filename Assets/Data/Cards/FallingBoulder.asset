@@ -19,7 +19,7 @@ MonoBehaviour:
     Name: Falling Boulder
     Description: Debris
     Icon:
-      Id: 
+      _id: d473e35d9c998d443a00d04000f893e5:21300000
     AnimationOverride:
       _id: 
     Vfx: 

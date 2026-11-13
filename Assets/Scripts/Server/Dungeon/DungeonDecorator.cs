@@ -9,6 +9,7 @@ public class DungeonDecorator : MonoBehaviour
     [SerializeField] private GameObject doorWallPrefab;
     [SerializeField] private GameObject chestPrefab;
     [SerializeField] private GameObject doorPrefab;
+    [SerializeField] private Stairs stairsPrefab;
 
     private int roomUnit;
     private const float FloorHeight = 0.5f;
@@ -195,5 +196,18 @@ public class DungeonDecorator : MonoBehaviour
                 GameObject chest = Instantiate(chestPrefab, point.position, point.rotation);
                 InstanceFinder.ServerManager.Spawn(chest);
             }
+    }
+
+    public void SpawnStairs(Transform stairsAnchor)
+    {
+        if (!InstanceFinder.IsServerStarted) return;
+
+        Stairs stairs = Instantiate(
+            stairsPrefab,
+            stairsAnchor.position,
+            stairsAnchor.rotation
+        );
+
+        InstanceFinder.ServerManager.Spawn(stairs.gameObject);
     }
 }

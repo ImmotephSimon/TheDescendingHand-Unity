@@ -49,9 +49,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c1612ac04ea0342b536927ffc6595b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 0
+  _componentIndexCache: 1
   _addedNetworkObject: {fileID: -7992482586034756828}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: -7992482586034756828}
   hinge: {fileID: 9160279562555013051}
   doorAnchor: {fileID: 632274252487417253}
   openAngle: {x: 0, y: -150, z: 0}
@@ -481,7 +481,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 15
+  <PrefabId>k__BackingField: 14
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 12688967291695008425
   SceneId: 0
@@ -498,9 +498,9 @@ MonoBehaviour:
   <PredictedOwner>k__BackingField: {fileID: 0}
   NetworkBehaviours:
   - {fileID: -335834321184899795}
+  - {fileID: 1076634270357803934}
   InitializedParentNetworkBehaviour: {fileID: 0}
-  InitializedNestedNetworkObjects:
-  - {fileID: 0}
+  InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
   RuntimeChildNetworkBehaviours: []
   _isNetworked: 1
@@ -509,7 +509,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584082140601083106
+  _initializedTimestamp: -8584070675590397560
 --- !u!114 &-335834321184899795
 MonoBehaviour:
   m_ObjectHideFlags: 0

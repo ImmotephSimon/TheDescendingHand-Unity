@@ -4,6 +4,6 @@ public class CardLootDefinition : LootDefinition
     public override void Initialize(WorldDrop drop, Rarity rarity)
     {
         if (drop is CardDrop cardDrop)
-            cardDrop.Initialize(ItemRegistry.Instance.CardRegistry.GetRandomCard());
+            cardDrop.Initialize(ServerRoot.Instance.CardRegistry.GetRandomCard());
     }
 }

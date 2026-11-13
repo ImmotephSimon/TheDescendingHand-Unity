@@ -1,7 +1,6 @@
 using FishNet;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEngine.EventSystems.EventTrigger;
 
 [ExecuteAlways]
 public class ARPGCamera : MonoBehaviour

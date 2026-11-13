@@ -6,9 +6,9 @@ public class PlayerInputController : MonoBehaviour
     private Vector2 _rawInput;
     private LayerMask _floorLayer;
     private GameInput _gameInput;
-
     private void Awake()
     {
+
         _floorLayer = LayerMask.GetMask("Floor");
         _gameInput = new GameInput();
         _gameInput.Enable();

@@ -6,10 +6,10 @@ using UnityEngine;
 public class DungeonManager : MonoBehaviour, IDungeonHandler
 {
     [SerializeField] private DungeonGenerator dungeonGeneratorPrefab;
-    [SerializeField] private Light directionalLight;
-    [SerializeField] private GameObject overworld;
-    [SerializeField] private Stairs stairsPrefab;
-
+    [SerializeField] private DungeonDecorator overworldDecorator;
+    private Light _directionalLight;
+    private GameObject _overworld;
+    private Transform _stairsAnchor;
     private readonly Dictionary<Transform, DungeonGenerator> dungeonCache = new();
     private DungeonGenerator activeDungeon;
     private bool isGenerating;
@@ -19,6 +19,7 @@ public class DungeonManager : MonoBehaviour, IDungeonHandler
 
     private DropsComponent _drops;
 
+
     public DungeonGenerator ActiveDungeon => IsOverworld ? null : dungeonStack.Peek();
     public bool IsOverworld => dungeonStack.Count == 0;
 
@@ -26,7 +27,6 @@ public class DungeonManager : MonoBehaviour, IDungeonHandler
 
     private Stack<DungeonGenerator> dungeonStack = new();
 
-    private GameObject stairs;
 
     public event Action<int> ZoneLevelChanged
     {
@@ -43,8 +43,23 @@ public class DungeonManager : MonoBehaviour, IDungeonHandler
         }
         Instance = this;
         _drops = GetComponent<DropsComponent>();
-        stairs = overworld.GetComponentInChildren<Stairs>().gameObject;
-        stairs.transform.SetParent(transform);
+        _directionalLight = RenderSettings.sun;
+        _overworld = GameObject.FindWithTag("Overworld");
+        _stairsAnchor = _overworld.transform.Find("Crypt/StairsAnchor");
+
+        Debug.Assert(_directionalLight != null, "DungeonManager: no sun found. Set Sun Source in Lighting settings.", this);
+        Debug.Assert(_overworld != null, "DungeonManager: no object tagged 'Overworld' found.", this);
+        Debug.Assert(_stairsAnchor != null, "DungeonManager: Crypt/StairsAnchor not found under Overworld.", this);
+
+        ServerRoot.Instance.Ready += SpawnOverworldStairs;
+
+        HingeController.OnPropSpawned += RegisterDungeonProp;
+
+    }
+
+    private void SpawnOverworldStairs()
+    {
+        overworldDecorator.SpawnStairs(_stairsAnchor);
     }
 
     private void OnEnable() { Stairs.OnDescend += OnDescend; Stairs.OnAscend += OnAscend; }
@@ -57,7 +72,7 @@ public class DungeonManager : MonoBehaviour, IDungeonHandler
         if (isGenerating || anchor == null) return;
 
         SetCurrentVisible(false);
-        overworld.SetActive(false);
+        _overworld.SetActive(false);
 
         if (dungeonCache.TryGetValue(anchor, out var cachedDungeon))
         {
@@ -92,8 +107,8 @@ public class DungeonManager : MonoBehaviour, IDungeonHandler
         if (IsOverworld)
         {
             activeDungeon = null;
-            overworld.SetActive(true);
-            if (directionalLight != null) directionalLight.enabled = true;
+            _overworld.SetActive(true);
+            if (_directionalLight != null) _directionalLight.enabled = true;
             OnZoneLevelChanged?.Invoke(0);
         }
         else
@@ -105,7 +120,7 @@ public class DungeonManager : MonoBehaviour, IDungeonHandler
     private void AssignDungeon(DungeonGenerator dungeon)
     {
         activeDungeon = dungeon;
-        if (directionalLight != null) directionalLight.enabled = IsOverworld;
+        if (_directionalLight != null) _directionalLight.enabled = IsOverworld;
         SetCurrentVisible(true);
 
         OnZoneLevelChanged?.Invoke(ZoneLevel);
@@ -127,23 +142,23 @@ public class DungeonManager : MonoBehaviour, IDungeonHandler
         isGenerating = false;
     }
 
-    internal void OnDungeonCompleted(Transform stairsAnchor)
+    public void OnDungeonCompleted(Transform stairsAnchor)
     {
-        Instantiate(
-            stairsPrefab,
-            stairsAnchor.position,
-            stairsAnchor.rotation,
-            transform
-        );
+        activeDungeon.Decorator.SpawnStairs(stairsAnchor);
     }
 
-    internal void RegisterDungeonChest(HingeController hingeController)
+    public void RegisterDungeonProp(
+        HingeController hingeController,
+        HingeController.PropType propType)
     {
+        if (propType != HingeController.PropType.Chest)
+            return;
 
         Action handler = null;
         handler = () =>
         {
             hingeController.PlayerInteracted -= handler;
+
             for (int i = 0; i < 5; i++)
             {
                 _drops.DropFromChest(

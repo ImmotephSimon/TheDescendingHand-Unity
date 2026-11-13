@@ -60,7 +60,7 @@ public class PlayerHUD : MonoBehaviour
         {
             _currentBoss = boss;
             _bossBar.gameObject.SetActive(true);
-            _bossBar.Bind(boss.GetComponent<IHealth>());
+            _bossBar.Bind(boss.GetComponent<EnemyStatsNetwork>());
         }
         else if (!show && boss == _currentBoss)
         {

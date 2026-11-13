@@ -1,5 +1,7 @@
+using FishNet.Managing.Object;
 using System.Collections.Generic;
 using UnityEngine;
+
 
 [CreateAssetMenu(menuName = "Registries/Server Prefabs")]
 public class ServerPrefabRegistry : ScriptableObject
@@ -10,24 +12,18 @@ public class ServerPrefabRegistry : ScriptableObject
         public GameTag Tag;
         public GameObject Prefab;
     }
+    [SerializeField] private List<Entry> _entries = new();
+    [SerializeField] private DefaultPrefabObjects _clientCollection;
+    [SerializeField] private DefaultPrefabObjects _serverCollection;
 
+    public DefaultPrefabObjects ClientCollection => _clientCollection;
+    public DefaultPrefabObjects ServerCollection => _serverCollection;
 
     private static ServerPrefabRegistry _instance;
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    private static void ResetStatics() => _instance = null;
+    public static ServerPrefabRegistry Instance => _instance;
 
+    public static void SetInstance(ServerPrefabRegistry registry) => _instance = registry;
 
-    public static ServerPrefabRegistry Instance
-    {
-        get
-        {
-            if (_instance == null)
-                _instance = Resources.Load<ServerPrefabRegistry>("ServerPrefabRegistry");
-            return _instance;
-        }
-    }
-
-    [SerializeField] private List<Entry> _entries = new();
     private Dictionary<GameTag, GameObject> _lookup;
 
     private void OnEnable() => _lookup = null;
@@ -65,4 +61,5 @@ public class ServerPrefabRegistry : ScriptableObject
         obj = Instantiate(prefab, position, Quaternion.identity);
         return true;
     }
+
 }

@@ -33,6 +33,7 @@ public class LiquidWobble : MonoBehaviour
     private Vector3 wobbleAmountToAdd;
     private float pulse;
     private float time;
+    private PlayerStatsNetwork _stats;
 
     private void OnValidate()
     {
@@ -113,29 +114,54 @@ public class LiquidWobble : MonoBehaviour
 
 
 
-    public void Initialize(PlayerStatsNetwork state)
+    public void Initialize(PlayerStatsNetwork stats)
     {
+        _stats = stats;
+
         switch (type)
         {
             case LiquidGlobeType.Life:
-                state.HealthChanged += UpdateHealth;
+                stats.Health.OnChange += OnHealthChanged;
+                stats.MaxHealth.OnChange += OnMaxChanged;
                 break;
 
             case LiquidGlobeType.Mana:
-                state.ManaChanged += UpdateMana;
+                stats.Mana.OnChange += OnManaChanged;
+                stats.MaxMana.OnChange += OnMaxChanged;
                 break;
         }
+
+        RefreshInstant();
     }
 
-    private void UpdateMana(float current, float max, bool isInstant)
+    private void OnHealthChanged(float prev, float next, bool asServer)
     {
-        SetFill(current / max, isInstant);
+        if (asServer) return;
+        SetFill(Ratio(next, _stats.MaxHealth.Value), !WithRate(prev, next, _stats.HealthPerSecond.Value));
     }
 
-    private void UpdateHealth(float current, float max, bool isInstant)
+    private void OnManaChanged(float prev, float next, bool asServer)
     {
-        SetFill(current / max, isInstant);
+        if (asServer) return;
+        SetFill(Ratio(next, _stats.MaxMana.Value), !WithRate(prev, next, _stats.ManaPerSecond.Value));
     }
+
+    private void OnMaxChanged(float prev, float next, bool asServer)
+    {
+        if (!asServer) RefreshInstant();
+    }
+
+    private void RefreshInstant()
+    {
+        bool life = type == LiquidGlobeType.Life;
+        SetFill(life ? Ratio(_stats.Health.Value, _stats.MaxHealth.Value)
+                     : Ratio(_stats.Mana.Value, _stats.MaxMana.Value), true);
+    }
+
+    private static bool WithRate(float prev, float next, float rate) =>
+        (next > prev && rate > 0) || (next < prev && rate < 0);
+
+    private static float Ratio(float current, float max) => max > 0f ? current / max : 0f;
 
     private void SetFill(float value, bool isInstant)
     {

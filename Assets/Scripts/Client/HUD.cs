@@ -32,67 +32,25 @@ public class HUD : MonoBehaviour
     private void Initialize(ClientPlayer player)
     {
         PlayerStatsNetwork stats = player.GetComponent<PlayerStatsNetwork>();
-        stats.ZoneLevel.OnChange += UpdateZoneText;
 
+        stats.ZoneLevel.OnChange += UpdateZoneText;
         UpdateZoneText(0, stats.ZoneLevel.Value, false);
 
-        Bind(player.GetComponent<IExperience>());
-        Bind(player.GetComponent<IHealth>());
-        Bind(player.GetComponent<IMana>());
-    }
+        stats.Level.OnChange += (_, _, asServer) => { if (!asServer) UpdateExperience(stats); };
+        stats.LevelProgress.OnChange += (_, _, asServer) => { if (!asServer) UpdateExperience(stats); };
+        UpdateExperience(stats);
 
-    public void Bind(IExperience comp)
-    {
-        comp.OnExperienceChanged += experienceBar.SetValue;
-        experienceBar.SetValue(comp.Level, comp.Progress);
-    }
+        stats.Health.OnChange += (prev, next, asServer) =>
+        { if (!asServer) SetHealth(prev, next, stats.MaxHealth.Value, stats.HealthPerSecond.Value); };
+        stats.MaxHealth.OnChange += (_, next, asServer) =>
+        { if (!asServer) SetHealth(stats.Health.Value, stats.Health.Value, next, 0f); };
+        SetHealth(stats.Health.Value, stats.Health.Value, stats.MaxHealth.Value, 0f);
 
-    public void Bind(IHealth health)
-    {
-        health.OnHealthChanged += UpdateHealth;
-        UpdateHealth(health.CurrentHealth, health.MaxHealth, true);
-    }
-
-    public void Bind(IMana mana)
-    {
-        mana.OnManaChanged += UpdateMana;
-        UpdateMana(mana.CurrentMana, mana.MaxMana, true);
-    }
-
-    private void UpdateHealth(float current, float max, bool isInstant)
-    {
-        _targetHealth = current;
-        _maxHealth = max;
-
-        if (isInstant)
-        {
-            _displayedHealth = current;
-            _healthTimer = DisplayDuration;
-        }
-        else
-        {
-            _healthTimer = 0f;
-        }
-
-        UpdateHealthText();
-    }
-
-    private void UpdateMana(float current, float max, bool isInstant)
-    {
-        _targetMana = current;
-        _maxMana = max;
-
-        if (isInstant)
-        {
-            _displayedMana = current;
-            _manaTimer = DisplayDuration;
-        }
-        else
-        {
-            _manaTimer = 0f;
-        }
-
-        UpdateManaText();
+        stats.Mana.OnChange += (prev, next, asServer) =>
+        { if (!asServer) SetMana(prev, next, stats.MaxMana.Value, stats.ManaPerSecond.Value); };
+        stats.MaxMana.OnChange += (_, next, asServer) =>
+        { if (!asServer) SetMana(stats.Mana.Value, stats.Mana.Value, next, 0f); };
+        SetMana(stats.Mana.Value, stats.Mana.Value, stats.MaxMana.Value, 0f);
     }
 
     private void Update()
@@ -119,6 +77,34 @@ public class HUD : MonoBehaviour
             UpdateManaText();
         }
     }
+
+    private void UpdateExperience(PlayerStatsNetwork s) =>
+    experienceBar.SetValue(s.Level.Value, s.LevelProgress.Value);
+
+    private void SetHealth(float prev, float next, float max, float rate)
+    {
+        _maxHealth = max;
+        _targetHealth = next;
+
+        if (WithRate(prev, next, rate)) _healthTimer = 0f;
+        else { _displayedHealth = next; _healthTimer = DisplayDuration; }
+
+        UpdateHealthText();
+    }
+
+    private void SetMana(float prev, float next, float max, float rate)
+    {
+        _maxMana = max;
+        _targetMana = next;
+
+        if (WithRate(prev, next, rate)) _manaTimer = 0f;
+        else { _displayedMana = next; _manaTimer = DisplayDuration; }
+
+        UpdateManaText();
+    }
+
+    private static bool WithRate(float prev, float next, float rate) =>
+        (next > prev && rate > 0) || (next < prev && rate < 0);
 
     private void UpdateZoneText(int old, int current, bool asServer)
     {

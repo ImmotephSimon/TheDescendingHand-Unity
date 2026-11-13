@@ -45,7 +45,7 @@ public class PlayerAnimationController : MonoBehaviour, IPlayerAnimationHandler
             return;
         }
 
-        _stats.StatusChanged += HandleStatusChanged;
+        _stats.OnStatusChanged += HandleStatusChanged;
     }
 
     private void OnDestroy()
@@ -60,7 +60,7 @@ public class PlayerAnimationController : MonoBehaviour, IPlayerAnimationHandler
             ClientRoot.Instance.OnClientPlayerReady -= OnPlayerReady;
 
         if (_stats != null)
-            _stats.StatusChanged -= HandleStatusChanged;
+            _stats.OnStatusChanged -= HandleStatusChanged;
     }
 
     private void HandleStatusChanged(GameTag status, bool isActive)

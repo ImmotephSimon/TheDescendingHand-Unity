@@ -8,8 +8,9 @@ public class HealthComponent : MonoBehaviour, IHealth
     private IEntity owner;
     private IStatContainer stats;
 
-    public event Action<float, float, bool> OnHealthChanged;
+    public event Action<float, float> OnHealthChanged;
 
+    public float HealthPerSecond { get; private set; }
     public float CurrentHealth => _currentHealth;
     public float MaxHealth => _maxHealth;
     private float _maxHealth => stats.GetStat(GameTags.ModStatHealth);
@@ -23,25 +24,32 @@ public class HealthComponent : MonoBehaviour, IHealth
         stats.Listen(GameTags.ModStatHealth, OnMaxHealthChanged);
     }
 
-    private void OnMaxHealthChanged(float maxHealth)
-    {
-        OnHealthChanged?.Invoke(_currentHealth, _maxHealth, true);
-    }
+
 
     private void Start()
     {
         _currentHealth = _maxHealth;
-        OnHealthChanged?.Invoke(_currentHealth, _maxHealth, true);
+        OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
     }
 
-    public void AdjustHealth(float healthAdjustment, object source, bool isInstant = true)
+    private void OnMaxHealthChanged(float maxHealth)
+    {
+        OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
+    }
+
+    public void SetHealthPerSecond(float healthPerSecond)
+    {
+        HealthPerSecond = healthPerSecond;
+    }
+
+    public void AdjustHealth(float healthAdjustment, object source)
     {
         _currentHealth = Mathf.Clamp(
             _currentHealth + healthAdjustment,
             0,
             _maxHealth
         );
-        OnHealthChanged?.Invoke(_currentHealth, _maxHealth, isInstant);
+        OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
 
         Debug.Log($"{owner} health now {_currentHealth} ({healthAdjustment:+#;-#;0} from {source ?? "Environment"})");
 
@@ -55,7 +63,7 @@ public class HealthComponent : MonoBehaviour, IHealth
             _currentHealth + amount,
             MaxHealth);
 
-        OnHealthChanged?.Invoke(_currentHealth, _maxHealth, true);
+        OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
     }
 
 }

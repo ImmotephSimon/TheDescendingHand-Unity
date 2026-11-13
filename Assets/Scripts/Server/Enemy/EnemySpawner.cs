@@ -17,7 +17,7 @@ public class EnemySpawner : MonoBehaviour
     private Room room;
     private Collider spawnArea;
 
-    public event Action<Enemy> OnSpawned;
+    public event Action<ServerEnemy> OnSpawned;
 
     private void Awake()
     {
@@ -93,7 +93,7 @@ public class EnemySpawner : MonoBehaviour
             return;
         }
 
-        Enemy enemy = nob.GetComponent<Enemy>();
+        ServerEnemy enemy = nob.GetComponent<ServerEnemy>();
         if (enemy == null)
         {
             Debug.LogError($"{nob.name} has no Enemy component.", this);

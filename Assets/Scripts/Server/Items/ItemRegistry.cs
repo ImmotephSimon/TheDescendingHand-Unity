@@ -7,39 +7,11 @@ public class ItemRegistry : ScriptableObject
 {
     [SerializeField] private List<Rarity> rarities = new();
 
-    [SerializeField] private CardRegistry cardRegistry;
-    [SerializeField] private CardRegistry testCardRegistry;
 
-    public CardRegistry CardRegistry => UseTestRegistry ? testCardRegistry : cardRegistry;
-
-    private bool UseTestRegistry =>
-        Application.isEditor
-        && testCardRegistry != null
-        && testCardRegistry.Cards.Count > 0;
 
     public List<ItemDefinition> Items = new();
     public List<Rarity> Rarities => rarities;
 
-
-
-    private static ItemRegistry _instance;
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    private static void ResetStatics() => _instance = null;
-    public static ItemRegistry Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = Resources.Load<ItemRegistry>("ItemRegistry");
-                if (_instance != null)
-                {
-                    _instance.Initialize();
-                }
-            }
-            return _instance;
-        }
-    }
 
     private Dictionary<Guid, ItemDefinition> _lookup;
 
@@ -62,27 +34,6 @@ public class ItemRegistry : ScriptableObject
         }
 
     }
-
-    //public bool TryGetIcon(Guid id, out Sprite icon)
-    //{
-    //    Initialize();
-
-    //    if (_lookup.TryGetValue(id, out var itemDef))
-    //    {
-    //        icon = itemDef.Appearance.Icon;
-    //        return true;
-    //    }
-
-    //    if (CardRegistry.TryGet(id, out var cardDef))
-    //    {
-    //        icon = cardDef.Visuals.Icon;
-    //        return true;
-    //    }
-
-    //    Debug.LogError($"Invalid id for TryGetInventoryItem (id: {id})");
-    //    icon = null;
-    //    return false;
-    //}
 
     public bool TryGetDefinition(Guid id, out ItemDefinition definition)
     {

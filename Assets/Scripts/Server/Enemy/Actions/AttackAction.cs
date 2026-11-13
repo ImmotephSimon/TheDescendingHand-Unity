@@ -14,7 +14,7 @@ public class AttackAction : EnemyActionBase
     public override bool CanBeInterrupted => _canBeInterrupted;
 
 
-    public AttackAction(Enemy owner, IEnemyAttack attack) : base(owner)
+    public AttackAction(ServerEnemy owner, IEnemyAttack attack) : base(owner)
     {
         _attack = attack;
         _stats = owner.GetComponent<IStatContainer>();

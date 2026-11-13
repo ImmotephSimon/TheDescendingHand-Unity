@@ -5,7 +5,7 @@ public class DropsComponent : MonoBehaviour
 {
     public void DropFromChest(Vector3 position, Vector3 forward)
     {
-        Rarity rarity = ItemRegistry.Instance.RollRandomRarity(
+        Rarity rarity = ServerRoot.Instance.ItemRegistry.RollRandomRarity(
             new System.Random(), minimumTier: 1);
 
         LootDefinition definition =
@@ -24,7 +24,7 @@ public class DropsComponent : MonoBehaviour
 
     public void DropFromEnemy(Vector3 position)
     {
-        Rarity rarity = ItemRegistry.Instance.RollRandomRarity(
+        Rarity rarity = ServerRoot.Instance.ItemRegistry.RollRandomRarity(
             new System.Random());
 
         LootDefinition definition =
@@ -87,9 +87,17 @@ public class DropsComponent : MonoBehaviour
         }
 
         InstanceFinder.ServerManager.Spawn(obj);
+
+        drop.Consumed += OnDropConsumed;
         definition.Initialize(drop, rarity);
 
         Debug.Log(
             $"Dropping {definition.Prefab.name}[{rarity.name}]");
+    }
+
+    private void OnDropConsumed(WorldDrop drop)
+    {
+        drop.Consumed -= OnDropConsumed;
+        InstanceFinder.ServerManager.Despawn(drop.gameObject);
     }
 }

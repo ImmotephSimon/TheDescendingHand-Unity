@@ -19,7 +19,7 @@ public class BossLocation : MonoBehaviour
         spawner.OnSpawned += HandleEnemySpawned;
     }
 
-    private void HandleEnemySpawned(Enemy enemy)
+    private void HandleEnemySpawned(ServerEnemy enemy)
     {
         spawner.OnSpawned -= HandleEnemySpawned;
 

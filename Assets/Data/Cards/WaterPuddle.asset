@@ -19,7 +19,7 @@ MonoBehaviour:
     Name: Water Puddle
     Description: Wet
     Icon:
-      Id: 
+      _id: 1458237dbb3c6d54f8fe9d39c0175d00:21300000
     AnimationOverride:
       _id: 
     Vfx: 0000000000000000

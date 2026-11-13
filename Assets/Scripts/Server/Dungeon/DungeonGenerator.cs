@@ -1,3 +1,6 @@
+using FishNet;
+using FishNet.Managing.Object;
+using FishNet.Object;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.AI.Navigation;
@@ -16,7 +19,10 @@ public class DungeonGenerator : MonoBehaviour
 
     private Dictionary<Vector2Int, Room> dungeonMap = new();
     private DungeonDecorator decorator;
+
+    public DungeonDecorator Decorator => decorator;
     public DungeonGenerator ParentDungeon { get; set; }
+
     public int ZoneLevel = 0;
     public void StartGenerating()
     {
@@ -38,14 +44,18 @@ public class DungeonGenerator : MonoBehaviour
         Debug.LogError($"[DungeonGenerator] Dungeon generation failed after all ({MaxGenerationAttempts}) attempts");
     }
 
+    private Room ResolveRoom(DualPrefabObjects set)
+    {
+        if (set == null || set.GetObjectCount() == 0) return null;
+
+        NetworkObject nob = set.GetObject(true, Random.Range(0, set.GetObjectCount()));
+        return nob != null ? nob.GetComponent<Room>() : null;
+    }
+
     private bool TryGenerateDungeon()
     {
-        Room startRoom = Instantiate(
-            config.startRooms[Random.Range(0, config.startRooms.Length)],
-            transform.position,
-            transform.rotation,
-            transform
-        );
+        Room startPrefab = ResolveRoom(config.startRooms[Random.Range(0, config.startRooms.Length)]);
+        Room startRoom = Instantiate(startPrefab, transform.position, transform.rotation, transform);
 
         AddStartRoom(startRoom);
 
@@ -162,13 +172,19 @@ public class DungeonGenerator : MonoBehaviour
 
         return true;
     }
-    private bool TrySpawnRoom(DoorSocket parentDoor, Room[] options, out Room room)
+    private bool TrySpawnRoom(DoorSocket parentDoor, DualPrefabObjects[] options, out Room room)
     {
-        Room[] shuffled = options.OrderBy(x => Random.value).ToArray();
+        DualPrefabObjects[] shuffled = options.OrderBy(x => Random.value).ToArray();
 
-        foreach (Room prefab in shuffled)
+        foreach (DualPrefabObjects set in shuffled)
         {
-            // Double check the engine hasn't lost the asset reference
+            if (set == null)
+            {
+                Debug.LogError("[TrySpawnRoom] Room option is null.");
+                continue;
+            }
+
+            Room prefab = ResolveRoom(set);
             if (prefab == null) continue;
 
             Room spawnedRoom = Instantiate(prefab, Vector3.zero, Quaternion.identity, transform);
@@ -212,13 +228,20 @@ public class DungeonGenerator : MonoBehaviour
 
     private void CreateDeadEnd(DoorSocket parentDoor)
     {
+        Room deadEndPrefab = ResolveRoom(config.deadEndRoom);
+        if (deadEndPrefab == null)
+        {
+            parentDoor.Disconnect();
+            Debug.LogWarning("[DungeonGenerator] No dead end prefab available");
+            return;
+        }
+
         Room room = Instantiate(
-            config.deadEndRoom,
+            deadEndPrefab,
             Vector3.zero,
             Quaternion.identity,
             transform
         );
-
         Vector2Int gridPosition = SnapRoom(
             parentDoor,
             room,
@@ -309,6 +332,16 @@ public class DungeonGenerator : MonoBehaviour
         return room.GetRoomGridPosition();
     }
 
+    private void NetworkRooms()
+    {
+        foreach (Room room in generatedRooms)
+        {
+            NetworkObject nob = room.GetComponent<NetworkObject>();
+            if (nob == null || nob.IsSpawned) continue;
+
+            InstanceFinder.ServerManager.Spawn(nob);
+        }
+    }
 
 
     private void FinishDungeon()
@@ -323,5 +356,7 @@ public class DungeonGenerator : MonoBehaviour
         Debug.Log($"Bake: collect={navMeshSurface.collectObjects}, geo={navMeshSurface.useGeometry}, " +
           $"layers={navMeshSurface.layerMask.value}, " +
           $"wallColliders={FindObjectsByType<Collider>(FindObjectsSortMode.None).Count(c => c.gameObject.layer == LayerMask.NameToLayer("Wall"))}");
+
+        NetworkRooms();
     }
 }

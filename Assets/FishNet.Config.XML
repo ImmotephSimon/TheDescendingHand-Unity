@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ConfigurationData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Loaded>false</Loaded>
+  <Loaded>true</Loaded>
   <PrefabGenerator>
-    <Enabled>true</Enabled>
+    <Enabled>false</Enabled>
     <LogToConsole>true</LogToConsole>
     <FullRebuild>false</FullRebuild>
     <SpawnableOnly>true</SpawnableOnly>

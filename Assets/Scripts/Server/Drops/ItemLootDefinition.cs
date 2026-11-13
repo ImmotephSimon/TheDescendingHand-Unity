@@ -13,7 +13,7 @@ public class ItemLootDefinition : LootDefinition
     {
         if (drop is ItemDrop itemDrop)
         {
-            var item = ItemRegistry.Instance.RollRandomItem();
+            var item = ServerRoot.Instance.ItemRegistry.RollRandomItem();
             Debug.Log($"ItemDrop rolled: {item.DisplayName}");
             itemDrop.Initialize(item, rarity);
         }

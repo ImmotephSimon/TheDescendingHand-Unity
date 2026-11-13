@@ -2,10 +2,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BossHealthBar : MonoBehaviour, IHealthBar
+public class BossHealthBar : MonoBehaviour
 {
     private Image _fill;
-    private IHealth _health;
+    private EnemyStatsNetwork _stats;
 
     private float _displayedHealth;
     private float _targetHealth;
@@ -18,63 +18,70 @@ public class BossHealthBar : MonoBehaviour, IHealthBar
         _fill = GetComponentsInChildren<Image>(true).FirstOrDefault(x => x.name == "Fill");
     }
 
-    public void Bind(IHealth health)
+    public void Bind(EnemyStatsNetwork stats)
     {
-        _health = health;
-        _health.OnHealthChanged += UpdateHealth;
+        _stats = stats;
+        _stats.Health.OnChange += OnHealthChanged;
+        _stats.MaxHealth.OnChange += OnMaxHealthChanged;
 
         // Initialize state directly on bind
-        _displayedHealth = _health.CurrentHealth;
-        _targetHealth = _health.CurrentHealth;
-
-        if (_fill != null && _health.MaxHealth > 0)
-        {
-            _fill.fillAmount = _displayedHealth / _health.MaxHealth;
-        }
+        _displayedHealth = _targetHealth = _stats.Health.Value;
+        RefreshFill();
     }
 
     public void Unbind()
     {
-        if (_health == null)
+        if (_stats == null)
             return;
 
-        _health.OnHealthChanged -= UpdateHealth;
-        _health = null;
+        _stats.Health.OnChange -= OnHealthChanged;
+        _stats.MaxHealth.OnChange -= OnMaxHealthChanged;
+        _stats = null;
     }
 
-    private void UpdateHealth(float current, float max, bool isInstant)
+    private void OnHealthChanged(float prev, float next, bool asServer)
     {
-        if (isInstant)
+        if (asServer) return;
+
+        float delta = next - prev;
+        float rate = _stats.HealthRate.Value;
+        bool withRate = (delta > 0 && rate > 0) || (delta < 0 && rate < 0);
+
+        if (withRate)
         {
-            _displayedHealth = current;
-            _targetHealth = current;
-            if (_fill != null && max > 0) _fill.fillAmount = current / max;
+            _degenStartHealth = _displayedHealth;
+            _targetHealth = next;
+            _degenTimer = 0f;
         }
         else
         {
-            _degenStartHealth = _displayedHealth;
-            _targetHealth = current;
-            _degenTimer = 0f;
+            _displayedHealth = _targetHealth = next;
+            RefreshFill();
         }
+    }
+
+    private void OnMaxHealthChanged(float prev, float next, bool asServer)
+    {
+        if (asServer) return;
+        RefreshFill();
+    }
+
+    private void RefreshFill()
+    {
+        if (_fill != null && _stats != null && _stats.MaxHealth.Value > 0)
+            _fill.fillAmount = _displayedHealth / _stats.MaxHealth.Value;
     }
 
     private void LateUpdate()
     {
-        if (_health == null || _displayedHealth == _targetHealth) return;
+        if (_stats == null || _displayedHealth == _targetHealth) return;
 
         _degenTimer += Time.deltaTime;
         float t = Mathf.Clamp01(_degenTimer / DegenDuration);
         _displayedHealth = Mathf.Lerp(_degenStartHealth, _targetHealth, t);
 
-        if (_fill != null && _health.MaxHealth > 0)
-        {
-            _fill.fillAmount = _displayedHealth / _health.MaxHealth;
-        }
+        RefreshFill();
     }
 
-    private void OnDestroy()
-    {
-        if (_health != null)
-            _health.OnHealthChanged -= UpdateHealth;
-    }
+    private void OnDestroy() => Unbind();
 }

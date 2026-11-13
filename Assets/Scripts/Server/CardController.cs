@@ -39,7 +39,7 @@ public class CardController : MonoBehaviour, ICardServerHandler
         Debug.Assert(_stats != null, $"[{name}] CardController requires an IStatContainer", this);
 
         var cards = new List<CardInstance>();
-        foreach (CardDefinition definition in ItemRegistry.Instance.CardRegistry.Cards)
+        foreach (CardDefinition definition in ServerRoot.Instance.CardRegistry.Cards)
             cards.Add(new CardInstance(Guid.NewGuid(), definition, _owner));
 
         _cardManager = new CardManager(cards);

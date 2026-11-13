@@ -19,7 +19,7 @@ MonoBehaviour:
     Name: Hex Burst
     Description: 'Condition: Hex'
     Icon:
-      Id: 
+      _id: 2bb02b871b3de264084da35529482ade:21300000
     AnimationOverride:
       _id: 
     Vfx: 00000000

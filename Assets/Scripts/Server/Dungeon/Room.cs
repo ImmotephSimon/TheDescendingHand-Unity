@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Room : MonoBehaviour
+public class Room : MonoBehaviour, IRoom
 {
     [SerializeField] private float roomUnit = 3f;
     [SerializeField] private BoxCollider bounds;

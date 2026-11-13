@@ -2,7 +2,7 @@
 
 public class StunAction : EnemyActionBase
 {
-    public StunAction(Enemy owner) : base(owner)
+    public StunAction(ServerEnemy owner) : base(owner)
     {
     }
 

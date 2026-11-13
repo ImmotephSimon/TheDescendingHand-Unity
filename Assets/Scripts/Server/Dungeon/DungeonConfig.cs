@@ -1,10 +1,11 @@
+using FishNet.Managing.Object;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "DungeonConfig", menuName = "Dungeon/Dungeon Config")]
 public class DungeonConfig : ScriptableObject
 {
-    public Room[] startRooms;
-    public Room[] standardRooms;
-    public Room[] bossRooms;
-    public Room deadEndRoom;
+    public DualPrefabObjects[] startRooms;
+    public DualPrefabObjects[] standardRooms;
+    public DualPrefabObjects[] bossRooms;
+    public DualPrefabObjects deadEndRoom;
 }

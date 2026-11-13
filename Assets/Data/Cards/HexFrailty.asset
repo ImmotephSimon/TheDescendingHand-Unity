@@ -19,7 +19,7 @@ MonoBehaviour:
     Name: 'Hex: Frailty'
     Description: Hex
     Icon:
-      Id: 
+      _id: c0c621637e6ca054cb6f00c56255ade7:21300000
     AnimationOverride:
       _id: 
     Vfx: 00000000

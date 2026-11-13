@@ -7,5 +7,5 @@ public abstract class EnemyAttackDefinition : ScriptableObject
     public AttackAnimation animation;
     public float priority = 100f;
 
-    public abstract IEnemyAttack Create(Enemy owner);
+    public abstract IEnemyAttack Create(ServerEnemy owner);
 }
