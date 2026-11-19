@@ -22,7 +22,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3999508112603585598, guid: dce01091836baae4ea10f1dff1fca6e8, type: 3}
       propertyPath: _initializedTimestamp
-      value: -8584073586708802071
+      value: -8584065021793048822
       objectReference: {fileID: 0}
     - target: {fileID: 3999508112603585598, guid: dce01091836baae4ea10f1dff1fca6e8, type: 3}
       propertyPath: <PrefabId>k__BackingField
@@ -97,6 +97,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3654252646813082573, guid: dce01091836baae4ea10f1dff1fca6e8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1472998197614780012}
+    - targetCorrespondingSourceObject: {fileID: 3654252646813082573, guid: dce01091836baae4ea10f1dff1fca6e8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -6780267374597043716}
   m_SourcePrefab: {fileID: 100100000, guid: dce01091836baae4ea10f1dff1fca6e8, type: 3}
 --- !u!65 &1102590297305686835 stripped
 BoxCollider:
@@ -150,11 +153,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c4bee56dfb17f0479a568967145a7ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyDualPrefabs: {fileID: 11400000, guid: 77e8638389964994d8f0c8f9281062b9, type: 2}
+  enemyDualPrefab: {fileID: 11400000, guid: 77e8638389964994d8f0c8f9281062b9, type: 2}
   enemyDefinition: {fileID: 11400000, guid: 54b1781ee4f967e419948efd4aff17ce, type: 2}
   spawnOnEnter: 1
-  spawnCount: 2
+  spawnCount: 1
   fixedSpawnPoint: {fileID: 0}
+--- !u!114 &-6780267374597043716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8298223067605451670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c71fd7f855ec523429999fc4e14a1928, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _overrideType: 3
+  _updateHostVisibility: 1
+  _observerConditions:
+  - {fileID: 11400000, guid: 3e3fea5af1e5f234f9410c0d41d3b259, type: 2}
 --- !u!114 &8511431600658447461 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3999508112603585598, guid: dce01091836baae4ea10f1dff1fca6e8, type: 3}

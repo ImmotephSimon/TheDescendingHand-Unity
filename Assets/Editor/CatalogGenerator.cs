@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 
 public interface ICatalogBuilder
@@ -162,5 +164,15 @@ public static class CatalogGenerator
         }
 
         recordsById.Add(id, new CatalogAssetRecord(id, path, kind, asset));
+    }
+
+    internal sealed class CatalogBuildPreprocessor : IPreprocessBuildWithReport
+    {
+        public int callbackOrder => -10000;
+
+        public void OnPreprocessBuild(BuildReport report)
+        {
+            CatalogGenerator.RebuildIndexAndCatalogs();
+        }
     }
 }

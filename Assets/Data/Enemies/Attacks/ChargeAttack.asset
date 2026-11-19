@@ -16,4 +16,8 @@ MonoBehaviour:
   cooldown: 5
   animation: 2
   priority: 120
+  hitWindow:
+    start: 0.18048486
+    end: 0.8736053
+  swingDuration: 1.8666668
   rangeTolerance: 0.5

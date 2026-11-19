@@ -1,4 +1,5 @@
 using FishNet;
+using FishNet.Component.Observing;
 using FishNet.Managing.Object;
 using FishNet.Object;
 using System.Collections.Generic;
@@ -24,8 +25,14 @@ public class DungeonGenerator : MonoBehaviour
     public DungeonGenerator ParentDungeon { get; set; }
 
     public int ZoneLevel = 0;
-    public void StartGenerating()
+
+    public int MatchId;
+
+    public void StartGenerating(int matchId, int zoneLevel)
     {
+        ZoneLevel = zoneLevel;
+        MatchId = matchId;
+
         if (decorator == null) decorator = GetComponentInChildren<DungeonDecorator>();
 
         for (int attempt = 1; attempt <= MaxGenerationAttempts; attempt++)
@@ -36,6 +43,7 @@ public class DungeonGenerator : MonoBehaviour
             {
                 Debug.Log($"[DungeonGenerator] Dungeon generated successfully on attempt {attempt}");
                 FinishDungeon();
+                NetworkRooms(MatchId);
                 return;
             }
             Debug.Log($"[DungeonGenerator] Dungeon generation failed, retrying ({attempt}/{MaxGenerationAttempts})");
@@ -236,12 +244,8 @@ public class DungeonGenerator : MonoBehaviour
             return;
         }
 
-        Room room = Instantiate(
-            deadEndPrefab,
-            Vector3.zero,
-            Quaternion.identity,
-            transform
-        );
+        Room room = Instantiate(deadEndPrefab, Vector3.zero, Quaternion.identity, transform);
+
         Vector2Int gridPosition = SnapRoom(
             parentDoor,
             room,
@@ -332,17 +336,31 @@ public class DungeonGenerator : MonoBehaviour
         return room.GetRoomGridPosition();
     }
 
-    private void NetworkRooms()
+    public void NetworkRooms(int matchId)
     {
+        var nobs = new List<NetworkObject>();
+
         foreach (Room room in generatedRooms)
         {
             NetworkObject nob = room.GetComponent<NetworkObject>();
-            if (nob == null || nob.IsSpawned) continue;
-
             InstanceFinder.ServerManager.Spawn(nob);
+            nobs.Add(nob);
         }
+
+        var network = GetComponent<DungeonWallsNetwork>();
+        network.SetWalls(decorator.SpawnedWalls);
+        network.SetDoorFrames(decorator.SpawnedDoorFrames);
+
+        MatchCondition.AddToMatch(matchId, nobs);
+
+        Debug.Log($"Room observers: {nobs[0].Observers.Count}");
     }
 
+    private void DetachRooms()
+    {
+        foreach (Room room in generatedRooms)
+            room.transform.SetParent(null, true);
+    }
 
     private void FinishDungeon()
     {
@@ -357,6 +375,6 @@ public class DungeonGenerator : MonoBehaviour
           $"layers={navMeshSurface.layerMask.value}, " +
           $"wallColliders={FindObjectsByType<Collider>(FindObjectsSortMode.None).Count(c => c.gameObject.layer == LayerMask.NameToLayer("Wall"))}");
 
-        NetworkRooms();
+        DetachRooms(); // must stay after the bake
     }
 }

@@ -37,8 +37,6 @@ public class EnemyMovementController : MonoBehaviour, IEnemyMovement, IEnemyMove
 
         agent.isStopped = false;
         agent.SetDestination(position);
-
-        Debug.Log($"{name} MoveTo: hasPath={agent.hasPath}, pending={agent.pathPending}", this);
     }
 
     public void StopMovement()

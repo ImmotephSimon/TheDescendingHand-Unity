@@ -82,11 +82,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7947321286850115126, guid: ddce3e6eea6d088489743b3da6815a76, type: 3}
       propertyPath: _initializedTimestamp
-      value: -8584070675590397560
+      value: -8584066347204070121
       objectReference: {fileID: 0}
     - target: {fileID: 7947321286850115126, guid: ddce3e6eea6d088489743b3da6815a76, type: 3}
       propertyPath: <PrefabId>k__BackingField
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7947321286850115126, guid: ddce3e6eea6d088489743b3da6815a76, type: 3}
       propertyPath: NetworkBehaviours.Array.size
@@ -276,7 +276,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1555574851286028492}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 3.5

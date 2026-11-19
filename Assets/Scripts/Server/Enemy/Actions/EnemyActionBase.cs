@@ -5,7 +5,7 @@ public abstract class EnemyActionBase : IEnemyAction
     protected readonly ServerEnemy _owner;
     protected readonly IEnemyMovement movementHandler;
     protected readonly IPerception perception;
-    protected IEnemyAnimationHandler animationHandler => _owner.GetComponentInChildren<IEnemyAnimationHandler>();
+    protected EnemyStatsNetwork animationHandler => _owner.GetComponent<EnemyStatsNetwork>();
     protected readonly IAbilityManager abilityManager;
 
     public virtual bool CanBeInterrupted => true;

@@ -1,14 +1,14 @@
 ﻿using System;
 using UnityEngine;
 
-public interface IAnimationHandler            // what Entity needs
+public interface IAnimationHandler // what Entity needs
 {
     void SetAnimationState(CharacterAnimationState state);
 }
 
 public interface IAttackAnimator : IAnimationHandler
 {
-    void PlayAttackAnimation(AttackAnimation attack, Action onFinished);
+    void PlayAttackAnimation(AttackAnimation attack, float duration);
     void StopCurrentAnimation();
 }
 
@@ -17,7 +17,6 @@ public interface IMovementAnimator
     void SetSpeed(float speed);
 }
 
-// player only
 public interface IPlayerAnimationHandler : IAttackAnimator, IMovementAnimator
 {
     Action PlayAnimation(AnimationClip clip, float duration);

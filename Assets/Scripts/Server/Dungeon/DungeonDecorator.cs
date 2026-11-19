@@ -9,10 +9,13 @@ public class DungeonDecorator : MonoBehaviour
     [SerializeField] private GameObject doorWallPrefab;
     [SerializeField] private GameObject chestPrefab;
     [SerializeField] private GameObject doorPrefab;
-    [SerializeField] private Stairs stairsPrefab;
 
+    public IReadOnlyList<Transform> SpawnedWalls => spawnedWalls;
+    public IReadOnlyList<Transform> SpawnedDoorFrames => spawnedDoorFrames;
+
+    private readonly List<Transform> spawnedWalls = new();
+    private readonly List<Transform> spawnedDoorFrames = new();
     private int roomUnit;
-    private const float FloorHeight = 0.5f;
 
     private Dictionary<Vector2Int, Room> dungeonMap;
 
@@ -27,7 +30,7 @@ public class DungeonDecorator : MonoBehaviour
     {
         this.roomUnit = roomUnit;
         this.dungeonMap = dungeonMap;
-
+        spawnedWalls.Clear();
         HashSet<string> processedConnections = new();
 
         foreach (Room room in dungeonMap.Values.Distinct())
@@ -72,23 +75,22 @@ public class DungeonDecorator : MonoBehaviour
             door.transform.rotation,
             roomA.transform
         );
+        spawnedDoorFrames.Add(frame.transform);
 
-        Transform anchor = frame.GetComponentInChildren<HingeController>().DoorAnchor;
+        Transform anchor = frame.transform.Find("DoorAnchor");
 
         // Spawn moving door at anchor
         GameObject doorObj = Instantiate(
             doorPrefab,
             anchor.position,
-            anchor.rotation,
-            anchor
+            anchor.rotation
         );
 
-        InstanceFinder.ServerManager.Spawn(frame);
         InstanceFinder.ServerManager.Spawn(doorObj);
 
         // Register the actual moving door's controller
         HingeController controller =
-            frame.GetComponentInChildren<HingeController>();
+            doorObj.GetComponentInChildren<HingeController>();
 
         roomA.RegisterDoor(controller);
         roomB.RegisterDoor(controller);
@@ -152,7 +154,8 @@ public class DungeonDecorator : MonoBehaviour
             ? Quaternion.identity
             : Quaternion.Euler(0, 90, 0);
 
-        Instantiate(wallPrefab, pos, rotation, room.transform);
+        GameObject wall = Instantiate(wallPrefab, pos, rotation, room.transform);
+        spawnedWalls.Add(wall.transform);
     }
 
 
@@ -163,7 +166,7 @@ public class DungeonDecorator : MonoBehaviour
         Vector2Int roomGridPosition = room.GetRoomGridPosition();
 
         Vector3 pos = room.transform.position;
-        pos.y = y + FloorHeight;
+        pos.y = y + room.FloorHeight;
 
         float pivotOffset = roomUnit / 2f;
 
@@ -198,16 +201,5 @@ public class DungeonDecorator : MonoBehaviour
             }
     }
 
-    public void SpawnStairs(Transform stairsAnchor)
-    {
-        if (!InstanceFinder.IsServerStarted) return;
 
-        Stairs stairs = Instantiate(
-            stairsPrefab,
-            stairsAnchor.position,
-            stairsAnchor.rotation
-        );
-
-        InstanceFinder.ServerManager.Spawn(stairs.gameObject);
-    }
 }

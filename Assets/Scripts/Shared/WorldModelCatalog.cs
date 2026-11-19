@@ -10,7 +10,7 @@ public class WorldModelCatalog : ScriptableObject
     [Serializable]
     public class Entry
     {
-        public string ItemId;
+        public string Id;
         public GameObject Prefab;
     }
 
@@ -56,7 +56,7 @@ public class WorldModelCatalog : ScriptableObject
         foreach (var entry in entries)
         {
             if (entry == null || entry.Prefab == null ||
-                !Guid.TryParse(entry.ItemId, out var id))
+                !Guid.TryParse(entry.Id, out var id))
                 continue;
 
             if (!_lookup.TryAdd(id, entry.Prefab))

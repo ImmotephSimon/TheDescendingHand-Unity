@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1323424591367383715}
   - component: {fileID: 8033926058981043618}
   - component: {fileID: 4744233561741478556}
-  - component: {fileID: 1534287410609463241}
   m_Layer: 0
   m_Name: DungeonManager
   m_TagString: Untagged
@@ -46,8 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b11809a6965a6444fbdff561d77af336, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dungeonGeneratorPrefab: {fileID: 4819669219746137910, guid: df4f40d11e2a5a14abcdef2d192d3a99, type: 3}
-  overworldDecorator: {fileID: 1534287410609463241}
+  dungeonGeneratorPrefab: {fileID: 5001090308629433042, guid: ace6f9e9d9da0884fa9de44a64611aa2, type: 3}
+  overworldDecorator: {fileID: 0}
+  stairsPrefab: {fileID: 7596102703809193858, guid: 11ffdea69eb21434da2dc259eec1a8eb, type: 3}
 --- !u!114 &4744233561741478556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,20 +60,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da88b4d1447642b488eb0b05c03ce51e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1534287410609463241
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 838062054534503502}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd2bb22e9d38cd14dbff11b8dde3f7b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wallPrefab: {fileID: 3273507634397097229, guid: e794ef6281667614cac380cdd895bdf9, type: 3}
-  doorWallPrefab: {fileID: 7017249610731780099, guid: 88b0bd32fdfe67946bc7044c5a1ac00c, type: 3}
-  chestPrefab: {fileID: 1654766839871344, guid: 68a19aab44d9d544ca4fd9f30e006f22, type: 3}
-  doorPrefab: {fileID: 2264132659979774048, guid: 6706e4153b073664d8d0738efb4eed55, type: 3}
-  stairsPrefab: {fileID: 7596102703809193858, guid: 11ffdea69eb21434da2dc259eec1a8eb, type: 3}

@@ -58,7 +58,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7045709837822586654, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
       propertyPath: _initializedTimestamp
-      value: -8584076787464807498
+      value: -8584065021793048822
       objectReference: {fileID: 0}
     - target: {fileID: 7045709837822586654, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
       propertyPath: <PrefabId>k__BackingField
@@ -89,6 +89,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7273590335366189293, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 417647309095823134}
+    - targetCorrespondingSourceObject: {fileID: 7273590335366189293, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -4578328795106279181}
   m_SourcePrefab: {fileID: 100100000, guid: 32f565921984dfa45980fc402f684c6b, type: 3}
 --- !u!4 &2525578206469717442 stripped
 Transform:
@@ -127,10 +130,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c4bee56dfb17f0479a568967145a7ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyDualPrefabs: {fileID: 11400000, guid: 77e8638389964994d8f0c8f9281062b9, type: 2}
+  enemyDualPrefab: {fileID: 11400000, guid: 77e8638389964994d8f0c8f9281062b9, type: 2}
   enemyDefinition: {fileID: 11400000, guid: 54b1781ee4f967e419948efd4aff17ce, type: 2}
   spawnOnEnter: 1
-  spawnCount: 2
+  spawnCount: 1
   fixedSpawnPoint: {fileID: 0}
 --- !u!114 &417647309095823134
 MonoBehaviour:
@@ -147,6 +150,22 @@ MonoBehaviour:
   roomUnit: 3
   bounds: {fileID: 5336733071374732496}
   chestSpawnPoints: []
+--- !u!114 &-4578328795106279181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3921482534612839541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c71fd7f855ec523429999fc4e14a1928, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _overrideType: 3
+  _updateHostVisibility: 1
+  _observerConditions:
+  - {fileID: 11400000, guid: 3e3fea5af1e5f234f9410c0d41d3b259, type: 2}
 --- !u!65 &5336733071374732496 stripped
 BoxCollider:
   m_CorrespondingSourceObject: {fileID: 1771320095387594824, guid: 32f565921984dfa45980fc402f684c6b, type: 3}

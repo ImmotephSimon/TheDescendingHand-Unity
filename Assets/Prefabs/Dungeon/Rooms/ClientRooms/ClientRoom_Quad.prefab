@@ -1902,7 +1902,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -3585834829236628691, guid: 46d79c8a54c9d7544b206ed0ede87b5d, type: 3}
       propertyPath: <PrefabId>k__BackingField
-      value: 12
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: -3585834829236628691, guid: 46d79c8a54c9d7544b206ed0ede87b5d, type: 3}
       propertyPath: NetworkBehaviours.Array.size

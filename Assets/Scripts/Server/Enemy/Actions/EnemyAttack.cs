@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class EnemyAttack : MonoBehaviour, IEnemyAttack
@@ -7,6 +9,7 @@ public abstract class EnemyAttack : MonoBehaviour, IEnemyAttack
     protected float range;
     protected float cooldownDuration;
     protected float priority;
+    private float swingDuration;
 
     public event Action<IEntity> OnHit;
     public virtual float Range => range;
@@ -14,9 +17,18 @@ public abstract class EnemyAttack : MonoBehaviour, IEnemyAttack
     public virtual AttackAnimation AttackAnimation => attackAnimation;
     public virtual float Effectiveness => 1f;
 
-    protected AttackHitbox AttackHitbox => attackHitbox;
-    private AttackHitbox attackHitbox;
+    public event Action Finished;
 
+    protected virtual float SpeedMultiplier => 1f; // Need the slow/stat code
+    protected virtual float SwingDuration => swingDuration;
+
+    protected AttackHitbox AttackHitbox => attackHitbox;
+
+
+    private AttackHitbox attackHitbox;
+    private Coroutine _swing;
+
+    private bool _hasHitbox;
 
     public virtual void Initialize(EnemyAttackDefinition def)
     {
@@ -24,8 +36,16 @@ public abstract class EnemyAttack : MonoBehaviour, IEnemyAttack
         cooldownDuration = def.cooldown;
         attackAnimation = def.animation;
         priority = def.priority;
+        swingDuration = def.swingDuration;
+    }
 
-        attackHitbox = GetComponentInChildren<AttackHitbox>();
+    public virtual void Initialize(EnemyAttackDefinition def, List<HitBoxSample> hitboxSamples, Transform visualRoot)
+    {
+        Initialize(def);
+
+        attackHitbox = new AttackHitbox();
+        attackHitbox.Setup(hitboxSamples, visualRoot, def.hitWindow);
+        _hasHitbox = true;
     }
 
     public float GetPriority() => priority;
@@ -41,11 +61,37 @@ public abstract class EnemyAttack : MonoBehaviour, IEnemyAttack
 
     public virtual void Execute(Transform target)
     {
-        AttackHitbox.OnHit -= HandleHit;
-        AttackHitbox.OnHit += HandleHit;
+        if (!_hasHitbox) return;
+        attackHitbox.OnHit -= HandleHit;
+        attackHitbox.OnHit += HandleHit;
+        _swing = StartCoroutine(Swing());
     }
 
-    public virtual void Stop() => AttackHitbox.OnHit -= HandleHit;
+    private IEnumerator Swing()
+    {
+        attackHitbox.Enable();
+
+        float progress = 0f;
+        while (progress < 1f)
+        {
+            attackHitbox.UpdateHitbox(progress);
+            progress += Time.deltaTime * SpeedMultiplier / SwingDuration;
+            yield return null;
+        }
+
+        attackHitbox.Disable();
+        _swing = null;
+        Finished?.Invoke();
+    }
+
+    public virtual void Stop()
+    {
+        if (_swing != null) StopCoroutine(_swing);
+        _swing = null;
+        //if (!AttackHitbox) return;
+        AttackHitbox.Disable();
+        AttackHitbox.OnHit -= HandleHit;
+    }
 
     public virtual void OnAnimationFinish()
     {

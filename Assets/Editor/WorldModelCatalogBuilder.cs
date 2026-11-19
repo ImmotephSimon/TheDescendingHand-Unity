@@ -3,11 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.Build;
-using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-internal static class WorldModelCatalogBuilder
+internal sealed class WorldModelCatalogBuilder : ICatalogBuilder
 {
     private const string ResourcesFolder = "Assets/Resources";
 
@@ -15,14 +13,13 @@ internal static class WorldModelCatalogBuilder
         ResourcesFolder + "/" +
         WorldModelCatalog.ResourcesAssetName + ".asset";
 
-    [MenuItem("Tools/Items/Rebuild World Model Catalog")]
-    private static void RebuildFromMenu()
+    public bool Rebuild(CatalogAssetIndex index)
     {
-        int count = RebuildCatalog();
-        Debug.Log($"World model catalog rebuilt: {count} entries.");
+        RebuildCatalog();
+        return true;
     }
 
-    internal static int RebuildCatalog()
+    internal int RebuildCatalog()
     {
         if (!AssetDatabase.IsValidFolder(ResourcesFolder))
             AssetDatabase.CreateFolder("Assets", "Resources");
@@ -36,35 +33,31 @@ internal static class WorldModelCatalogBuilder
             AssetDatabase.CreateAsset(catalog, CatalogPath);
         }
 
-        var entries = new SortedDictionary<string, WorldModelCatalog.Entry>(
-            StringComparer.Ordinal);
+        var entries = new SortedDictionary<string, WorldModelCatalog.Entry>(StringComparer.Ordinal);
+        var seenPaths = new HashSet<string>();
 
-        foreach (string assetGuid in AssetDatabase.FindAssets("t:ItemDefinition"))
+        foreach (var type in TypeCache.GetTypesDerivedFrom<IWorldModelSource>())
         {
-            string path = AssetDatabase.GUIDToAssetPath(assetGuid);
-            var item = AssetDatabase.LoadAssetAtPath<ItemDefinition>(path);
-
-            if (item == null || item.Id == Guid.Empty)
+            if (type.IsAbstract || !typeof(ScriptableObject).IsAssignableFrom(type))
                 continue;
 
-            // Items without world models are intentionally omitted.
-            if (item.Appearance.WorldModel == null)
-                continue;
-
-            string id = item.Id.ToString("D");
-
-            if (entries.ContainsKey(id))
+            foreach (string guid in AssetDatabase.FindAssets($"t:{type.Name}"))
             {
-                Debug.LogError(
-                    $"Duplicate item ID '{id}' on '{item.name}'.", item);
-                continue;
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                if (!seenPaths.Add(path)) continue; // t:Base also matches subclasses
+
+                var asset = AssetDatabase.LoadAssetAtPath<ScriptableObject>(path);
+                if (asset is not IWorldModelSource src) continue;
+                if (src.Id == Guid.Empty || src.WorldModel == null) continue;
+
+                string key = src.Id.ToString();
+
+                if (!entries.TryAdd(key, new WorldModelCatalog.Entry
+                { Id = key, Prefab = src.WorldModel }))
+                {
+                    Debug.LogError($"Duplicate catalog ID '{key}' on '{asset.name}'.", asset);
+                }
             }
-
-            entries.Add(id, new WorldModelCatalog.Entry
-            {
-                ItemId = id,
-                Prefab = item.Appearance.WorldModel
-            });
         }
 
         catalog.ReplaceEntries(entries.Values.ToList());
@@ -73,17 +66,6 @@ internal static class WorldModelCatalogBuilder
         AssetDatabase.SaveAssets();
 
         return entries.Count;
-    }
-}
-
-internal sealed class WorldModelCatalogBuildPreprocessor
-    : IPreprocessBuildWithReport
-{
-    public int callbackOrder => -10000;
-
-    public void OnPreprocessBuild(BuildReport report)
-    {
-        WorldModelCatalogBuilder.RebuildCatalog();
     }
 }
 #endif

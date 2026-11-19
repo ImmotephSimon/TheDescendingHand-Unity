@@ -1,5 +1,6 @@
 ﻿using FishNet.Connection;
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using System;
 
 public interface IPlayerNetworkActionsServerHandler
@@ -10,7 +11,9 @@ public interface IPlayerNetworkActionsServerHandler
 public class PlayerNetworkActions : NetworkBehaviour
 {
     private IPlayerNetworkActionsServerHandler _serverHandler;
+    public readonly SyncVar<int> _currentMatchId = new();
 
+    private NetworkObject[] activeDungeonRooms;
     public static event Action<string, float> SpeechBubbleReceived;
 
     public event Action<NetworkObject, bool> BossBarChanged;
@@ -24,6 +27,8 @@ public class PlayerNetworkActions : NetworkBehaviour
         if (_serverHandler == null)
             throw new InvalidOperationException(
                 $"{nameof(IPlayerNetworkActionsServerHandler)} is missing on {gameObject.name}.");
+
+        _currentMatchId.OnChange += OnMatchChanged;
     }
 
     [ServerRpc]
@@ -50,4 +55,14 @@ public class PlayerNetworkActions : NetworkBehaviour
 
     [TargetRpc]
     private void BossBarRpc(NetworkConnection c, NetworkObject boss, bool show) => BossBarChanged?.Invoke(boss, show);
+
+
+
+
+    private void OnMatchChanged(int oldValue, int newValue, bool asServer)
+    {
+        if (asServer) return;
+
+    }
+
 }

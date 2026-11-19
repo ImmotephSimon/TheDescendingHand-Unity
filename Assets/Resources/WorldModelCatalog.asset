@@ -13,17 +13,21 @@ MonoBehaviour:
   m_Name: WorldModelCatalog
   m_EditorClassIdentifier: 
   entries:
-  - ItemId: 03ad957a-e97c-36e4-eb63-4533f492b6fc
+  - Id: 03ad957a-e97c-36e4-eb63-4533f492b6fc
     Prefab: {fileID: 919132149155446097, guid: 05ce57e582a1d844bbc1e311bb8c09bf, type: 3}
-  - ItemId: 15cd08c8-2b37-17a4-a922-dc437dbebdb2
+  - Id: 15cd08c8-2b37-17a4-a922-dc437dbebdb2
     Prefab: {fileID: 919132149155446097, guid: 0a5f5a0e1bc30764db73c789c1901acd, type: 3}
-  - ItemId: 46d8aee5-e295-0854-6bae-3e69ad43986f
+  - Id: 46d8aee5-e295-0854-6bae-3e69ad43986f
     Prefab: {fileID: 919132149155446097, guid: 5dabcd0974f9098449183d2b966a1ec6, type: 3}
-  - ItemId: 61d54c49-8dbf-1cc4-080a-4d7767e84417
+  - Id: 54b1781e-e4f9-67e4-1994-8efd4aff17ce
+    Prefab: {fileID: 3829372780128530005, guid: 6baa4702c05691644b000e5f7714656b, type: 3}
+  - Id: 61d54c49-8dbf-1cc4-080a-4d7767e84417
     Prefab: {fileID: 919132149155446097, guid: deb22067e8e1fad47a68af5f892b15a8, type: 3}
-  - ItemId: 7081d82d-5e99-d764-5bfe-dc5f90ef6a7c
+  - Id: 7081d82d-5e99-d764-5bfe-dc5f90ef6a7c
     Prefab: {fileID: 919132149155446097, guid: c7c9136a0b5d3e747a598daec68857e2, type: 3}
-  - ItemId: ac8dfc47-c768-fad4-eadb-cfd5016b0155
+  - Id: a95a7926-620f-7b44-e863-3a576140cd33
+    Prefab: {fileID: 1494583877365688, guid: 8a8c850b3d9c8a54496ac45fa9fcf7d6, type: 3}
+  - Id: ac8dfc47-c768-fad4-eadb-cfd5016b0155
     Prefab: {fileID: 919132149155446097, guid: 4d137fc27c66ca3498e021580084eb38, type: 3}
-  - ItemId: b25f7aad-1070-7834-d91a-1ab44fcb7e26
+  - Id: b25f7aad-1070-7834-d91a-1ab44fcb7e26
     Prefab: {fileID: 919132149155446097, guid: 00d7a23769fc07944a1a5477badd2caf, type: 3}

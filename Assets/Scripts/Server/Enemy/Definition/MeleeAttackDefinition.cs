@@ -6,7 +6,7 @@ public class MeleeAttackDefinition : EnemyAttackDefinition
     public override IEnemyAttack Create(ServerEnemy owner)
     {
         var attack = owner.gameObject.AddComponent<MeleeAttack>();
-        attack.Initialize(this);
+        attack.Initialize(this, owner.HitBoxSampleData[animation], owner.transform);
         return attack;
     }
 }

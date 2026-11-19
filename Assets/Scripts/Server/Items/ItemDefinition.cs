@@ -11,10 +11,13 @@ public struct ItemImplicit
 }
 
 [CreateAssetMenu(fileName = "NewItemDefinition", menuName = "Items/Item Definition")]
-public class ItemDefinition : ScriptableObject
+public class ItemDefinition : ScriptableObject, IWorldModelSource
 {
     [SerializeField, HideInInspector] private string id;
     public Guid Id => Guid.TryParse(id, out var guid) ? guid : Guid.Empty;
+
+    public GameObject WorldModel => Appearance.WorldModel;
+
     public string DisplayName;
 
 

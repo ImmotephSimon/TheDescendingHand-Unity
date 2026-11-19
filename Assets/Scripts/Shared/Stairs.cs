@@ -1,5 +1,4 @@
-﻿// ───────── Shared asmdef ─────────
-using FishNet.Object;
+﻿using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System;
 using System.Collections.Generic;
@@ -8,24 +7,45 @@ using UnityEngine;
 public class Stairs : NetworkBehaviour
 {
     [SerializeField] private Transform dungeonAnchor;
-    [SerializeField] private TriggerDetector walkDownTrigger;
-    [SerializeField] private TriggerDetector walkUpTrigger;
     [SerializeField] private List<GameObject> walls = new();
+    [SerializeField] private TriggerDetector staircaseVolume;
+    [SerializeField] private TriggerDetector topLanding;
+    [SerializeField] private TriggerDetector bottomLanding;
 
-    // Server-side registry so DungeonManager can hook in regardless of start order.
-    public static event Action<Stairs> OnDescend;
-    public static event Action<Stairs> OnAscend;
+    public static event Action<Stairs, NetworkObject> OnDescend;
+    public static event Action<Stairs, NetworkObject> OnAscend;
 
+    private enum State
+    {
+        Idle,
+        GoingDown,
+        GoingUp
+    }
 
-    private enum State { Idle, TraversingDown, TraversingUp }
+    private enum Side
+    {
+        None,
+        Top,
+        Bottom
+    }
+
     private State _state = State.Idle;
+    private NetworkObject _traveller;
 
+    // Idle only: the landing a player was last standing on.
+    private Side _origin = Side.None;
+    private NetworkObject _originPlayer;
+
+    // Travelling only: true once he has been in the volume clear of both landings.
+    private bool _clearOfLandings;
+
+    // Last physics time a Stay was seen on each landing.
+    private float _topSeen = float.NegativeInfinity;
+    private float _bottomSeen = float.NegativeInfinity;
 
     private readonly SyncVar<bool> _wallsActive = new();
 
     public Transform DungeonAnchor => dungeonAnchor;
-
-    // ── Networking lifecycle ──
 
     public override void OnStartNetwork()
     {
@@ -39,94 +59,218 @@ public class Stairs : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        // Pure clients don't run trigger logic at all.
+        ApplyWalls(_wallsActive.Value);
+
+        // Only the server's physics drives the state machine.
         if (!IsServerInitialized)
         {
-            if (walkDownTrigger != null) walkDownTrigger.enabled = false;
-            if (walkUpTrigger != null) walkUpTrigger.enabled = false;
+            staircaseVolume.enabled = false;
+            topLanding.enabled = false;
+            bottomLanding.enabled = false;
         }
-
-        ApplyWalls(_wallsActive.Value);
     }
 
     public override void OnStartServer()
     {
-        walkDownTrigger.OnEntered += OnTopEnter;
-        walkDownTrigger.OnExited += OnTopExit;
-        walkUpTrigger.OnEntered += OnBottomEnter;
-        walkUpTrigger.OnExited += OnBottomExit;
+        staircaseVolume.OnStay += OnVolumeStay;
+        topLanding.OnStay += OnTopLandingStay;
+        bottomLanding.OnStay += OnBottomLandingStay;
     }
 
     public override void OnStopServer()
     {
-        walkDownTrigger.OnEntered -= OnTopEnter;
-        walkDownTrigger.OnExited -= OnTopExit;
-        walkUpTrigger.OnEntered -= OnBottomEnter;
-        walkUpTrigger.OnExited -= OnBottomExit;
-
+        staircaseVolume.OnStay -= OnVolumeStay;
+        topLanding.OnStay -= OnTopLandingStay;
+        bottomLanding.OnStay -= OnBottomLandingStay;
     }
 
-    // ── Walls (runs on server and clients via SyncVar) ──
-
-    private void OnWallsChanged(bool prev, bool next, bool asServer) => ApplyWalls(next);
+    private void OnWallsChanged(bool prev, bool next, bool asServer)
+    {
+        ApplyWalls(next);
+    }
 
     private void ApplyWalls(bool active)
     {
         for (int i = 0; i < walls.Count; i++)
-            if (walls[i] != null) walls[i].SetActive(active);
+        {
+            if (walls[i] != null)
+            {
+                walls[i].SetActive(active);
+            }
+        }
     }
 
-
-    // ── Server-only logic ──
+    // ---------------------------------------------------------------
+    // Volume
+    // Idle: a player who came off a landing and is now clear of it starts a trip.
+    // Travelling: being here clear of both landings arms the landings.
+    // ---------------------------------------------------------------
     [Server]
-    private void OnTopEnter(NetworkObject nob)
+    private void OnVolumeStay(NetworkObject player)
     {
-        if (_state != State.Idle) return;
-        BeginTraversal(State.TraversingDown, OnDescend);
+        if (!IsPlayer(player))
+            return;
+
+        RecoverIfTravellerGone();
+
+        if (_state == State.Idle)
+        {
+            TryStartTrip(player);
+            return;
+        }
+
+        if (player == _traveller && !OnTop() && !OnBottom())
+            _clearOfLandings = true;
     }
 
     [Server]
-    private void OnBottomEnter(NetworkObject nob)
+    private void TryStartTrip(NetworkObject player)
     {
-        if (_state != State.Idle) return;
-        BeginTraversal(State.TraversingUp, OnAscend);
+        if (player != _originPlayer)
+            return;
+
+        // Still standing on the landing he came from: not started yet.
+        if (_origin == Side.Top && !OnTop())
+            StartGoingDown(player);
+        else if (_origin == Side.Bottom && !OnBottom())
+            StartGoingUp(player);
     }
 
     [Server]
-    private void OnBottomExit(NetworkObject nob)
+    private void StartGoingDown(NetworkObject player)
     {
-        if (_state == State.TraversingDown) EndTraversal();
+        BeginTrip(State.GoingDown, player);
+        OnDescend?.Invoke(this, player);
     }
 
     [Server]
-    private void OnTopExit(NetworkObject nob)
+    private void StartGoingUp(NetworkObject player)
     {
-        if (_state == State.TraversingUp) EndTraversal();
+        BeginTrip(State.GoingUp, player);
+        OnAscend?.Invoke(this, player);
     }
 
     [Server]
-    private void BeginTraversal(State next, Action<Stairs> request)
+    private void BeginTrip(State state, NetworkObject player)
     {
-        _state = next;
+        _origin = Side.None;
+        _originPlayer = null;
+        _state = state;
+        _traveller = player;
+        _clearOfLandings = false;
         _wallsActive.Value = true;
+    }
 
-        try
+    // ---------------------------------------------------------------
+    // Landings
+    // Idle: remember which landing he is on.
+    // Travelling: once armed, either he arrived or he turned back.
+    // ---------------------------------------------------------------
+    [Server]
+    private void OnTopLandingStay(NetworkObject player)
+    {
+        if (!IsPlayer(player))
+            return;
+
+        _topSeen = Time.fixedTime;
+        RecoverIfTravellerGone();
+
+        if (_state == State.Idle)
         {
-            request?.Invoke(this);
+            Remember(Side.Top, player);
+            return;
         }
-        catch (Exception e)
-        {
-            // Don't leave the stairs stuck if the dungeon side fails.
-            Debug.LogException(e);
-            EndTraversal();
-        }
+
+        if (player != _traveller || !_clearOfLandings)
+            return;
+
+        if (_state == State.GoingUp)
+            FinishAscent();
+        else
+            CancelDescent();
     }
 
     [Server]
-    private void EndTraversal()
+    private void OnBottomLandingStay(NetworkObject player)
+    {
+        if (!IsPlayer(player))
+            return;
+
+        _bottomSeen = Time.fixedTime;
+        RecoverIfTravellerGone();
+
+        if (_state == State.Idle)
+        {
+            Remember(Side.Bottom, player);
+            return;
+        }
+
+        if (player != _traveller || !_clearOfLandings)
+            return;
+
+        if (_state == State.GoingDown)
+            FinishDescent();
+        else
+            CancelAscent();
+    }
+
+    // Arrived: the start event already fired, so just release.
+    [Server] private void FinishAscent() => ReturnToIdle();
+    [Server] private void FinishDescent() => ReturnToIdle();
+
+    // Turned back: undo the start event, then release.
+    [Server]
+    private void CancelDescent()
+    {
+        NetworkObject player = _traveller;
+        OnAscend?.Invoke(this, player);
+        ReturnToIdle();
+    }
+
+    [Server]
+    private void CancelAscent()
+    {
+        NetworkObject player = _traveller;
+        OnDescend?.Invoke(this, player);
+        ReturnToIdle();
+    }
+
+    // ---------------------------------------------------------------
+    // Helpers
+    // ---------------------------------------------------------------
+    private bool OnTop() => IsFresh(_topSeen);
+    private bool OnBottom() => IsFresh(_bottomSeen);
+
+    // A landing counts as occupied if it saw a Stay within about 1.5 physics steps.
+    private static bool IsFresh(float seenAt)
+    {
+        return Time.fixedTime - seenAt <= Time.fixedDeltaTime * 1.5f;
+    }
+
+    private void Remember(Side side, NetworkObject player)
+    {
+        _origin = side;
+        _originPlayer = player;
+    }
+
+    [Server]
+    private void ReturnToIdle()
     {
         _state = State.Idle;
+        _traveller = null;
+        _clearOfLandings = false;
         _wallsActive.Value = false;
     }
 
+    [Server]
+    private void RecoverIfTravellerGone()
+    {
+        if (_state != State.Idle && (_traveller == null || !_traveller.IsSpawned))
+            ReturnToIdle();
+    }
+
+    private static bool IsPlayer(NetworkObject nob)
+    {
+        return nob != null && nob.Owner.IsValid && nob.Owner.FirstObject == nob;
+    }
 }

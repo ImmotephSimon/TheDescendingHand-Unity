@@ -7,7 +7,7 @@ using UnityEngine.AI;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private DualPrefabObjects enemyDualPrefabs;
+    [SerializeField] private DualPrefabObjects enemyDualPrefab;
     [SerializeField] public EnemyDefinition enemyDefinition;
 
     [SerializeField] private bool spawnOnEnter = true;
@@ -33,31 +33,29 @@ public class EnemySpawner : MonoBehaviour
 
     private Vector3 GetRandomFloorPoint()
     {
-        Vector3 spawnPoint;
-        if (fixedSpawnPoint != null) spawnPoint = fixedSpawnPoint.position;
-        else
-        {
-            Bounds bounds = spawnArea.bounds;
+        if (fixedSpawnPoint != null)
+            return fixedSpawnPoint.position;
 
-            spawnPoint = new Vector3(
-                UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
-                bounds.max.y + 5f,
-                UnityEngine.Random.Range(bounds.min.z, bounds.max.z)
-            );
-        }
+        Bounds bounds = spawnArea.bounds;
+
+        Vector3 spawnPoint = new Vector3(
+            UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
+            room.transform.position.y + room.FloorHeight + 1.5f,
+            UnityEngine.Random.Range(bounds.min.z, bounds.max.z)
+        );
 
         if (Physics.Raycast(
             spawnPoint,
             Vector3.down,
             out RaycastHit hit,
-            20f,
+            room.RoomExtent.y + 2f,
             LayerMask.GetMask("Floor"),
             QueryTriggerInteraction.Ignore))
         {
             if (NavMesh.SamplePosition(
                 hit.point,
                 out NavMeshHit navHit,
-                2f,
+                3f * 0.5f,
                 NavMesh.AllAreas))
             {
                 return navHit.position + Vector3.up * 0.1f;
@@ -72,21 +70,14 @@ public class EnemySpawner : MonoBehaviour
         if (!InstanceFinder.IsServerStarted)
             return;
 
-        if (enemyDualPrefabs == null || enemyDualPrefabs.Prefabs.Count == 0)
+        if (enemyDualPrefab == null)
         {
-            Debug.LogError($"No dual enemy prefab configured on {name}.", this);
+            Debug.LogError($"No server enemy prefab assigned on {name}.", this);
             return;
         }
 
-        NetworkObject serverPrefab = enemyDualPrefabs.Prefabs[0].Server;
-
-        NetworkObject nob = InstanceFinder.NetworkManager.GetPooledInstantiated(
-            serverPrefab.PrefabId,
-            serverPrefab.SpawnableCollectionId,
-            point,
-            Quaternion.identity,
-            true);
-
+        NetworkObject serverPrefab = enemyDualPrefab.Prefabs[0].Server;
+        NetworkObject nob = Instantiate(serverPrefab, point, Quaternion.identity);
         if (nob == null)
         {
             Debug.LogError("Failed to instantiate enemy prefab.", this);
@@ -104,6 +95,7 @@ public class EnemySpawner : MonoBehaviour
         enemy.Initialize(enemyDefinition, DungeonManager.Instance.ZoneLevel);
 
         InstanceFinder.ServerManager.Spawn(nob);
+        Debug.Log($"[SERVER] enemy {nob.ObjectId} pos {nob.transform.position} | spawner room {room.name} at {room.transform.position}");
 
         nob.GetComponent<ISpawnable>()?.OnSpawnComplete();
 

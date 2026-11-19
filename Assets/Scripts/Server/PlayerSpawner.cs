@@ -1,4 +1,5 @@
 ﻿using FishNet;
+using FishNet.Component.Observing;
 using FishNet.Connection;
 using FishNet.Managing.Object;
 using FishNet.Managing.Scened;
@@ -60,7 +61,7 @@ public class PlayerSpawner : MonoBehaviour
     $"PrefabId={serverPrefab.PrefabId}, " +
     $"CollectionId={serverPrefab.SpawnableCollectionId}");
 
-
+        MatchCondition.AddToMatch(0, conn);
         InstanceFinder.ServerManager.Spawn(player, conn);
         InstanceFinder.SceneManager.AddOwnerToDefaultScene(player);
     }

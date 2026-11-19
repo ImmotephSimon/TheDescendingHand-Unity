@@ -28,7 +28,7 @@ public class ServerEnemy : Entity, IExperienceSource
     public int ExperienceReward => experienceTable.ScaleByRarity(baseExperience, rarity);
 
     public override Vector3 CursorPosition => _perception.Target.position;
-
+    public HitBoxSampleData HitBoxSampleData => definition.HitBoxSampleData;
 
     private void OnValidate()
     {
@@ -58,13 +58,14 @@ public class ServerEnemy : Entity, IExperienceSource
         _level = enemyLevel;
 
         // Runtime visual setup
-        if (definition.ModelPrefab != null && visualRoot.childCount == 0)
-        {
-            Instantiate(definition.ModelPrefab, visualRoot);
-        }
+        //if (definition.WorldModel != null && visualRoot.childCount == 0)
+        //{
+        //    Instantiate(definition.WorldModel, visualRoot);
+        //}
 
         AttachAttacks(definition.Attacks);
         _network.EnemyType.Value = definition.EnemyType;
+        _network.WorldModelId.Value = definition.Id;
 
         _brain = GetComponent<EnemyBrain>();
         _perception = GetComponent<Perception>();

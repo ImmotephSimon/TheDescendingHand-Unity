@@ -8,6 +8,8 @@ public class Room : MonoBehaviour, IRoom
     [SerializeField] private float roomUnit = 3f;
     [SerializeField] private BoxCollider bounds;
 
+    private const float _floorHeight = 0.5f;
+
     private DoorSocket[] doorSockets;
     private DoorSocket entranceDoor;
     private readonly List<HingeController> _doors = new();
@@ -16,7 +18,7 @@ public class Room : MonoBehaviour, IRoom
 
     [SerializeField] private Transform[] chestSpawnPoints;
     public IReadOnlyList<Transform> ChestSpawnPoints => chestSpawnPoints;
-
+    public float FloorHeight => _floorHeight;
     public event Action Entered;
     public Collider Bounds => bounds;
     private bool entered = false;

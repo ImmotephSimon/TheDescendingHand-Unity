@@ -116,17 +116,6 @@ public class PlayerAnimationController : MonoBehaviour, IPlayerAnimationHandler
         animator.CrossFade(hash, BlendTime);
     }
 
-    public void PlayAttackAnimation(AttackAnimation attackAnimation, Action onFinished)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void SetSpeed(float value)
-    {
-        throw new NotImplementedException();
-    }
-
-
     public float PlayDodgeRoll(float duration)
     {
         PlayClip(dodgeAnimation, duration);
@@ -248,5 +237,15 @@ public class PlayerAnimationController : MonoBehaviour, IPlayerAnimationHandler
 
         animator.SetFloat("MoveX", localMovement.x, 0.15f, deltaTime);
         animator.SetFloat("MoveY", localMovement.z, 0.15f, deltaTime);
+    }
+
+    public void PlayAttackAnimation(AttackAnimation attack, float duration)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetSpeed(float speed)
+    {
+        throw new NotImplementedException();
     }
 }

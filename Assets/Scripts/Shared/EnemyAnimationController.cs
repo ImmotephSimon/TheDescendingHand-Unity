@@ -8,20 +8,36 @@ public class EnemyAnimationController : MonoBehaviour, IEnemyAnimationHandler
 
     private Animator _animator;
     private CharacterAnimationState _currentState;
-    private Action _attackFinished;
     private Coroutine _attackCoroutine;
-    private AttackHitbox _hitbox;
 
     private void Awake()
     {
         _animator = GetComponentInChildren<Animator>();
-        _hitbox = GetComponentInChildren<AttackHitbox>();
-
+        Debug.Assert(_animator != null, $"Missing animator on {transform.name}");
+        Debug.Log($"Animator enabled: {_animator.enabled}, active: {_animator.gameObject.activeInHierarchy}, controller: {_animator.runtimeAnimatorController}");
     }
 
-    public void HitboxEnable() => _hitbox?.Enable();
-    public void HitboxDisable() => _hitbox?.Disable();
+    private EnemyStatsNetwork _network;
 
+    private void OnEnable()
+    {
+        _network = GetComponentInParent<EnemyStatsNetwork>();
+        if (_network == null) return;
+
+        _network.AnimationStateChanged += SetAnimationState;
+        _network.AttackAnimationPlayed += PlayAttackAnimation;
+    }
+
+    private void OnDisable()
+    {
+        if (_network == null) return;
+
+        _network.AnimationStateChanged -= SetAnimationState;
+        _network.AttackAnimationPlayed -= PlayAttackAnimation;
+    }
+
+    public void HitboxEnable() { }
+    public void HitboxDisable() { }
 
     public void SetSpeed(float speed)
     {
@@ -33,24 +49,15 @@ public class EnemyAnimationController : MonoBehaviour, IEnemyAnimationHandler
         PlayState(state);
     }
 
-    public void PlayAttackAnimation(AttackAnimation attackAnimation, Action onFinished)
+    public void PlayAttackAnimation(AttackAnimation attackAnimation, float duration)
     {
         StopCurrentAnimation();
         _currentState = CharacterAnimationState.Unset;
 
-        var state = attackAnimation switch
-        {
-            AttackAnimation.MeleeFast => "FastAttack",
-            AttackAnimation.MeleeSlow => "SlowAttack",
-            AttackAnimation.Charge => "ChargeAttack",
-            AttackAnimation.Special => "SpecialAttack",
-            _ => throw new ArgumentOutOfRangeException(nameof(attackAnimation))
-        };
-
-        _attackFinished = onFinished;
+        var state = attackAnimation.StateName();
 
         _animator.CrossFade(state, TransitionDuration);
-        _attackCoroutine = StartCoroutine(FinishAttack(state, onFinished));
+        _attackCoroutine = StartCoroutine(FinishAttack(state));
     }
 
 
@@ -61,8 +68,6 @@ public class EnemyAnimationController : MonoBehaviour, IEnemyAnimationHandler
             StopCoroutine(_attackCoroutine);
             _attackCoroutine = null;
         }
-        _hitbox?.Disable();
-        _attackFinished = null;
     }
 
     public void PlayState(
@@ -88,7 +93,7 @@ public class EnemyAnimationController : MonoBehaviour, IEnemyAnimationHandler
         _animator.CrossFade(stateName, transitionDuration);
     }
 
-    private IEnumerator FinishAttack(string state, Action onFinished)
+    private IEnumerator FinishAttack(string state)
     {
         yield return new WaitUntil(() =>
             _animator.GetCurrentAnimatorStateInfo(0).IsName(state));
@@ -99,9 +104,6 @@ public class EnemyAnimationController : MonoBehaviour, IEnemyAnimationHandler
 
         SetAnimationState(CharacterAnimationState.Locomotion);
         _attackCoroutine = null;
-        var finished = _attackFinished;
-        _attackFinished = null;
-        finished?.Invoke();
     }
 
     private void OnDestroy()

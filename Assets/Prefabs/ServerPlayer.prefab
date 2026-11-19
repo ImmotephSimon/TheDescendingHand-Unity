@@ -18,7 +18,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 927076904386195409, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: _initializedTimestamp
-      value: -8584070675590397560
+      value: -8584066374862661461
       objectReference: {fileID: 0}
     - target: {fileID: 927076904386195409, guid: 370548d182ab1b14896983486ec10ed4, type: 3}
       propertyPath: NetworkBehaviours.Array.size

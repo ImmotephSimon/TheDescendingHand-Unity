@@ -1,17 +1,19 @@
+using FishNet;
+using FishNet.Component.Observing;
+using FishNet.Object;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DungeonManager : MonoBehaviour, IDungeonHandler
 {
     [SerializeField] private DungeonGenerator dungeonGeneratorPrefab;
-    [SerializeField] private DungeonDecorator overworldDecorator;
+    [SerializeField] private Stairs stairsPrefab;
     private Light _directionalLight;
-    private GameObject _overworld;
     private Transform _stairsAnchor;
     private readonly Dictionary<Transform, DungeonGenerator> dungeonCache = new();
-    private DungeonGenerator activeDungeon;
     private bool isGenerating;
 
     public int ZoneLevel => activeDungeon != null ? activeDungeon.ZoneLevel : 0;
@@ -19,13 +21,12 @@ public class DungeonManager : MonoBehaviour, IDungeonHandler
 
     private DropsComponent _drops;
 
-
-    public DungeonGenerator ActiveDungeon => IsOverworld ? null : dungeonStack.Peek();
     public bool IsOverworld => dungeonStack.Count == 0;
 
     public Action<int> OnZoneLevelChanged { get; internal set; }
 
     private Stack<DungeonGenerator> dungeonStack = new();
+    private DungeonGenerator activeDungeon;
 
 
     public event Action<int> ZoneLevelChanged
@@ -44,40 +45,40 @@ public class DungeonManager : MonoBehaviour, IDungeonHandler
         Instance = this;
         _drops = GetComponent<DropsComponent>();
         _directionalLight = RenderSettings.sun;
-        _overworld = GameObject.FindWithTag("Overworld");
-        _stairsAnchor = _overworld.transform.Find("Crypt/StairsAnchor");
+        _stairsAnchor = OverworldAnchor.Instance.StairsAnchor;
 
         Debug.Assert(_directionalLight != null, "DungeonManager: no sun found. Set Sun Source in Lighting settings.", this);
-        Debug.Assert(_overworld != null, "DungeonManager: no object tagged 'Overworld' found.", this);
         Debug.Assert(_stairsAnchor != null, "DungeonManager: Crypt/StairsAnchor not found under Overworld.", this);
 
-        ServerRoot.Instance.Ready += SpawnOverworldStairs;
+        ServerRoot.Instance.Ready += InitializeOverworld;
 
         HingeController.OnPropSpawned += RegisterDungeonProp;
 
     }
 
-    private void SpawnOverworldStairs()
+    private void InitializeOverworld()
     {
-        overworldDecorator.SpawnStairs(_stairsAnchor);
+        var nob = OverworldAnchor.Instance.GetComponent<NetworkObject>();
+        MatchCondition.AddToMatch(0, nob);
+        SpawnStairs(_stairsAnchor, 0, 1);
     }
+
 
     private void OnEnable() { Stairs.OnDescend += OnDescend; Stairs.OnAscend += OnAscend; }
     private void OnDisable() { Stairs.OnDescend -= OnDescend; Stairs.OnAscend -= OnAscend; }
-    private void OnDescend(Stairs s) => EnterDungeon(s.DungeonAnchor);
-    private void OnAscend(Stairs s) => LeaveDungeon();
+    private void OnDescend(Stairs s, NetworkObject player) => EnterDungeon(s.DungeonAnchor, player);
+    private void OnAscend(Stairs s, NetworkObject player) => LeaveDungeon(player);
 
-    public void EnterDungeon(Transform anchor)
+
+    public void EnterDungeon(Transform anchor, NetworkObject player)
     {
         if (isGenerating || anchor == null) return;
 
-        SetCurrentVisible(false);
-        _overworld.SetActive(false);
 
         if (dungeonCache.TryGetValue(anchor, out var cachedDungeon))
         {
             dungeonStack.Push(cachedDungeon);
-            AssignDungeon(cachedDungeon);
+            AssignDungeon(player);
             return;
         }
 
@@ -87,64 +88,54 @@ public class DungeonManager : MonoBehaviour, IDungeonHandler
             Mathf.Round(anchor.position.z / 3f) * 3f
         );
 
-        var newDungeon = Instantiate(dungeonGeneratorPrefab, spawnPosition, anchor.rotation);
-        newDungeon.ZoneLevel = (activeDungeon != null) ? activeDungeon.ZoneLevel + 1 : 1;
+        DungeonGenerator newDungeon = Instantiate(
+            dungeonGeneratorPrefab,
+            spawnPosition,
+            anchor.rotation
+        );
+        InstanceFinder.ServerManager.Spawn(newDungeon.gameObject);
+
+        newDungeon.ZoneLevel = activeDungeon != null
+            ? activeDungeon.ZoneLevel + 1
+            : 1;
 
         dungeonCache[anchor] = newDungeon;
         dungeonStack.Push(newDungeon);
 
-        AssignDungeon(newDungeon);
+        AssignDungeon(player);
         StartCoroutine(GenerateRoutine(newDungeon));
     }
 
-    public void LeaveDungeon()
+    public void LeaveDungeon(NetworkObject player)
     {
-        if (isGenerating || dungeonStack.Count == 0) return;
+        if (isGenerating || IsOverworld) return;
 
-        SetCurrentVisible(false);
         dungeonStack.Pop();
-
-        if (IsOverworld)
-        {
-            activeDungeon = null;
-            _overworld.SetActive(true);
-            if (_directionalLight != null) _directionalLight.enabled = true;
-            OnZoneLevelChanged?.Invoke(0);
-        }
-        else
-        {
-            AssignDungeon(dungeonStack.Peek());
-        }
+        AssignDungeon(player);
     }
 
-    private void AssignDungeon(DungeonGenerator dungeon)
+    private void AssignDungeon(NetworkObject player)
     {
-        activeDungeon = dungeon;
         if (_directionalLight != null) _directionalLight.enabled = IsOverworld;
-        SetCurrentVisible(true);
+        SetActiveDungeonFor(player, activeDungeon);
 
         OnZoneLevelChanged?.Invoke(ZoneLevel);
-    }
-
-    private void SetCurrentVisible(bool visible)
-    {
-        if (activeDungeon != null)
-        {
-            activeDungeon.gameObject.SetActive(visible);
-        }
     }
 
     private IEnumerator GenerateRoutine(DungeonGenerator dungeon)
     {
         isGenerating = true;
         yield return null;
-        dungeon.StartGenerating();
+        dungeon.StartGenerating(dungeonStack.Count, dungeon.ZoneLevel);
         isGenerating = false;
     }
 
     public void OnDungeonCompleted(Transform stairsAnchor)
     {
-        activeDungeon.Decorator.SpawnStairs(stairsAnchor);
+        int currentMatch = activeDungeon.GetInstanceID();
+        int parentMatch = dungeonStack.Count > 1 ? dungeonStack.ElementAt(1).GetInstanceID() : 0;
+
+        SpawnStairs(stairsAnchor, currentMatch, parentMatch);
     }
 
     public void RegisterDungeonProp(
@@ -171,4 +162,26 @@ public class DungeonManager : MonoBehaviour, IDungeonHandler
         hingeController.PlayerInteracted += handler;
     }
 
+    private void SetActiveDungeonFor(NetworkObject player, DungeonGenerator dungeon)
+    {
+        var matchId = dungeonStack.Count;
+        Debug.LogWarning($"matchId now: {matchId}");
+        //MatchCondition.AddToMatch(matchId, player, null, true);
+        MatchCondition.AddToMatch(matchId, player.Owner, null, true);
+        player.GetComponent<PlayerNetworkActions>()._currentMatchId.Value = matchId;
+    }
+
+    public NetworkObject SpawnStairs(Transform stairsAnchor, int matchA, int matchB)
+    {
+        if (!InstanceFinder.IsServerStarted) return null;
+
+        Stairs stairs = Instantiate(stairsPrefab, stairsAnchor.position, stairsAnchor.rotation);
+        var nob = stairs.GetComponent<NetworkObject>();
+
+        MatchCondition.AddToMatch(matchA, nob, null, false);
+        MatchCondition.AddToMatch(matchB, nob, null, false);
+
+        InstanceFinder.ServerManager.Spawn(stairs.gameObject);
+        return nob;
+    }
 }

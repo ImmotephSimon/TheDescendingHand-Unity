@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,8 +21,9 @@ public class AttackAction : EnemyActionBase
         Debug.Assert(_attack != null, $"{owner.name}: Missing IAttackAbility");
 
         _attack.OnHit += HandleHit;
+        _attack.Finished += FinishAttack;
     }
-    
+
 
     public override bool IsAvailable()
     {
@@ -46,7 +47,7 @@ public class AttackAction : EnemyActionBase
         movementHandler.LockRotation(perception.Target);
 
         _canBeInterrupted = false;
-        
+
 
 
         abilityManager.StartCooldown(_attack);
@@ -60,8 +61,8 @@ public class AttackAction : EnemyActionBase
                 GameTags.ModOffenseDamage) * _attack.Effectiveness;
 
             target.TakeDamage(new DamageInfo(
-                damageMap: new Dictionary<GameTag, float> { { GameTags.RestrictionPhysical, damage } }, 
-                source: _owner, 
+                damageMap: new Dictionary<GameTag, float> { { GameTags.RestrictionPhysical, damage } },
+                source: _owner,
                 hitPosition: entity.Transform.position)
             );
         }
@@ -91,7 +92,7 @@ public class AttackAction : EnemyActionBase
             _isAttacking = true;
             animationHandler.PlayAttackAnimation(
                 _attack.AttackAnimation,
-                FinishAttack
+                _attack.CooldownDuration
             );
 
             _attack.Execute(perception.Target);

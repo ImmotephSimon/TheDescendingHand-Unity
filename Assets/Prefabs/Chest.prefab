@@ -138,7 +138,6 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 7462580630383870699}
   _networkObjectCache: {fileID: 7462580630383870699}
   hinge: {fileID: 7000056319400868430}
-  doorAnchor: {fileID: 0}
   openAngle: {x: 0, y: 0, z: -45}
   openSpeed: 1
   propType: 1
@@ -194,7 +193,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 13
+  <PrefabId>k__BackingField: 14
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 12186515287280750339
   SceneId: 0
@@ -221,7 +220,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584070675590397560
+  _initializedTimestamp: -8584066347204070121
 --- !u!1 &1753468799525924
 GameObject:
   m_ObjectHideFlags: 0

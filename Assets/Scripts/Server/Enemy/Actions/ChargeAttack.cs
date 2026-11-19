@@ -1,12 +1,13 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class ChargeAttack : EnemyAttack
 {
     private float rangeTolerance;
 
-    public override void Initialize(EnemyAttackDefinition def)
+    public override void Initialize(EnemyAttackDefinition def, List<HitBoxSample> hitboxSamples, Transform visualRoot)
     {
-        base.Initialize(def);
+        base.Initialize(def, hitboxSamples, visualRoot);
         rangeTolerance = ((ChargeAttackDefinition)def).rangeTolerance;
     }
 

@@ -8,6 +8,7 @@ public interface IEnemyAttack
     float Range { get; }
     float CooldownDuration { get; }
     AttackAnimation AttackAnimation { get; }
+    event Action Finished;
 
     float GetPriority();
     bool CanHit(Transform target);

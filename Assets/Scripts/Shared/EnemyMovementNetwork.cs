@@ -26,6 +26,7 @@ public class EnemyMovementNetwork : NetworkBehaviour
         movementController?.Activate();
     }
 
+
     private void Update()
     {
         UpdateServerMovementState();

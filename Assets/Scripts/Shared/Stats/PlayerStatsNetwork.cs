@@ -37,9 +37,9 @@ public class PlayerStatsNetwork : NetworkBehaviour
     public HashSet<string> Statuses => _replicatedStatuses;
 
     public event Action<GameTag, bool> OnStatusChanged;
-    public event Action<float, float> OnHealthChanged;
-    public event Action<float, float> OnManaChanged;
-    public event Action<int, float> OnExperienceChanged;
+    //public event Action<float, float> OnHealthChanged;
+    //public event Action<float, float> OnManaChanged;
+    //public event Action<int, float> OnExperienceChanged;
 
     public override void OnStartServer()
     {
